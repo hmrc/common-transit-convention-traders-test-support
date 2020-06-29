@@ -1,0 +1,25 @@
+{
+  "scopes": [
+    {
+      "key": "common-transit-convention-traders-test-support",
+      "name": "Common Transit Convention Traders",
+      "description": "Common Transit Convention Traders Test Support API"
+    }
+  ],
+  "api": {
+    "name": "Common Transit Convention Traders Test Support",
+    "description": "The public API to allow 3rd party testers to inject Common Transit Convention (IE) messages as if they were coming from NCTS",
+    "context": "customs/transits",
+    "categories": ["CUSTOMS"],
+    "versions": [
+      {
+        "version": "1.0",
+        "status": "BETA",
+        "endpointsEnabled": true,
+        "access": {
+          "type": "PUBLIC"
+        }
+      }
+    ]
+  }
+}

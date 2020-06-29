@@ -1,0 +1,70 @@
+#%RAML 1.0
+---
+title: CTC Traders
+
+protocols: [ HTTPS ]
+baseUri: https://common-transit-convention-traders-test-support-test-support.hmrc.gov.uk/
+version: v1.0
+
+documentation:
+ - title: Overview
+   content: !include docs/overview.md
+ - title: Versioning
+   content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
+ - title: Errors
+   content: !include docs/errors.md
+
+mediaType: [ application/json, application/xml ]
+
+uses:
+  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
+  headers: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/headers.raml
+  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
+  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+
+traits:
+  contentXmlHeader:
+    headers:
+      Content-Type:
+        description: Specifies the format of the request body, which must be JSON.
+        type: string
+        required: true
+        example: application/json
+
+
+/customs/transits/movements:
+  /arrivals:
+    /{arrivalId}:
+      /test-message
+        uriParameters:
+          arrivalId:
+            description: The ID specifying the arrival
+            type: string
+            example: "1"
+            required: true
+        post:
+          displayName: Inject a fake NCTS Arrival Message
+          description: |
+            Inject a message type into the test NCTS database for a given Movement Arrival.
+          is: [contentXmlHeader]
+          (annotations.scope): "common-transit-convention-traders-test-support"
+          securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
+          responses:
+            201:
+              headers:
+                Location:
+                  description: The uri to retrieve the injected message
+                  example: /customs/transits/movements/arrivals/1234/messages/5678
+            404:
+              description: When the arrival movement does not exist, has been archived or is not available to the EORI number.
+            400:
+              description: When the message type requested is not valid for the current state of the Movement.
+          body:
+            application/json:
+              description: JSON with message type
+              example: |
+                {
+                     "message": {
+                         "type": "IE008"
+                     }
+                 }
