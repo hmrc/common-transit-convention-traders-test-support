@@ -35,7 +35,7 @@ traits:
 /customs/transits/movements:
   /arrivals:
     /{arrivalId}:
-      /test-message
+      /test-message:
         uriParameters:
           arrivalId:
             description: The ID specifying the arrival
@@ -48,7 +48,7 @@ traits:
             Inject a message type into the test NCTS database for a given Movement Arrival.
           is: [contentXmlHeader]
           (annotations.scope): "common-transit-convention-traders-test-support"
-          securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
+          securedBy: [ sec.x-application ]
           responses:
             201:
               headers:

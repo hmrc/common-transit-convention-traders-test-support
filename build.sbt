@@ -4,6 +4,8 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "common-transit-convention-traders-test-support"
 
+scalaVersion := "2.11.12"
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
@@ -23,7 +25,7 @@ lazy val microservice = Project(appName, file("."))
 
 lazy val itSettings = Defaults.itSettings ++ Seq(
   unmanagedSourceDirectories := Seq(
-    baseDirectory.value / "it",
+    baseDirectory.value / "it"
   ),
   parallelExecution := false,
   fork := true,
