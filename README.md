@@ -1,7 +1,7 @@
 
 # Common Transit Convention Traders Test Support API
 
-This is a microservice for a public API which provides ability for software developers to place CTC test messages as if they where coming from NCTS. For use in the  HMRC Sandbox environment.
+This is a microservice for a public API which will allow you the ability to request CTC test messages as if they were coming from NCTS. You can use this in the  HMRC Sandbox environment.
 
 This mircoservice is in [Beta](https://www.gov.uk/help/beta). The signature may change. 
 
