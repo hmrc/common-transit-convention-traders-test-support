@@ -24,6 +24,8 @@ import scala.xml.NodeSeq
 
 object Messages {
 
+  val SupportedMessageTypes: Map[String, () => NodeSeq] = Map("IE928" -> Messages.generateIE928Message)
+
   def generateIE928Message(): NodeSeq = {
     val xml =
       <CC928A>
