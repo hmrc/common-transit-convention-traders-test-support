@@ -61,8 +61,8 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
           case Seq() =>
             Future.successful(NotFound)
           case _ =>
-            // Pick a random message out of the list
-            val message = messages(new Random().nextInt(messages.length))
+            // Use the most recent message submitted by the user
+            val message = messages.last
 
             val ieMessage = Messages.SupportedMessageTypes(testMessage.message.messageType)().toString()
 
