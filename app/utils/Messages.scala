@@ -20,11 +20,13 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
+import models.MessageType.PositiveAcknowledgement
+
 import scala.xml.NodeSeq
 
 object Messages {
 
-  val SupportedMessageTypes: Map[String, () => NodeSeq] = Map("IE928" -> Messages.generateIE928Message)
+  val SupportedMessageTypes: Map[String, () => NodeSeq] = Map(PositiveAcknowledgement.code -> Messages.generateIE928Message)
 
   def generateIE928Message(): NodeSeq = {
     val xml =
