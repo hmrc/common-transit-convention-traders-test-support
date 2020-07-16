@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package models
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+sealed trait SubmissionProcessingResult
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+object SubmissionProcessingResult {
 
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
+  case object SubmissionSuccess extends SubmissionProcessingResult
 
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+  sealed trait SubmissionFailure        extends SubmissionProcessingResult
+  case object SubmissionFailureInternal extends SubmissionFailure
+  case object SubmissionFailureExternal extends SubmissionFailure
+
+  val values = Seq(
+    SubmissionSuccess,
+    SubmissionFailureInternal,
+    SubmissionFailureExternal
+  )
 }

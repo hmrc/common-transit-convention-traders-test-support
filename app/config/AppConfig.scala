@@ -16,7 +16,8 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import javax.inject.Singleton
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -27,4 +28,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
   val graphiteHost: String     = config.get[String]("microservice.metrics.graphite.host")
+
+  val traderAtDestinationUrl = servicesConfig.baseUrl("transit-movement-trader-at-destination")
+  val traderAtDeparturesUrl  = servicesConfig.baseUrl("transits-movements-trader-at-departure")
+  val cacheTtl               = config.get[Int]("mongodb.timeToLiveInSeconds")
 }

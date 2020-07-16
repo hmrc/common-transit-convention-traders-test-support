@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package config
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import com.google.inject.AbstractModule
+import repositories.DepartureRepository
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+class Module extends AbstractModule {
 
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
+  override def configure(): Unit = {
+    bind(classOf[AppConfig]).asEagerSingleton()
+    bind(classOf[DepartureRepository]).asEagerSingleton()
+  }
 
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
 }

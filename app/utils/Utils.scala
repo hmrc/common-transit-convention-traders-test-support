@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package utils
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import java.net.URI
+import java.net.URLEncoder
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+object Utils {
 
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
+  def lastFragment(location: String): String =
+    URI.create(location).getPath.split("/").last
 
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+  def urlEncode(str: String): String =
+    URLEncoder.encode(str, "UTF-8")
 }

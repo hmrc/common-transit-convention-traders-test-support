@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package connectors
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import play.api.http.HeaderNames
+import play.api.http.MimeTypes
+import uk.gov.hmrc.http.HttpErrorFunctions
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+class BaseConnector extends HttpErrorFunctions {
+  protected val requestHeaders: Seq[(String, String)] =
+    Seq((HeaderNames.CONTENT_TYPE, MimeTypes.XML))
 
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
+  protected val responseHeaders: Seq[(String, String)] =
+    Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
 
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+  protected val departureRoute = "/transits-movements-trader-at-departure/movements/departures/MDTP-%d-%d/messages/eis"
 }
