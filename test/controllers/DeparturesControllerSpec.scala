@@ -151,7 +151,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
     }
 
-    "must return NotFound when invalid Content-Type specified" in {
+    "must return UnsupportedMediaType when invalid Content-Type specified" in {
       val departure = Arbitrary.arbitrary[Departure].sample.value.copy(eoriNumber = "eori")
 
       val application = baseApplicationBuilder
