@@ -38,6 +38,8 @@ case class Departure(departureId: DepartureId,
   lazy val messagesWithId: NonEmptyList[(Message, MessageId)] =
     messages.mapWithIndex(_ -> MessageId.fromIndex(_))
 
+  def messagesWithoutStatus: Seq[MessageWithStatus] =
+    messages.collect { case message: MessageWithStatus => message }
 }
 
 object Departure {

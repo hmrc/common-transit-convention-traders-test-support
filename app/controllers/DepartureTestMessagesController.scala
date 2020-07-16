@@ -55,7 +55,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
         As we only want to generate EIS responses for messages sent by the user, get only the messages
         with the status field. Messages without the status field are EIS responses.
          */
-        val messages: Seq[MessageWithStatus] = request.departure.messages.collect { case message: MessageWithStatus => message }
+        val messages = request.departure.messagesWithoutStatus
 
         messages match {
           case Seq() =>
