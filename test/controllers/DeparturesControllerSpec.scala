@@ -109,7 +109,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
   )
 
   "POST" - {
-    "must return Accepted, send the message to departures backend and return Created if submission successful" in {
+    "must send a test message to the departures backend and return Created if successful" in {
       val mockDepartureRepository = mock[DepartureRepository]
       val mockDepartureConnector  = mock[DepartureConnector]
 
@@ -194,7 +194,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
     }
 
-    "must return InternalServerError if database error occurs" in {
+    "must return InternalServerError if database error occurs when retrieving departure" in {
       val mockDepartureRepository = mock[DepartureRepository]
 
       val departure = Arbitrary.arbitrary[Departure].sample.value.copy(eoriNumber = "eori")
