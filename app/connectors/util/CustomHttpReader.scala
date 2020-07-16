@@ -23,10 +23,5 @@ import uk.gov.hmrc.http.HttpResponse
 
 object CustomHttpReader extends HttpReads[HttpResponse] with HttpErrorFunctions with Status {
   override def read(method: String, url: String, response: HttpResponse): HttpResponse =
-    response.status match {
-      case LOCKED | BAD_GATEWAY => recode(INTERNAL_SERVER_ERROR, response)
-      case _                    => response
-    }
-
-  def recode(newCode: Int, response: HttpResponse) = HttpResponse(newCode, response.json, response.headers)
+    response
 }
