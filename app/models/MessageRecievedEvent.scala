@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package models
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+sealed trait MessageReceivedEvent
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+object MessageReceivedEvent {
 
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
+  case object DepartureSubmitted      extends MessageReceivedEvent
+  case object DepartureRejected       extends MessageReceivedEvent
+  case object MrnAllocated            extends MessageReceivedEvent
+  case object PositiveAcknowledgement extends MessageReceivedEvent
 
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+  val values: Seq[MessageReceivedEvent] = Seq(
+    DepartureSubmitted,
+    DepartureRejected,
+    PositiveAcknowledgement,
+    MrnAllocated
+  )
 }

@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package models.request
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import models.Departure
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
-
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
-
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
-}
+case class DepartureRequest[A](request: Request[A], departure: Departure) extends WrappedRequest[A](request)

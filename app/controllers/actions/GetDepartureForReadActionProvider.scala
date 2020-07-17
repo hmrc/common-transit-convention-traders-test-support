@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package controllers.actions
 
-import controllers.Assets
 import javax.inject.Inject
-import play.api.mvc.Action
+import models.DepartureId
+import models.request.DepartureRequest
+import play.api.mvc.ActionBuilder
 import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import play.api.mvc.DefaultActionBuilder
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+class GetDepartureForReadActionProvider @Inject()(
+  buildDefault: DefaultActionBuilder,
+  getDeparture: GetDepartureActionProvider
+) {
 
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
-
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+  def apply(departureId: DepartureId): ActionBuilder[DepartureRequest, AnyContent] =
+    buildDefault andThen getDeparture(departureId)
 }

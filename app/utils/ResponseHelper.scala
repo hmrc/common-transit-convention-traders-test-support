@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package utils
 
-import config.AppConfig
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import play.api.http.Status
+import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpResponse
+import play.api.mvc.Result
+import play.api.mvc.Results
 
-import scala.concurrent.Future
+trait ResponseHelper extends Results with Status with HttpErrorFunctions {
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject()(appConfig: AppConfig, cc: ControllerComponents)
-    extends BackendController(cc) {
-
-  def hello(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
-  }
+  def handleNon2xx(response: HttpResponse): Result =
+    response.status match {
+      case s if is4xx(s) => if (response.body != null) Status(response.status)(response.body) else Status(response.status)
+      case _             => Status(response.status)
+    }
 }

@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.documentation
+package connectors.util
 
-import controllers.Assets
-import javax.inject.Inject
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import play.api.http.Status
+import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpReads
+import uk.gov.hmrc.http.HttpResponse
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
-
-  def definition(): Action[AnyContent] =
-    assets.at("/public/api", "definition.json")
-
-  def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+object CustomHttpReader extends HttpReads[HttpResponse] with HttpErrorFunctions with Status {
+  override def read(method: String, url: String, response: HttpResponse): HttpResponse =
+    response
 }

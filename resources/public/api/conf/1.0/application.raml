@@ -33,19 +33,19 @@ traits:
 
 
 /customs/transits/movements:
-  /arrivals:
-    /{arrivalId}:
+  /departures:
+    /{departureId}:
       /test-message:
         uriParameters:
-          arrivalId:
-            description: The ID specifying the arrival
+          departureId:
+            description: The ID specifying the departure
             type: string
             example: "1"
             required: true
         post:
-          displayName: Inject a fake NCTS Arrival Message
+          displayName: Inject a fake NCTS Departure Message
           description: |
-            Inject a message type into the test NCTS database for a given Movement Arrival.
+            Inject a message type into the test NCTS database for a given Movement Departure.
           is: [contentXmlHeader]
           (annotations.scope): "common-transit-convention-traders-test-support"
           securedBy: [ sec.x-application ]
@@ -54,9 +54,9 @@ traits:
               headers:
                 Location:
                   description: The uri to retrieve the injected message
-                  example: /customs/transits/movements/arrivals/1234/messages/5678
+                  example: /customs/transits/movements/departure/1234/messages/5678
             404:
-              description: When the arrival movement does not exist, has been archived or is not available to the EORI number.
+              description: When the departure movement does not exist, has been archived or is not available to the EORI number.
             400:
               description: When the message type requested is not valid for the current state of the Movement.
           body:
@@ -65,6 +65,6 @@ traits:
               example: |
                 {
                      "message": {
-                         "type": "IE008"
+                         "messageType": "IE008"
                      }
                  }
