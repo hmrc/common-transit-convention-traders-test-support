@@ -119,7 +119,7 @@ class ValidateMessageTypeActionSpec
       status(result) mustEqual BAD_REQUEST
     }
 
-    "must return NotImplemented when passed in an incorrect XML request" in {
+    "must return NotImplemented when passed in TestMessage has unsupported message type" in {
       val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
