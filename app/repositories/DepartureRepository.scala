@@ -20,14 +20,9 @@ import config.AppConfig
 import javax.inject.Inject
 import models.Departure
 import models.DepartureId
-import models.DepartureStatus
-import models.Message
-import models.MessageStatus
 import models.MongoDateTimeFormats
-import models.MovementReferenceNumber
 import play.api.libs.json.Json
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.commands.WriteResult
 import reactivemongo.bson.BSONDocument
 import reactivemongo.api.bson.collection.BSONSerializationPack
 import reactivemongo.api.indexes.Index.Aux
@@ -38,9 +33,6 @@ import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
 
 class DepartureRepository @Inject()(mongo: ReactiveMongoApi, appConfig: AppConfig)(implicit ec: ExecutionContext) extends MongoDateTimeFormats {
 
@@ -81,97 +73,6 @@ class DepartureRepository @Inject()(mongo: ReactiveMongoApi, appConfig: AppConfi
         .map(_ => ())
     }
 
-  def addNewMessage(departureId: DepartureId, message: Message): Future[Try[Unit]] = {
-
-    val selector = Json.obj(
-      "_id" -> departureId
-    )
-
-    val modifier =
-      Json.obj(
-        "$set" -> Json.obj(
-          "updated" -> message.dateTime
-        ),
-        "$inc" -> Json.obj(
-          "nextMessageCorrelationId" -> 1
-        ),
-        "$push" -> Json.obj(
-          "messages" -> Json.toJson(message)
-        )
-      )
-
-    collection.flatMap {
-      _.findAndUpdate(selector, modifier)
-        .map {
-          _.lastError
-            .map {
-              le =>
-                if (le.updatedExisting) Success(()) else Failure(new Exception(s"Could not find departure $departureId"))
-            }
-            .getOrElse(Failure(new Exception("Failed to update departure")))
-        }
-    }
-  }
-
-  def setDepartureStateAndMessageState(departureId: DepartureId,
-                                       messageId: Int,
-                                       departureStatus: DepartureStatus,
-                                       messageStatus: MessageStatus): Future[Option[Unit]] = {
-
-    val selector = Json.obj("_id" -> departureId)
-
-    val modifier = Json.obj(
-      "$set" -> Json.obj(
-        s"messages.$messageId.status" -> messageStatus.toString,
-        "status"                      -> departureStatus.toString
-      )
-    )
-
-    collection.flatMap {
-      _.update(false)
-        .one(selector, modifier)
-        .map {
-          y =>
-            if (y.n == 1) Some(())
-            else None
-        }
-    }
-  }
-
-  def setMessageState(departureId: DepartureId, messageId: Int, messageStatus: MessageStatus): Future[Try[Unit]] = {
-    val selector = Json.obj(
-      "$and" -> Json.arr(
-        Json.obj("_id"                         -> departureId),
-        Json.obj(s"messages.$messageId.status" -> Json.obj("$exists" -> true))
-      )
-    )
-
-    val modifier = Json.obj(
-      "$set" -> Json.obj(
-        s"messages.$messageId.status" -> messageStatus.toString
-      )
-    )
-
-    collection.flatMap {
-      _.update(false)
-        .one(selector, modifier)
-        .map {
-          WriteResult
-            .lastError(_)
-            .map {
-              le =>
-                if (le.updatedExisting) Success(())
-                else
-                  Failure(new Exception(le.errmsg match {
-                    case Some(err) => err
-                    case None      => "Unable to update message status"
-                  }))
-            }
-            .getOrElse(Failure(new Exception("Unable to update message status")))
-        }
-    }
-  }
-
   def get(departureId: DepartureId): Future[Option[Departure]] = {
 
     val selector = Json.obj(
@@ -181,77 +82,6 @@ class DepartureRepository @Inject()(mongo: ReactiveMongoApi, appConfig: AppConfi
     collection.flatMap {
       _.find(selector, None)
         .one[Departure]
-    }
-  }
-
-  def get(eoriNumber: String, reference: String): Future[Option[Departure]] = {
-    val selector = Json.obj(
-      "referenceNumber" -> reference,
-      "eoriNumber"      -> eoriNumber
-    )
-
-    collection.flatMap {
-      _.find(selector, None)
-        .one[Departure]
-    }
-  }
-
-  def addResponseMessage(departureId: DepartureId, message: Message, status: DepartureStatus): Future[Try[Unit]] = {
-    val selector = Json.obj(
-      "_id" -> departureId
-    )
-
-    val modifier =
-      Json.obj(
-        "$set" -> Json.obj(
-          "updated" -> message.dateTime,
-          "status"  -> status.toString
-        ),
-        "$push" -> Json.obj(
-          "messages" -> Json.toJson(message)
-        )
-      )
-
-    collection.flatMap {
-      _.findAndUpdate(selector, modifier)
-        .map {
-          _.lastError
-            .map {
-              le =>
-                if (le.updatedExisting) Success(()) else Failure(new Exception(s"Could not find departure $departureId"))
-            }
-            .getOrElse(Failure(new Exception("Failed to update departure")))
-        }
-    }
-  }
-
-  def setMrnAndAddResponseMessage(departureId: DepartureId, message: Message, status: DepartureStatus, mrn: MovementReferenceNumber): Future[Try[Unit]] = {
-    val selector = Json.obj(
-      "_id" -> departureId
-    )
-
-    val modifier =
-      Json.obj(
-        "$set" -> Json.obj(
-          "updated"                 -> message.dateTime,
-          "movementReferenceNumber" -> mrn,
-          "status"                  -> status.toString
-        ),
-        "$push" -> Json.obj(
-          "messages" -> Json.toJson(message)
-        )
-      )
-
-    collection.flatMap {
-      _.findAndUpdate(selector, modifier)
-        .map {
-          _.lastError
-            .map {
-              le =>
-                if (le.updatedExisting) Success(()) else Failure(new Exception(s"Could not find departure $departureId"))
-            }
-            .getOrElse(Failure(new Exception("Failed to update departure")))
-        }
     }
   }
 }
