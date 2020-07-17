@@ -23,7 +23,7 @@ uses:
   types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
 
 traits:
-  contentXmlHeader:
+  contentJsonHeader:
     headers:
       Content-Type:
         description: Specifies the format of the request body, which must be JSON.
@@ -32,7 +32,7 @@ traits:
         example: application/json
 
 
-/customs/transits/movements:
+/test/customs/transits/movements:
   /departures:
     /{departureId}:
       /test-message:
@@ -46,7 +46,7 @@ traits:
           displayName: Inject a fake NCTS Departure Message
           description: |
             Inject a message type into the test NCTS database for a given Movement Departure.
-          is: [contentXmlHeader]
+          is: [contentJsonHeader]
           (annotations.scope): "common-transit-convention-traders-test-support"
           securedBy: [ sec.x-application ]
           responses:
