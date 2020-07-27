@@ -38,7 +38,7 @@ traits:
       /test-message:
         uriParameters:
           departureId:
-            description: The ID specifying the departure
+            description: The ID specifying the Departure
             type: string
             example: "1"
             required: true
@@ -53,10 +53,10 @@ traits:
             201:
               headers:
                 Location:
-                  description: The uri to retrieve the injected message
+                  description: The URI to retrieve the injected message
                   example: /customs/transits/movements/departure/1234/messages/5678
             404:
-              description: When the departure movement does not exist, has been archived or is not available to the EORI number.
+              description: When the Movement Departure does not exist, has been archived or is not available to the EORI number.
             400:
               description: When the message type requested is not valid for the current state of the Movement.
           body:
