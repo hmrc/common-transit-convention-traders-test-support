@@ -16,16 +16,13 @@
 
 package models
 
-import play.api.libs.json.Json
 import play.api.libs.json.Reads
+import play.api.libs.json._
 
-case class TestMessageType(messageType: String)
-case class TestMessage(message: TestMessageType)
-
-object TestMessageType {
-  implicit val reads: Reads[TestMessageType] = Json.reads[TestMessageType]
-}
+case class TestMessage(messageType: String)
 
 object TestMessage {
-  implicit val reads: Reads[TestMessage] = Json.reads[TestMessage]
+  implicit val readsTestMessage: Reads[TestMessage] =
+    (__ \ "message" \ "messageType").read[String].map(v => TestMessage(v))
+  (TestMessage.apply _)
 }

@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
 import models.DepartureId
-import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -30,8 +29,7 @@ import scala.concurrent.Future
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def post(messageType: String, message: String, departureId: DepartureId, messageCorrelationId: Int)(implicit requestHeader: RequestHeader,
-                                                                                                      hc: HeaderCarrier,
+  def post(messageType: String, message: String, departureId: DepartureId, messageCorrelationId: Int)(implicit hc: HeaderCarrier,
                                                                                                       ec: ExecutionContext): Future[HttpResponse] = {
     val eisPath = departureRoute format (departureId.index, messageCorrelationId)
 

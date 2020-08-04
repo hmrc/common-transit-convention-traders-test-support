@@ -16,6 +16,8 @@
 
 package controllers.actions
 
+import models.MessageType
+import models.TestMessage
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -31,13 +33,18 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import play.api.mvc.DefaultActionBuilder
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import utils.Messages
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.xml.Elem
+import scala.xml.NodeSeq
+import scala.xml.XML
 
 class ValidateMessageTypeActionSpec
     extends AnyFreeSpec
@@ -56,10 +63,15 @@ class ValidateMessageTypeActionSpec
   class Harness(validateMessageTypeAction: ValidateMessageTypeAction, cc: ControllerComponents) extends BackendController(cc) {
 
     def post: Action[JsValue] = (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen validateMessageTypeAction).async(cc.parsers.json) {
-      _ =>
-        Future.successful(Ok)
+      request: GeneratedMessageRequest[JsValue] =>
+        Future.successful(Ok(request.generatedMessage))
     }
   }
+
+  private def contentAsXml(of: Future[Result]): Elem = XML.loadString(contentAsString(of))
+
+  private def numberOfNodes(nodes: NodeSeq): Int =
+    nodes.head.child.filterNot(_.toString().trim.isEmpty).length
 
   "ValidateMessageTypeAction" - {
     "must execute the block when passed in a valid TestMessage" in {
@@ -82,6 +94,31 @@ class ValidateMessageTypeActionSpec
       val result = controller.post()(req)
 
       status(result) mustEqual OK
+    }
+
+    "must generate correct message in executed block" in {
+      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val cc                  = app.injector.instanceOf[ControllerComponents]
+
+      val ie928: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.PositiveAcknowledgement.code))()
+
+      val controller = new Harness(validateMessageType, cc)
+
+      val exampleRequest: JsValue = Json.parse(
+        """{
+          |     "message": {
+          |         "messageType": "IE928"
+          |     }
+          | }""".stripMargin
+      )
+
+      val req: FakeRequest[JsValue] =
+        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
+
+      val result = controller.post()(req)
+
+      status(result) mustEqual OK
+      numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie928)
     }
 
     "must return BadRequest when passed in an invalid TestMessage" in {

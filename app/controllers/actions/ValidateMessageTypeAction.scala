@@ -27,23 +27,24 @@ import play.api.mvc.Result
 import play.api.mvc.Results.BadRequest
 import play.api.mvc.Results.NotImplemented
 import utils.Messages
+import utils.Messages.GenerateMessage
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ValidateMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, Request] {
-  override protected def refine[A](request: Request[A]): Future[Either[Result, Request[A]]] =
+class ValidateMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, GeneratedMessageRequest] {
+  override protected def refine[A](request: Request[A]): Future[Either[Result, GeneratedMessageRequest[A]]] =
     request.body match {
       case body: JsValue =>
         body.validate[TestMessage] match {
-          case _: JsError =>
+          case JsError(_) =>
             Future.successful(Left(BadRequest))
           case JsSuccess(testMessage, _) =>
-            Messages.SupportedMessageTypes.get(testMessage.message.messageType) match {
+            Messages.SupportedMessageTypes.get(testMessage) match {
               case None =>
                 Future.successful(Left(NotImplemented))
-              case _ =>
-                Future.successful(Right(request))
+              case Some(generateMessage: GenerateMessage) =>
+                Future.successful(Right(GeneratedMessageRequest(request, testMessage, generateMessage())))
             }
         }
       case _ =>

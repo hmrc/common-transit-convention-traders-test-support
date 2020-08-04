@@ -16,15 +16,10 @@
 
 package controllers
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-
 import base.SpecBase
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.BeforeAndAfterEach
 import org.mockito.Mockito._
-import org.scalacheck.Arbitrary.arbitrary
 import generators.ModelGenerators
 import org.mockito.ArgumentMatchers.any
 import play.api.inject.bind
@@ -45,26 +40,12 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.AnyContentAsXml
 import uk.gov.hmrc.http.HttpResponse
-import utils.Format
 
 import scala.concurrent.Future
 
-class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with IntegrationPatience {
+class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with IntegrationPatience {
 
-  val localDate     = LocalDate.now()
-  val localTime     = LocalTime.of(1, 1)
-  val localDateTime = LocalDateTime.of(localDate, localTime)
-
-  val newDepartureId = arbitrary[DepartureId].sample.value
-
-  val requestXmlBody =
-    <CC015B>
-      <DatOfPreMES9>{Format.dateFormatted(localDate)}</DatOfPreMES9>
-      <TimOfPreMES10>{Format.timeFormatted(localTime)}</TimOfPreMES10>
-      <HEAHEA>
-        <RefNumHEA4>abc</RefNumHEA4>
-      </HEAHEA>
-    </CC015B>
+  val departureId = new DepartureId(1)
 
   val exampleRequest = Json.parse(
     """{
@@ -78,7 +59,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
     "must send a test message to the departures backend and return Created if successful" in {
       val mockDepartureConnector = mock[DepartureConnector]
 
-      when(mockDepartureConnector.post(any(), any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockDepartureConnector.post(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -88,7 +69,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -105,7 +86,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       running(application) {
         val request = FakeRequest(method = POST,
-                                  uri = routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url,
+                                  uri = routes.DepartureTestMessagesController.injectEISResponse(departureId).url,
                                   headers = FakeHeaders(Nil),
                                   body = AnyContentAsEmpty)
 
@@ -125,7 +106,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
       running(application) {
         val request = FakeRequest(
           method = POST,
-          uri = routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url,
+          uri = routes.DepartureTestMessagesController.injectEISResponse(departureId).url,
           headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/xml")),
           body = AnyContentAsXml(<xml></xml>)
         )
@@ -152,7 +133,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url).withJsonBody(invalidRequest)
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(invalidRequest)
 
         val result = route(application, request).value
 
@@ -163,7 +144,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
     "must return BadRequest if departures backend returns BadRequest" in {
       val mockDepartureConnector = mock[DepartureConnector]
 
-      when(mockDepartureConnector.post(any(), any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+      when(mockDepartureConnector.post(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -173,7 +154,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -184,7 +165,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
     "must return InternalServerError if departures backend returns InternalServerError" in {
       val mockDepartureConnector = mock[DepartureConnector]
 
-      when(mockDepartureConnector.post(any(), any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+      when(mockDepartureConnector.post(any(), any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -194,7 +175,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 

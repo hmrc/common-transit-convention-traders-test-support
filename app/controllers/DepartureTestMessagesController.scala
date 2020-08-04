@@ -19,17 +19,15 @@ package controllers
 import config.Constants
 import connectors.DepartureConnector
 import controllers.actions.AuthAction
+import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateMessageTypeAction
 import javax.inject.Inject
 import models.DepartureId
-import models.TestMessage
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
-import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
-import utils.Messages
 import utils.ResponseHelper
 
 import scala.concurrent.ExecutionContext
@@ -44,12 +42,8 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (authAction andThen validateMessageTypeAction).async(parse.json) {
-      implicit request: Request[JsValue] =>
-        val testMessage: TestMessage = request.body.as[TestMessage]
-
-        val ieMessage = Messages.SupportedMessageTypes(testMessage.message.messageType)().toString()
-
-        departureConnector.post(testMessage.message.messageType, ieMessage, departureId, Constants.MessageCorrelationId).map {
+      implicit request: GeneratedMessageRequest[JsValue] =>
+        departureConnector.post(request.testMessage.messageType, request.generatedMessage.toString(), departureId, Constants.MessageCorrelationId).map {
           response =>
             response.status match {
               case status if is2xx(status) =>

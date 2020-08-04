@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package generators
+package controllers.actions
 
-import org.scalacheck.Arbitrary
-import org.scalacheck.Gen
-import models.DepartureId
-import models.MessageType
+import models.TestMessage
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
-trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
+import scala.xml.NodeSeq
 
-  implicit lazy val arbitraryDepartureId: Arbitrary[DepartureId] = {
-    Arbitrary {
-      for {
-        id <- intWithMaxLength(9)
-      } yield DepartureId(id)
-    }
-  }
-
-  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
-    Arbitrary(Gen.oneOf(MessageType.values))
-}
+case class GeneratedMessageRequest[A](request: Request[A], testMessage: TestMessage, generatedMessage: NodeSeq) extends WrappedRequest[A](request)
