@@ -32,7 +32,6 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 class ValidateMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, Request] {
-
   override protected def refine[A](request: Request[A]): Future[Either[Result, Request[A]]] =
     request.body match {
       case body: JsValue =>

@@ -18,4 +18,6 @@ package config
 
 object Constants {
   val Context = "/test/customs/transits"
+
+  val MessageCorrelationId = 1
 }

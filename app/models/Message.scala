@@ -16,61 +16,8 @@
 
 package models
 
-import java.time.LocalDateTime
-
-import play.api.libs.json.JsResult
-import play.api.libs.json.JsValue
 import play.api.libs.json.Json
-import play.api.libs.json.OFormat
-import play.api.libs.json.OWrites
 import play.api.libs.json.Reads
-import utils.NodeSeqFormat
-
-import scala.xml.NodeSeq
-
-sealed trait Message {
-  def dateTime: LocalDateTime
-  def messageType: MessageType
-  def message: NodeSeq
-  def optStatus: Option[MessageStatus]
-}
-
-final case class MessageWithStatus(dateTime: LocalDateTime, messageType: MessageType, message: NodeSeq, status: MessageStatus, messageCorrelationId: Int)
-    extends Message { def optStatus = Some(status) }
-
-final case class MessageWithoutStatus(dateTime: LocalDateTime, messageType: MessageType, message: NodeSeq, messageCorrelationId: Int) extends Message {
-  def optStatus = None
-}
-
-object Message extends NodeSeqFormat with MongoDateTimeFormats {
-
-  implicit lazy val reads: Reads[Message] = new Reads[Message] {
-    override def reads(json: JsValue): JsResult[Message] = (json \ "status").toOption match {
-      case Some(_) =>
-        json.validate[MessageWithStatus]
-      case None =>
-        json.validate[MessageWithoutStatus]
-    }
-  }
-
-  implicit lazy val writes: OWrites[Message] = OWrites {
-    case ns: MessageWithStatus    => Json.toJsObject(ns)(MessageWithStatus.formatsMessage)
-    case ws: MessageWithoutStatus => Json.toJsObject(ws)(MessageWithoutStatus.formatsMessage)
-  }
-
-}
-
-object MessageWithStatus extends NodeSeqFormat with MongoDateTimeFormats {
-
-  implicit val formatsMessage: OFormat[MessageWithStatus] =
-    Json.format[MessageWithStatus]
-}
-
-object MessageWithoutStatus extends NodeSeqFormat with MongoDateTimeFormats {
-
-  implicit val formatsMessage: OFormat[MessageWithoutStatus] =
-    Json.format[MessageWithoutStatus]
-}
 
 case class TestMessageType(messageType: String)
 case class TestMessage(message: TestMessageType)
