@@ -36,6 +36,8 @@ import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import play.api.test.Helpers._
 import connectors.DepartureConnector
+import controllers.actions.AuthAction
+import controllers.actions.FakeAuthAction
 import models.DepartureId
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.HeaderNames
@@ -80,6 +82,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       val application = baseApplicationBuilder
         .overrides(
+          bind[AuthAction].to[FakeAuthAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector)
         )
         .build()
@@ -94,7 +97,11 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "must return UnsupportedMediaType when no Content-Type specified" in {
-      val application = baseApplicationBuilder.build()
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction]
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(method = POST,
@@ -109,7 +116,11 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "must return UnsupportedMediaType when invalid Content-Type specified" in {
-      val application = baseApplicationBuilder.build()
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction]
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(
@@ -134,7 +145,11 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
           | }""".stripMargin
       )
 
-      val application = baseApplicationBuilder.build()
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction]
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(new DepartureId(1)).url).withJsonBody(invalidRequest)
@@ -152,6 +167,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       val application = baseApplicationBuilder
         .overrides(
+          bind[AuthAction].to[FakeAuthAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector)
         )
         .build()
@@ -172,6 +188,7 @@ class DeparturesControllerSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       val application = baseApplicationBuilder
         .overrides(
+          bind[AuthAction].to[FakeAuthAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector)
         )
         .build()

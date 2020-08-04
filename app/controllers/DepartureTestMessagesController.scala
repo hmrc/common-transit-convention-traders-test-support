@@ -18,6 +18,7 @@ package controllers
 
 import config.Constants
 import connectors.DepartureConnector
+import controllers.actions.AuthAction
 import controllers.actions.ValidateMessageTypeAction
 import javax.inject.Inject
 import models.DepartureId
@@ -25,7 +26,6 @@ import models.TestMessage
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
-import play.api.mvc.DefaultActionBuilder
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
@@ -36,14 +36,14 @@ import scala.concurrent.ExecutionContext
 
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 departureConnector: DepartureConnector,
-                                                buildDefault: DefaultActionBuilder,
+                                                authAction: AuthAction,
                                                 validateMessageTypeAction: ValidateMessageTypeAction)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
     with ResponseHelper {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
-    (buildDefault andThen validateMessageTypeAction).async(parse.json) {
+    (authAction andThen validateMessageTypeAction).async(parse.json) {
       implicit request: Request[JsValue] =>
         val testMessage: TestMessage = request.body.as[TestMessage]
 
