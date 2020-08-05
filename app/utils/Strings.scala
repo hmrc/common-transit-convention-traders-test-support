@@ -38,6 +38,27 @@ object Strings {
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
   }
 
+  def numeric(lengthStart: Int, lengthEnd: Int, excludeChars: Seq[Int] = Seq()): String = {
+    val length = Gen.choose(lengthStart, lengthEnd).sample.getOrElse(lengthStart)
+    Random.alphanumeric.filter(x => (!excludeChars.contains(x)) && x.isDigit).take(length).mkString
+  }
+
+  def numeric8(): String = {
+    val first  = Gen.choose(1, 2).sample.getOrElse(1)
+    val second = Gen.choose(0, 9).sample.getOrElse(9)
+
+    Seq(
+      first.toString,
+      second.toString,
+      first.toString,
+      second.toString,
+      "0",
+      Gen.choose(1, 9).sample.getOrElse(5).toString,
+      "0",
+      Gen.choose(1, 9).sample.getOrElse(7).toString,
+    ).mkString
+  }
+
   def alpha(length: Int): String =
     Random.alphanumeric.filter(_.isLetter).take(length).mkString
 }
