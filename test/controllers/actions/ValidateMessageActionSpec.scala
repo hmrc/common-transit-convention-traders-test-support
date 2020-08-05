@@ -140,6 +140,28 @@ class ValidateMessageTypeActionSpec
       status(result) mustEqual OK
     }
 
+    "must execute the block when passed in a valid IE060 TestMessage" in {
+      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val cc                  = app.injector.instanceOf[ControllerComponents]
+
+      val controller = new Harness(validateMessageType, cc)
+
+      val exampleRequest: JsValue = Json.parse(
+        """{
+          |     "message": {
+          |         "messageType": "IE060"
+          |     }
+          | }""".stripMargin
+      )
+
+      val req: FakeRequest[JsValue] =
+        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
+
+      val result = controller.post()(req)
+
+      status(result) mustEqual OK
+    }
+
     "must generate correct IE928 message in executed block" in {
       val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
@@ -213,6 +235,31 @@ class ValidateMessageTypeActionSpec
 
       status(result) mustEqual OK
       numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie029)
+    }
+
+    "must generate correct IE060 message in executed block" in {
+      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val cc                  = app.injector.instanceOf[ControllerComponents]
+
+      val ie060: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.ControlDecisionNotification.code))()
+
+      val controller = new Harness(validateMessageType, cc)
+
+      val exampleRequest: JsValue = Json.parse(
+        """{
+          |     "message": {
+          |         "messageType": "IE060"
+          |     }
+          | }""".stripMargin
+      )
+
+      val req: FakeRequest[JsValue] =
+        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
+
+      val result = controller.post()(req)
+
+      status(result) mustEqual OK
+      numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie060)
     }
 
     "must return BadRequest when passed in an invalid TestMessage" in {
