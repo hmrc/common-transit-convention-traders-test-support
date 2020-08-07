@@ -16,25 +16,13 @@
 
 package models
 
+import play.api.libs.json.Reads
 import play.api.libs.json._
 
-final case class MovementReferenceNumber(value: String)
+case class TestMessage(messageType: String)
 
-object MovementReferenceNumber {
-
-  implicit lazy val reads: Reads[MovementReferenceNumber] = __.read[String].map(MovementReferenceNumber.apply)
-  implicit lazy val writes: Writes[MovementReferenceNumber] = Writes {
-    mrn =>
-      JsString(mrn.value)
-  }
-
-  implicit lazy val optReads: Reads[Option[MovementReferenceNumber]] = __.readNullable[MovementReferenceNumber]
-  implicit lazy val optWrites: Writes[Option[MovementReferenceNumber]] = Writes {
-    optMrn =>
-      optMrn match {
-        case Some(mrn) => JsString(mrn.value)
-        case None      => JsNull
-      }
-  }
-
+object TestMessage {
+  implicit val readsTestMessage: Reads[TestMessage] =
+    (__ \ "message" \ "messageType").read[String].map(v => TestMessage(v))
+  (TestMessage.apply _)
 }

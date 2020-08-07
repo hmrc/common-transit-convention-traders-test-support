@@ -14,21 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package controllers.actions
 
-sealed trait MessageReceivedEvent
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
-object MessageReceivedEvent {
-
-  case object DepartureSubmitted      extends MessageReceivedEvent
-  case object DepartureRejected       extends MessageReceivedEvent
-  case object MrnAllocated            extends MessageReceivedEvent
-  case object PositiveAcknowledgement extends MessageReceivedEvent
-
-  val values: Seq[MessageReceivedEvent] = Seq(
-    DepartureSubmitted,
-    DepartureRejected,
-    PositiveAcknowledgement,
-    MrnAllocated
-  )
-}
+case class AuthRequest[A](request: Request[A], eori: String) extends WrappedRequest[A](request)

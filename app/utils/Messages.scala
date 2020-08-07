@@ -21,12 +21,17 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 import models.MessageType.PositiveAcknowledgement
+import models.TestMessage
 
 import scala.xml.NodeSeq
 
 object Messages {
 
-  val SupportedMessageTypes: Map[String, () => NodeSeq] = Map(PositiveAcknowledgement.code -> Messages.generateIE928Message)
+  type GenerateMessage = () => NodeSeq
+
+  val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
+    TestMessage(PositiveAcknowledgement.code) -> Messages.generateIE928Message
+  )
 
   def generateIE928Message(): NodeSeq = {
     val xml =
@@ -52,9 +57,14 @@ object Messages {
         <ComAccRefMES21>{Strings.alphanumeric(1, 35)}</ComAccRefMES21>
         <MesSeqNumMES22>{Strings.numeric(1, 2)}</MesSeqNumMES22>
         <FirAndLasTraMES23>{Strings.alpha(1)}</FirAndLasTraMES23>
-        <HEAHEA><RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4></HEAHEA>
-        <TRAPRIPC1></TRAPRIPC1>
-        <CUSOFFDEPEPT><RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1></CUSOFFDEPEPT>
+        <HEAHEA>
+          <RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4>
+        </HEAHEA>
+        <TRAPRIPC1>
+        </TRAPRIPC1>
+        <CUSOFFDEPEPT>
+          <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
+        </CUSOFFDEPEPT>
       </CC928A>
 
     xml

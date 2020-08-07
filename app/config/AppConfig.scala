@@ -23,7 +23,6 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
-
   val authBaseUrl: String = servicesConfig.baseUrl("auth")
 
   val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
@@ -31,5 +30,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
 
   val traderAtDestinationUrl = servicesConfig.baseUrl("transit-movement-trader-at-destination")
   val traderAtDeparturesUrl  = servicesConfig.baseUrl("transits-movements-trader-at-departure")
-  val cacheTtl               = config.get[Int]("mongodb.timeToLiveInSeconds")
+
+  lazy val enrolmentKey: String = config.get[String]("security.enrolmentKey")
 }

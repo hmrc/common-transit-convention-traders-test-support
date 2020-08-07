@@ -16,18 +16,21 @@
 
 package controllers.actions
 
-import javax.inject.Inject
-import models.DepartureId
-import models.request.DepartureRequest
-import play.api.mvc.ActionBuilder
-import play.api.mvc.AnyContent
-import play.api.mvc.DefaultActionBuilder
+import com.google.inject.Inject
+import config.AppConfig
+import play.api.mvc._
+import uk.gov.hmrc.auth.core._
 
-class GetDepartureForReadActionProvider @Inject()(
-  buildDefault: DefaultActionBuilder,
-  getDeparture: GetDepartureActionProvider
-) {
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
-  def apply(departureId: DepartureId): ActionBuilder[DepartureRequest, AnyContent] =
-    buildDefault andThen getDeparture(departureId)
+case class FakeAuthAction @Inject()(
+  override val authConnector: AuthConnector,
+  config: AppConfig,
+  override val parser: BodyParsers.Default
+)(implicit override val executionContext: ExecutionContext)
+    extends AuthAction(authConnector, config, parser) {
+
+  override def invokeBlock[A](request: Request[A], block: AuthRequest[A] => Future[Result]): Future[Result] =
+    block(AuthRequest(request, "id"))
 }

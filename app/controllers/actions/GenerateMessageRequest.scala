@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package models.request
+package controllers.actions
 
-import models.Departure
+import models.TestMessage
 import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 
-case class DepartureRequest[A](request: Request[A], departure: Departure) extends WrappedRequest[A](request)
+import scala.xml.NodeSeq
+
+case class GeneratedMessageRequest[A](request: Request[A], testMessage: TestMessage, generatedMessage: NodeSeq) extends WrappedRequest[A](request)
