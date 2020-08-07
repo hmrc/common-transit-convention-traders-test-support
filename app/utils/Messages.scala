@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter
 
 import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
+import models.MessageType.ReleaseForTransit
 import models.TestMessage
 
 import scala.xml.NodeSeq
@@ -32,7 +33,8 @@ object Messages {
 
   val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
     TestMessage(PositiveAcknowledgement.code) -> Messages.generateIE928Message,
-    TestMessage(NoReleaseForTransit.code)     -> Messages.generateIE051Message
+    TestMessage(NoReleaseForTransit.code)     -> Messages.generateIE051Message,
+    TestMessage(ReleaseForTransit.code)       -> Messages.generateIE029Message
   )
 
   def generateIE928Message(): NodeSeq = {
@@ -120,6 +122,52 @@ object Messages {
           </PACGS2>
         </GOOITEGDS>
       </CC051A>
+
+    xml
+  }
+
+  def generateIE029Message(): NodeSeq = {
+    val xml =
+      <CC029A>
+        <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+        <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+        <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+        <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+        <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+        <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+        <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+        <HEAHEA>
+          <RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4>
+          <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+          <TypOfDecHEA24>{Strings.alphanumeric(1, 9)}</TypOfDecHEA24>
+          <ConIndHEA96>{Strings.numeric(1)}</ConIndHEA96>
+          <NCTRetCopHEA104>{Strings.numeric(1)}</NCTRetCopHEA104>
+          <AccDatHEA158>{Strings.numeric8()}</AccDatHEA158>
+          <IssDatHEA186>{Strings.numeric8()}</IssDatHEA186>
+          <NCTSAccDocHEA601LNG>{Strings.alpha(2)}</NCTSAccDocHEA601LNG>
+          <TotNumOfIteHEA305>{Strings.numeric(1, 5)}</TotNumOfIteHEA305>
+          <TotGroMasHEA307>{Strings.numeric(5)}</TotGroMasHEA307>
+          <BinItiHEA246>{Strings.numeric(1)}</BinItiHEA246>
+          <DecDatHEA383>{Strings.numeric8()}</DecDatHEA383>
+          <DecPlaHEA394>{Strings.alphanumeric(1, 35)}</DecPlaHEA394>
+        </HEAHEA>
+        <TRAPRIPC1/>
+        <CUSOFFDEPEPT>
+          <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
+        </CUSOFFDEPEPT>
+        <CUSOFFDESEST>
+          <RefNumEST1>{Strings.alphanumeric(8)}</RefNumEST1>
+        </CUSOFFDESEST>
+        <GUAGUA>
+          <GuaTypGUA1>{Strings.alphanumeric(1)}</GuaTypGUA1>
+        </GUAGUA>
+        <GOOITEGDS>
+          <IteNumGDS7>{Strings.numeric(1,5)}</IteNumGDS7>
+          <GooDesGDS23>{Strings.alphanumeric(1, 35)}</GooDesGDS23>
+        </GOOITEGDS>
+      </CC029A>
 
     xml
   }
