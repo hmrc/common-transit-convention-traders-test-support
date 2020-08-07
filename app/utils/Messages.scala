@@ -20,6 +20,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
+import models.MessageType.ControlDecisionNotification
 import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
 import models.MessageType.ReleaseForTransit
@@ -32,9 +33,10 @@ object Messages {
   type GenerateMessage = () => NodeSeq
 
   val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
-    TestMessage(PositiveAcknowledgement.code) -> Messages.generateIE928Message,
-    TestMessage(NoReleaseForTransit.code)     -> Messages.generateIE051Message,
-    TestMessage(ReleaseForTransit.code)       -> Messages.generateIE029Message
+    TestMessage(PositiveAcknowledgement.code)     -> Messages.generateIE928Message,
+    TestMessage(NoReleaseForTransit.code)         -> Messages.generateIE051Message,
+    TestMessage(ReleaseForTransit.code)           -> Messages.generateIE029Message,
+    TestMessage(ControlDecisionNotification.code) -> Messages.generateIE060Message
   )
 
   def generateIE928Message(): NodeSeq = {
@@ -168,6 +170,37 @@ object Messages {
           <GooDesGDS23>{Strings.alphanumeric(1, 35)}</GooDesGDS23>
         </GOOITEGDS>
       </CC029A>
+
+    xml
+  }
+
+  def generateIE060Message(): NodeSeq = {
+    val xml =
+      <CC060A>
+        <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+        <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+        <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+        <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+        <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+        <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+        <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+        <HEAHEA>
+          <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+          <DatOfConNotHEA148>{Strings.numeric8()}</DatOfConNotHEA148>
+        </HEAHEA>
+        <TRAPRIPC1>
+          <NamPC17>{Strings.alphanumeric(1, 35)}</NamPC17>
+          <StrAndNumPC122>{Strings.alphanumeric(1, 35)}</StrAndNumPC122>
+          <PosCodPC123>{Strings.alphanumeric(1, 9)}</PosCodPC123>
+          <CitPC124>{Strings.alphanumeric(1, 35)}</CitPC124>
+          <CouPC125>{Strings.alpha(2)}</CouPC125>
+        </TRAPRIPC1>
+        <CUSOFFDEPEPT>
+          <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
+        </CUSOFFDEPEPT>
+      </CC060A>
 
     xml
   }
