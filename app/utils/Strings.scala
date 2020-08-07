@@ -38,20 +38,8 @@ object Strings {
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
   }
 
-  def decimalMax12(): String =
-    Seq(
-      Gen.choose(1, 9).sample.getOrElse(1).toString,
-      Gen.choose(1, 9).sample.getOrElse(2).toString,
-      Gen.choose(1, 9).sample.getOrElse(3).toString,
-      Gen.choose(1, 9).sample.getOrElse(4).toString,
-      Gen.choose(1, 9).sample.getOrElse(5).toString,
-      Gen.choose(1, 9).sample.getOrElse(6).toString,
-      Gen.choose(1, 9).sample.getOrElse(7).toString,
-      Gen.choose(1, 9).sample.getOrElse(8).toString,
-      Gen.choose(1, 9).sample.getOrElse(9).toString,
-      Gen.choose(1, 9).sample.getOrElse(3).toString,
-      Gen.choose(1, 9).sample.getOrElse(5).toString,
-    ).mkString
+  def decimal(length: Int): String =
+    Seq.fill(length)(Gen.choose(1, 9).sample.getOrElse(1)).mkString
 
   def numeric8(): String = {
     val first  = Gen.choose(1, 2).sample.getOrElse(1)
