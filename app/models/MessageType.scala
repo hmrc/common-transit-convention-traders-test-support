@@ -28,8 +28,9 @@ sealed trait MessageType extends IeMetadata {
 object MessageType extends Enumerable.Implicits {
 
   case object PositiveAcknowledgement extends IeMetadata("IE928", "CC928A") with MessageType
+  case object NoReleaseForTransit     extends IeMetadata("IE051", "CC051A") with MessageType
 
-  val values: Seq[MessageType] = Seq(PositiveAcknowledgement)
+  val values: Seq[MessageType] = Seq(PositiveAcknowledgement, NoReleaseForTransit)
 
   def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
     ReaderT[Option, NodeSeq, MessageType] {

@@ -22,6 +22,8 @@ import org.scalacheck.Gen
 
 object Strings {
 
+  def between1And9: Int = Gen.choose(1, 9).sample.getOrElse(1)
+
   def alphanumeric(length: Int): String =
     Random.alphanumeric take length mkString
 
@@ -36,6 +38,25 @@ object Strings {
   def numeric(lengthStart: Int, lengthEnd: Int): String = {
     val length = Gen.choose(lengthStart, lengthEnd).sample.getOrElse(lengthStart)
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
+  }
+
+  def decimalMax12(): String =
+    Seq.fill(11)(between1And9).mkString
+
+  def numeric8(): String = {
+    val first  = Gen.choose(1, 2).sample.getOrElse(1)
+    val second = Gen.choose(0, 9).sample.getOrElse(9)
+
+    Seq(
+      first.toString,
+      second.toString,
+      first.toString,
+      second.toString,
+      "0",
+      between1And9.toString,
+      "0",
+      between1And9.toString,
+    ).mkString
   }
 
   def alpha(length: Int): String =
