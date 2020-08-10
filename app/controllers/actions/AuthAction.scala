@@ -54,11 +54,13 @@ class AuthAction @Inject()(
         block(AuthRequest(request, eoriNumber))
     }
   } recover {
-    case _: InsufficientEnrolments =>
-      Logger.logger.warn("insufficient enrolments")
+    case e: InsufficientEnrolments =>
+      Logger.warn("insufficient enrolments")
+      Logger.debug(s"Test Support API - AuthAction(InsufficientEnrolments): ${e.getStackTrace()}")
       Forbidden
-    case _: AuthorisationException =>
-      Logger.logger.warn("auth issues")
+    case e: AuthorisationException =>
+      Logger.warn("auth issues")
+      Logger.debug(s"Test Support API - AuthAction(AuthorisationException): ${e.getStackTrace()}")
       Unauthorized
   }
 }
