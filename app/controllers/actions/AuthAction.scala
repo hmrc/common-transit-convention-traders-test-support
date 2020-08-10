@@ -55,10 +55,10 @@ class AuthAction @Inject()(
     }
   } recover {
     case e: InsufficientEnrolments =>
-      Logger.debug(s"Error: ${e.getMessage}. Stacktrace: ${e.getStackTrace}.")
+      Logger.debug("InsufficientEnrolments", e)
       Forbidden
     case e: AuthorisationException =>
-      Logger.debug(s"Error: ${e.getMessage}. Stacktrace: ${e.getStackTrace}.")
+      Logger.debug("AuthorisationException", e)
       Unauthorized
   }
 }
