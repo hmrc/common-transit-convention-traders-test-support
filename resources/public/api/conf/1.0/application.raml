@@ -48,7 +48,7 @@ traits:
             Inject a message type into the test NCTS database for a given Movement Departure.
           is: [contentJsonHeader]
           (annotations.scope): "common-transit-convention-traders-test-support"
-          securedBy: [ sec.x-application ]
+          securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
           responses:
             201:
               headers:
