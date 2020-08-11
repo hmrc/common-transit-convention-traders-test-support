@@ -51,10 +51,7 @@ traits:
           securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
           responses:
             201:
-              headers:
-                Location:
-                  description: The URI to retrieve the injected message
-                  example: /customs/transits/movements/departure/1234/messages/5678
+              description: When a test message has been successfully injected.
             404:
               description: When the Movement Departure does not exist, has been archived or is not available to the EORI number.
             400:
@@ -65,6 +62,6 @@ traits:
               example: |
                 {
                      "message": {
-                         "messageType": "IE008"
+                         "messageType": "IE928"
                      }
                  }
