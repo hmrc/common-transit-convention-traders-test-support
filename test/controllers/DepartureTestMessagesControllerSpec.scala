@@ -121,7 +121,7 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
       val invalidRequest = Json.parse(
         """{
           |     "message": {
-          |         "messageType": "IE028"
+          |         "messageType": "IE005"
           |     }
           | }""".stripMargin
       )
