@@ -21,6 +21,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 import models.MessageType.ControlDecisionNotification
+import models.MessageType.MrnAllocated
 import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
 import models.MessageType.ReleaseForTransit
@@ -36,7 +37,8 @@ object Messages {
     TestMessage(PositiveAcknowledgement.code)     -> Messages.generateIE928Message,
     TestMessage(NoReleaseForTransit.code)         -> Messages.generateIE051Message,
     TestMessage(ReleaseForTransit.code)           -> Messages.generateIE029Message,
-    TestMessage(ControlDecisionNotification.code) -> Messages.generateIE060Message
+    TestMessage(ControlDecisionNotification.code) -> Messages.generateIE060Message,
+    TestMessage(MrnAllocated.code)                -> Messages.generateIE028Message
   )
 
   def generateIE928Message(): NodeSeq = {
@@ -201,6 +203,32 @@ object Messages {
           <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
         </CUSOFFDEPEPT>
       </CC060A>
+
+    xml
+  }
+
+  def generateIE028Message(): NodeSeq = {
+    val xml =
+      <CC028A>
+        <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+        <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+        <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+        <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+        <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+        <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+        <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+        <HEAHEA>
+          <RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4>
+          <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+          <AccDatHEA158>{Strings.numeric8()}</AccDatHEA158>
+        </HEAHEA>
+        <TRAPRIPC1/>
+        <CUSOFFDEPEPT>
+          <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
+        </CUSOFFDEPEPT>
+      </CC028A>
 
     xml
   }

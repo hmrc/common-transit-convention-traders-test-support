@@ -1,1 +1,1 @@
-POST         /movements/departures/:departureId/test-message             controllers.DepartureTestMessagesController.injectEISResponse(departureId: DepartureId)
+POST         /movements/departures/:departureId/messages             controllers.DepartureTestMessagesController.injectEISResponse(departureId: DepartureId)
