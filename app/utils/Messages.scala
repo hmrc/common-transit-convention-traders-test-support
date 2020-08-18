@@ -21,6 +21,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 import models.MessageType.ControlDecisionNotification
+import models.MessageType.DeclarationRejected
 import models.MessageType.MrnAllocated
 import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
@@ -38,7 +39,8 @@ object Messages {
     TestMessage(NoReleaseForTransit.code)         -> Messages.generateIE051Message,
     TestMessage(ReleaseForTransit.code)           -> Messages.generateIE029Message,
     TestMessage(ControlDecisionNotification.code) -> Messages.generateIE060Message,
-    TestMessage(MrnAllocated.code)                -> Messages.generateIE028Message
+    TestMessage(MrnAllocated.code)                -> Messages.generateIE028Message,
+    TestMessage(DeclarationRejected.code)         -> Messages.generateIE016Message
   )
 
   def generateIE928Message(): NodeSeq = {
@@ -229,6 +231,28 @@ object Messages {
           <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
         </CUSOFFDEPEPT>
       </CC028A>
+
+    xml
+  }
+
+  def generateIE016Message(): NodeSeq = {
+    val xml =
+      <CC016A>
+        <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+        <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+        <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+        <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+        <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+        <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+        <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+        <HEAHEA>
+          <RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4>
+          <TypOfDecHEA24>{Strings.alphanumeric(1, 9)}</TypOfDecHEA24>
+          <DecRejDatHEA159>{Strings.numeric8()}</DecRejDatHEA159>
+        </HEAHEA>
+      </CC016A>
 
     xml
   }
