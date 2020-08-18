@@ -101,8 +101,6 @@ class ValidateArrivalMessageTypeActionSpec
 
       val ie008: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.ArrivalRejection.code))()
 
-      println(ie008)
-
       val controller = new Harness(validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
