@@ -28,7 +28,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId, 1).futureValue
+      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
 
       result.status mustEqual CREATED
     }
@@ -46,7 +46,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
         implicit val hc = HeaderCarrier()
         implicit val requestHeader = FakeRequest()
 
-        val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId, 1).futureValue
+        val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
 
         result.status mustEqual INTERNAL_SERVER_ERROR
       }
@@ -65,7 +65,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId, 1).futureValue
+      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
 
       result.status mustEqual BAD_REQUEST
     }

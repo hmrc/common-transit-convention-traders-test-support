@@ -28,7 +28,7 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
   val graphiteHost: String     = config.get[String]("microservice.metrics.graphite.host")
 
-  val traderAtDestinationUrl = servicesConfig.baseUrl("transit-movement-trader-at-destination")
+  val traderAtDestinationUrl = servicesConfig.baseUrl("transit-movements-trader-at-destination")
   val traderAtDeparturesUrl  = servicesConfig.baseUrl("transits-movements-trader-at-departure")
 
   lazy val enrolmentKey: String = config.get[String]("security.enrolmentKey")

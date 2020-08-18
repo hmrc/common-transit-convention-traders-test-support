@@ -46,7 +46,7 @@ import scala.xml.Elem
 import scala.xml.NodeSeq
 import scala.xml.XML
 
-class ValidateMessageTypeActionSpec
+class ValidateDepartureMessageTypeActionSpec
     extends AnyFreeSpec
     with Matchers
     with GuiceOneAppPerSuite
@@ -60,7 +60,7 @@ class ValidateMessageTypeActionSpec
   override def beforeEach(): Unit =
     super.beforeEach()
 
-  class Harness(validateMessageTypeAction: ValidateMessageTypeAction, cc: ControllerComponents) extends BackendController(cc) {
+  class Harness(validateMessageTypeAction: ValidateDepartureMessageTypeAction, cc: ControllerComponents) extends BackendController(cc) {
 
     def post: Action[JsValue] = (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen validateMessageTypeAction).async(cc.parsers.json) {
       request: GeneratedMessageRequest[JsValue] =>
@@ -73,9 +73,9 @@ class ValidateMessageTypeActionSpec
   private def numberOfNodes(nodes: NodeSeq): Int =
     nodes.head.child.filterNot(_.toString().trim.isEmpty).length
 
-  "ValidateMessageTypeAction" - {
+  "ValidateDepartureMessageTypeAction" - {
     "must execute the block when passed in a valid IE928 TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -97,7 +97,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE051 TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -119,7 +119,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE029 TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -141,7 +141,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE060 TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -163,7 +163,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE028 TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -185,7 +185,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE016 TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -207,10 +207,10 @@ class ValidateMessageTypeActionSpec
     }
 
     "must generate correct IE928 message in executed block" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
-      val ie928: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.PositiveAcknowledgement.code))()
+      val ie928: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.PositiveAcknowledgement.code))()
 
       val controller = new Harness(validateMessageType, cc)
 
@@ -232,10 +232,10 @@ class ValidateMessageTypeActionSpec
     }
 
     "must generate correct IE051 message in executed block" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
-      val ie051: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.NoReleaseForTransit.code))()
+      val ie051: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.NoReleaseForTransit.code))()
 
       val controller = new Harness(validateMessageType, cc)
 
@@ -257,10 +257,10 @@ class ValidateMessageTypeActionSpec
     }
 
     "must generate correct IE029 message in executed block" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
-      val ie029: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.ReleaseForTransit.code))()
+      val ie029: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.ReleaseForTransit.code))()
 
       val controller = new Harness(validateMessageType, cc)
 
@@ -282,10 +282,10 @@ class ValidateMessageTypeActionSpec
     }
 
     "must generate correct IE060 message in executed block" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
-      val ie060: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.ControlDecisionNotification.code))()
+      val ie060: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.ControlDecisionNotification.code))()
 
       val controller = new Harness(validateMessageType, cc)
 
@@ -307,10 +307,10 @@ class ValidateMessageTypeActionSpec
     }
 
     "must generate correct IE028 message in executed block" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
-      val ie028: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.MrnAllocated.code))()
+      val ie028: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.MrnAllocated.code))()
 
       val controller = new Harness(validateMessageType, cc)
 
@@ -332,10 +332,10 @@ class ValidateMessageTypeActionSpec
     }
 
     "must generate correct IE016 message in executed block" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
-      val ie016: NodeSeq = Messages.SupportedMessageTypes(TestMessage(MessageType.DeclarationRejected.code))()
+      val ie016: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.DeclarationRejected.code))()
 
       val controller = new Harness(validateMessageType, cc)
 
@@ -357,7 +357,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must return BadRequest when passed in an invalid TestMessage" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -379,7 +379,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must return BadRequest when passed in an empty request" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)
@@ -392,7 +392,7 @@ class ValidateMessageTypeActionSpec
     }
 
     "must return NotImplemented when passed in TestMessage has unsupported message type" in {
-      val validateMessageType = app.injector.instanceOf[ValidateMessageTypeAction]
+      val validateMessageType = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(validateMessageType, cc)

@@ -32,7 +32,7 @@ import utils.Messages.GenerateMessage
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ValidateMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, GeneratedMessageRequest] {
+class ValidateArrivalMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, GeneratedMessageRequest] {
   override protected def refine[A](request: Request[A]): Future[Either[Result, GeneratedMessageRequest[A]]] =
     request.body match {
       case body: JsValue =>
@@ -40,7 +40,7 @@ class ValidateMessageTypeAction @Inject()()(implicit val executionContext: Execu
           case JsError(_) =>
             Future.successful(Left(BadRequest))
           case JsSuccess(testMessage, _) =>
-            Messages.SupportedMessageTypes.get(testMessage) match {
+            Messages.Arrival.SupportedMessageTypes.get(testMessage) match {
               case None =>
                 Future.successful(Left(NotImplemented))
               case Some(generateMessage: GenerateMessage) =>

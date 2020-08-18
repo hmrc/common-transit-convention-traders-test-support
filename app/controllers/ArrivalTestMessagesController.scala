@@ -17,12 +17,12 @@
 package controllers
 
 import config.Constants
-import connectors.DepartureConnector
+import connectors.ArrivalConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
-import controllers.actions.ValidateDepartureMessageTypeAction
+import controllers.actions.ValidateArrivalMessageTypeAction
 import javax.inject.Inject
-import models.DepartureId
+import models.ArrivalId
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
@@ -32,18 +32,18 @@ import utils.ResponseHelper
 
 import scala.concurrent.ExecutionContext
 
-class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
-                                                departureConnector: DepartureConnector,
-                                                authAction: AuthAction,
-                                                validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction)(implicit ec: ExecutionContext)
+class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
+                                              arrivalConnector: ArrivalConnector,
+                                              authAction: AuthAction,
+                                              validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
     with ResponseHelper {
 
-  def injectEISResponse(departureId: DepartureId): Action[JsValue] =
-    (authAction andThen validateDepartureMessageTypeAction).async(parse.json) {
+  def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
+    (authAction andThen validateArrivalMessageTypeAction).async(parse.json) {
       implicit request: GeneratedMessageRequest[JsValue] =>
-        departureConnector.post(request.testMessage.messageType, request.generatedMessage.toString(), departureId).map {
+        arrivalConnector.post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId).map {
           response =>
             response.status match {
               case status if is2xx(status) =>
