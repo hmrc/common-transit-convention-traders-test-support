@@ -18,10 +18,19 @@ package generators
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
+import models.ArrivalId
 import models.DepartureId
 import models.MessageType
 
 trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
+
+  implicit lazy val arbitraryArrivalId: Arbitrary[ArrivalId] = {
+    Arbitrary {
+      for {
+        id <- intWithMaxLength(9)
+      } yield ArrivalId(id)
+    }
+  }
 
   implicit lazy val arbitraryDepartureId: Arbitrary[DepartureId] = {
     Arbitrary {
