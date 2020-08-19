@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter
 import models.MessageType.ArrivalRejection
 import models.MessageType.ControlDecisionNotification
 import models.MessageType.DeclarationRejected
+import models.MessageType.GoodsReleased
 import models.MessageType.MrnAllocated
 import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
@@ -38,7 +39,8 @@ object Messages {
   object Arrival {
 
     val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
-      TestMessage(ArrivalRejection.code) -> generateIE008Message
+      TestMessage(ArrivalRejection.code) -> generateIE008Message,
+      TestMessage(GoodsReleased.code)    -> generateIE025Message
     )
 
     def generateIE008Message(): NodeSeq = {
@@ -58,6 +60,31 @@ object Messages {
             <ArrRejDatHEA142>{Strings.numeric8()}</ArrRejDatHEA142>
           </HEAHEA>
         </CC008A>
+
+      xml
+    }
+
+    def generateIE025Message(): NodeSeq = {
+      val xml =
+        <CC025A>
+          <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+          <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+          <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+          <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+          <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+          <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+          <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+          <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+          <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+          <HEAHEA>
+            <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+            <GooRelDatHEA176>{Strings.numeric8()}</GooRelDatHEA176>
+          </HEAHEA>
+          <TRADESTRD/>
+          <CUSOFFPREOFFRES>
+            <RefNumRES1>{Strings.alphanumeric(8)}</RefNumRES1>
+          </CUSOFFPREOFFRES>
+        </CC025A>
 
       xml
     }
