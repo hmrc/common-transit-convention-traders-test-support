@@ -117,6 +117,28 @@ class ValidateArrivalMessageTypeActionSpec
       status(result) mustEqual OK
     }
 
+    "must execute the block when passed in a valid IE043 TestMessage" in {
+      val validateMessageType = app.injector.instanceOf[ValidateArrivalMessageTypeAction]
+      val cc                  = app.injector.instanceOf[ControllerComponents]
+
+      val controller = new Harness(validateMessageType, cc)
+
+      val exampleRequest: JsValue = Json.parse(
+        """{
+          |     "message": {
+          |         "messageType": "IE043"
+          |     }
+          | }""".stripMargin
+      )
+
+      val req: FakeRequest[JsValue] =
+        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
+
+      val result = controller.post()(req)
+
+      status(result) mustEqual OK
+    }
+
     "must generate correct IE008 message in executed block" in {
       val validateMessageType = app.injector.instanceOf[ValidateArrivalMessageTypeAction]
       val cc                  = app.injector.instanceOf[ControllerComponents]
@@ -165,6 +187,31 @@ class ValidateArrivalMessageTypeActionSpec
 
       status(result) mustEqual OK
       numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie025)
+    }
+
+    "must generate correct IE043 message in executed block" in {
+      val validateMessageType = app.injector.instanceOf[ValidateArrivalMessageTypeAction]
+      val cc                  = app.injector.instanceOf[ControllerComponents]
+
+      val ie043: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.UnloadingPermission.code))()
+
+      val controller = new Harness(validateMessageType, cc)
+
+      val exampleRequest: JsValue = Json.parse(
+        """{
+          |     "message": {
+          |         "messageType": "IE043"
+          |     }
+          | }""".stripMargin
+      )
+
+      val req: FakeRequest[JsValue] =
+        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
+
+      val result = controller.post()(req)
+
+      status(result) mustEqual OK
+      numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie043)
     }
   }
 }

@@ -34,8 +34,9 @@ object MessageType extends Enumerable.Implicits {
   case object MrnAllocated                extends IeMetadata("IE028", "CC028A") with MessageType
   case object DeclarationRejected         extends IeMetadata("IE016", "CC016A") with MessageType
 
-  case object ArrivalRejection extends IeMetadata("IE008", "CC008A") with MessageType
-  case object GoodsReleased    extends IeMetadata("IE025", "CC025A") with MessageType
+  case object ArrivalRejection    extends IeMetadata("IE008", "CC008A") with MessageType
+  case object UnloadingPermission extends IeMetadata("IE043", "CC043A") with MessageType
+  case object GoodsReleased       extends IeMetadata("IE025", "CC025A") with MessageType
 
   val values: Seq[MessageType] = Seq(
     PositiveAcknowledgement,
@@ -45,7 +46,8 @@ object MessageType extends Enumerable.Implicits {
     MrnAllocated,
     DeclarationRejected,
     ArrivalRejection,
-    GoodsReleased
+    GoodsReleased,
+    UnloadingPermission
   )
 
   def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
