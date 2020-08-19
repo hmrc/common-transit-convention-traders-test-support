@@ -29,6 +29,7 @@ import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
 import models.MessageType.ReleaseForTransit
 import models.MessageType.UnloadingPermission
+import models.MessageType.UnloadingRemarksRejection
 import models.TestMessage
 
 import scala.xml.NodeSeq
@@ -40,9 +41,10 @@ object Messages {
   object Arrival {
 
     val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
-      TestMessage(ArrivalRejection.code)    -> generateIE008Message,
-      TestMessage(GoodsReleased.code)       -> generateIE025Message,
-      TestMessage(UnloadingPermission.code) -> generateIE043Message
+      TestMessage(ArrivalRejection.code)          -> generateIE008Message,
+      TestMessage(GoodsReleased.code)             -> generateIE025Message,
+      TestMessage(UnloadingPermission.code)       -> generateIE043Message,
+      TestMessage(UnloadingRemarksRejection.code) -> generateIE058Message
     )
 
     def generateIE008Message(): NodeSeq = {
@@ -104,6 +106,27 @@ object Messages {
           <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
           <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
         </CC043A>
+
+      xml
+    }
+
+    def generateIE058Message(): NodeSeq = {
+      val xml =
+        <CC058A>
+          <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+          <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+          <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+          <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+          <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+          <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+          <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+          <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+          <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+          <HEAHEA>
+            <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+            <UnlRemRejDatHEA218>{Strings.numeric8()}</UnlRemRejDatHEA218>
+          </HEAHEA>
+        </CC058A>
 
       xml
     }
