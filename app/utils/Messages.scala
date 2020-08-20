@@ -254,7 +254,7 @@ object Messages {
             <IssDatHEA186>{Strings.numeric8()}</IssDatHEA186>
             <NCTSAccDocHEA601LNG>{Strings.alpha(2)}</NCTSAccDocHEA601LNG>
             <TotNumOfIteHEA305>{Strings.numeric(1, 5)}</TotNumOfIteHEA305>
-            <TotGroMasHEA307>{Strings.numeric(5)}</TotGroMasHEA307>
+            <TotGroMasHEA307>{Strings.decimalMax12()}</TotGroMasHEA307>
             <BinItiHEA246>{Strings.numeric(1)}</BinItiHEA246>
             <DecDatHEA383>{Strings.numeric8()}</DecDatHEA383>
             <DecPlaHEA394>{Strings.alphanumeric(1, 35)}</DecPlaHEA394>
