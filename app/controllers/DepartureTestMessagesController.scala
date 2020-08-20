@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.Constants
 import connectors.DepartureConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
