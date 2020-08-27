@@ -22,6 +22,7 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(publishingSettings: _*)
   .settings(resolvers += Resolver.jcenterRepo)
+  .settings(ScoverageSettings())
   .settings(PlayKeys.playDefaultPort := 9497)
   .settings(scoverageSettings: _*)
   .settings(
