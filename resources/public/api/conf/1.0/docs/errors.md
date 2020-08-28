@@ -3,7 +3,7 @@ We use standard HTTP status codes to show whether an API request has succeeded o
 
 **POST**
 
-400 BadRequest: If XML message is invalid
+400 BadRequest: If JSON message is invalid
 
 401 Unauthorized: If client passes invalid auth credentials
 
