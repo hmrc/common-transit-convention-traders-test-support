@@ -2,7 +2,7 @@
   "scopes": [
     {
       "key": "common-transit-convention-traders-test-support",
-      "name": "Common Transit Convention Traders",
+      "name": "Common Transit Convention Traders Test Support",
       "description": "Common Transit Convention Traders Test Support API"
     }
   ],
