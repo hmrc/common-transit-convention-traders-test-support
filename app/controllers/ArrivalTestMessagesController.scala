@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.ResponseHelper
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                               arrivalConnector: ArrivalConnector,
@@ -42,14 +43,34 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
     (authAction andThen validateArrivalMessageTypeAction).async(parse.json) {
       implicit request: GeneratedMessageRequest[JsValue] =>
-        arrivalConnector.post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId).map {
-          response =>
-            response.status match {
-              case status if is2xx(status) =>
-                Created
-              case _ =>
-                handleNon2xx(response)
-            }
-        }
+        arrivalConnector
+          .get(arrivalId)
+          .flatMap {
+            getResponse =>
+              getResponse.status match {
+                case status if is2xx(status) =>
+                  arrivalConnector
+                    .post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId)
+                    .map {
+                      postResponse =>
+                        postResponse.status match {
+                          case status if is2xx(status) =>
+                            Created
+                          case _ =>
+                            handleNon2xx(postResponse)
+                        }
+                    }
+                    .recover {
+                      case e =>
+                        InternalServerError
+                    }
+                case _ =>
+                  Future.successful(handleNon2xx(getResponse))
+              }
+          }
+          .recover {
+            case e =>
+              InternalServerError
+          }
     }
 }
