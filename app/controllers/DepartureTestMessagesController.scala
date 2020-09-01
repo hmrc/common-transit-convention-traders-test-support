@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.ResponseHelper
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 departureConnector: DepartureConnector,
@@ -42,14 +43,34 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (authAction andThen validateDepartureMessageTypeAction).async(parse.json) {
       implicit request: GeneratedMessageRequest[JsValue] =>
-        departureConnector.post(request.testMessage.messageType, request.generatedMessage.toString(), departureId).map {
-          response =>
-            response.status match {
-              case status if is2xx(status) =>
-                Created
-              case _ =>
-                handleNon2xx(response)
-            }
-        }
+        departureConnector
+          .get(departureId)
+          .flatMap {
+            getResponse =>
+              getResponse.status match {
+                case status if is2xx(status) =>
+                  departureConnector
+                    .post(request.testMessage.messageType, request.generatedMessage.toString(), departureId)
+                    .map {
+                      postResponse =>
+                        postResponse.status match {
+                          case status if is2xx(status) =>
+                            Created
+                          case _ =>
+                            handleNon2xx(postResponse)
+                        }
+                    }
+                    .recover {
+                      case _ =>
+                        InternalServerError
+                    }
+                case _ =>
+                  Future.successful(handleNon2xx(getResponse))
+              }
+          }
+          .recover {
+            case _ =>
+              InternalServerError
+          }
     }
 }

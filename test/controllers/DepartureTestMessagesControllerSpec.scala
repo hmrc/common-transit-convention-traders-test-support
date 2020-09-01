@@ -59,6 +59,7 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
     "must send a test message to the departures backend and return Created if successful" in {
       val mockDepartureConnector = mock[DepartureConnector]
 
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val application = baseApplicationBuilder
@@ -144,6 +145,7 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
     "must return BadRequest if departures backend returns BadRequest" in {
       val mockDepartureConnector = mock[DepartureConnector]
 
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
       when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val application = baseApplicationBuilder
@@ -165,7 +167,72 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
     "must return InternalServerError if departures backend returns InternalServerError" in {
       val mockDepartureConnector = mock[DepartureConnector]
 
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
       when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return NotFound if departures backend returns NotFound" in {
+      val mockDepartureConnector = mock[DepartureConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual NOT_FOUND
+      }
+    }
+
+    "must return InternalServerError if GET fails in departure id check" in {
+      val mockDepartureConnector = mock[DepartureConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return InternalServerError if POST fails to send to departures backend" in {
+      val mockDepartureConnector = mock[DepartureConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(

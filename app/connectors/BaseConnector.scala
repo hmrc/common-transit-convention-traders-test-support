@@ -18,7 +18,10 @@ package connectors
 
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
+import play.api.mvc.RequestHeader
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.logging.Authorization
 
 class BaseConnector extends HttpErrorFunctions {
   protected val requestHeaders: Seq[(String, String)] =
@@ -27,6 +30,17 @@ class BaseConnector extends HttpErrorFunctions {
   protected val responseHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
 
-  protected val arrivalRoute   = "/transit-movements-trader-at-destination/movements/arrivals/MDTP-%d-%d/messages/eis"
-  protected val departureRoute = "/transits-movements-trader-at-departure/movements/departures/MDTP-%d-%d/messages/eis"
+  protected val arrivalRoute    = "/transit-movements-trader-at-destination/movements/arrivals/MDTP-%d-%d/messages/eis"
+  protected val departureRoute    = "/transits-movements-trader-at-departure/movements/departures/MDTP-%d-%d/messages/eis"
+
+  protected val arrivalGetRoute = "/transit-movements-trader-at-destination/movements/arrivals/"
+  protected val departureGetRoute = "/transits-movements-trader-at-departure/movements/departures/"
+
+  protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
+                                                                              headerCarrier: HeaderCarrier): HeaderCarrier = {
+    val newHeaderCarrier = headerCarrier
+      .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
+      .withExtraHeaders(extraHeaders: _*)
+    newHeaderCarrier
+  }
 }

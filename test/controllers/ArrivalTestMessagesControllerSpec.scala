@@ -59,6 +59,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must send a test message to the arrivals backend and return Created if successful" in {
       val mockArrivalConnector = mock[ArrivalConnector]
 
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val application = baseApplicationBuilder
@@ -144,6 +145,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must return BadRequest if arrivals backend returns BadRequest" in {
       val mockArrivalConnector = mock[ArrivalConnector]
 
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val application = baseApplicationBuilder
@@ -165,7 +167,72 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must return InternalServerError if arrivals backend returns InternalServerError" in {
       val mockArrivalConnector = mock[ArrivalConnector]
 
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return NotFound if arrivals backend returns NotFound" in {
+      val mockArrivalConnector = mock[ArrivalConnector]
+
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual NOT_FOUND
+      }
+    }
+
+    "must return InternalServerError if GET fails in arrival id check" in {
+      val mockArrivalConnector = mock[ArrivalConnector]
+
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return InternalServerError if POST fails to send to arrivals backend" in {
+      val mockArrivalConnector = mock[ArrivalConnector]
+
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(

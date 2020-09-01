@@ -21,9 +21,11 @@ import config.Constants
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
 import models.DepartureId
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -40,5 +42,11 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
       .withExtraHeaders(Seq("X-Message-Type" -> messageType): _*)
 
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
+  }
+
+  def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
+
+    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
   }
 }
