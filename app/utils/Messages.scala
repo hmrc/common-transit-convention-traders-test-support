@@ -31,6 +31,7 @@ import models.MessageType.PositiveAcknowledgement
 import models.MessageType.ReleaseForTransit
 import models.MessageType.UnloadingPermission
 import models.MessageType.UnloadingRemarksRejection
+import models.MessageType.WriteOffNotification
 import models.TestMessage
 
 import scala.xml.NodeSeq
@@ -142,7 +143,8 @@ object Messages {
       TestMessage(ControlDecisionNotification.code) -> generateIE060Message,
       TestMessage(MrnAllocated.code)                -> generateIE028Message,
       TestMessage(DeclarationRejected.code)         -> generateIE016Message,
-      TestMessage(CancellationDecision.code)        -> generateIE009Message
+      TestMessage(CancellationDecision.code)        -> generateIE009Message,
+      TestMessage(WriteOffNotification.code)        -> generateIE045Message
     )
 
     def generateIE928Message(): NodeSeq = {
@@ -381,6 +383,37 @@ object Messages {
             <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
           </CUSOFFDEPEPT>
         </CC009A>
+
+      xml
+    }
+
+    def generateIE045Message(): NodeSeq = {
+      val xml =
+        <CC045A>
+          <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+          <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+          <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+          <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+          <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+          <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+          <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+          <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+          <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+          <HEAHEA>
+            <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+            <WriOffDatHEA619>{Strings.numeric8()}</WriOffDatHEA619>
+          </HEAHEA>
+          <TRAPRIPC1>
+            <NamPC17>{Strings.alphanumeric(1, 35)}</NamPC17>
+            <StrAndNumPC122>{Strings.alphanumeric(1, 35)}</StrAndNumPC122>
+            <PosCodPC123>{Strings.alphanumeric(1, 9)}</PosCodPC123>
+            <CitPC124>{Strings.alphanumeric(1, 35)}</CitPC124>
+            <CouPC125>{Strings.alpha(2)}</CouPC125>
+          </TRAPRIPC1>
+          <CUSOFFDEPEPT>
+            <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
+          </CUSOFFDEPEPT>
+        </CC045A>
 
       xml
     }
