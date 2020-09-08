@@ -35,6 +35,7 @@ object MessageType extends Enumerable.Implicits {
   case object DeclarationRejected         extends IeMetadata("IE016", "CC016A") with MessageType
   case object CancellationDecision        extends IeMetadata("IE009", "CC009A") with MessageType
   case object WriteOffNotification        extends IeMetadata("IE045", "CC045A") with MessageType
+  case object GuaranteeNotValid           extends IeMetadata("IE055", "CC055A") with MessageType
 
   case object ArrivalRejection          extends IeMetadata("IE008", "CC008A") with MessageType
   case object UnloadingPermission       extends IeMetadata("IE043", "CC043A") with MessageType
@@ -53,7 +54,8 @@ object MessageType extends Enumerable.Implicits {
     UnloadingPermission,
     UnloadingRemarksRejection,
     CancellationDecision,
-    WriteOffNotification
+    WriteOffNotification,
+    GuaranteeNotValid
   )
 
   def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
