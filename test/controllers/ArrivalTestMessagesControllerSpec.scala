@@ -232,7 +232,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockArrivalConnector = mock[ArrivalConnector]
 
       when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
+      when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(
