@@ -25,6 +25,7 @@ import models.MessageType.CancellationDecision
 import models.MessageType.ControlDecisionNotification
 import models.MessageType.DeclarationRejected
 import models.MessageType.GoodsReleased
+import models.MessageType.GuaranteeNotValid
 import models.MessageType.MrnAllocated
 import models.MessageType.NoReleaseForTransit
 import models.MessageType.PositiveAcknowledgement
@@ -144,7 +145,8 @@ object Messages {
       TestMessage(MrnAllocated.code)                -> generateIE028Message,
       TestMessage(DeclarationRejected.code)         -> generateIE016Message,
       TestMessage(CancellationDecision.code)        -> generateIE009Message,
-      TestMessage(WriteOffNotification.code)        -> generateIE045Message
+      TestMessage(WriteOffNotification.code)        -> generateIE045Message,
+      TestMessage(GuaranteeNotValid.code)           -> generateIE055Message
     )
 
     def generateIE928Message(): NodeSeq = {
@@ -414,6 +416,36 @@ object Messages {
             <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
           </CUSOFFDEPEPT>
         </CC045A>
+
+      xml
+    }
+
+    def generateIE055Message(): NodeSeq = {
+      val xml =
+        <CC055A>
+          <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+          <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+          <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+          <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+          <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+          <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+          <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+          <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+          <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+          <HEAHEA>
+            <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+          </HEAHEA>
+          <TRAPRIPC1/>
+          <CUSOFFDEPEPT>
+            <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
+          </CUSOFFDEPEPT>
+          <GUAREF2>
+            <GuaRefNumGRNREF21>{Strings.alphanumeric(1, 24)}</GuaRefNumGRNREF21>
+            <INVGUARNS>
+              <InvGuaReaCodRNS11>{Strings.alphanumeric(1, 3)}</InvGuaReaCodRNS11>
+            </INVGUARNS>
+          </GUAREF2>
+        </CC055A>
 
       xml
     }
