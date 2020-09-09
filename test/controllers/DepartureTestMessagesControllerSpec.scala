@@ -17,12 +17,21 @@
 package controllers
 
 import base.SpecBase
-import org.scalatest.concurrent.IntegrationPatience
-import org.scalatest.BeforeAndAfterEach
-import org.mockito.Mockito._
+import connectors.DepartureConnector
+import controllers.actions.AuthAction
+import controllers.actions.FakeAuthAction
 import generators.ModelGenerators
+import models.DepartureId
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.IntegrationPatience
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.http.HeaderNames
 import play.api.inject.bind
+import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.AnyContentAsXml
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
@@ -30,15 +39,6 @@ import play.api.test.Helpers.route
 import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import play.api.test.Helpers._
-import connectors.DepartureConnector
-import controllers.actions.AuthAction
-import controllers.actions.FakeAuthAction
-import models.DepartureId
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.http.HeaderNames
-import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsEmpty
-import play.api.mvc.AnyContentAsXml
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future

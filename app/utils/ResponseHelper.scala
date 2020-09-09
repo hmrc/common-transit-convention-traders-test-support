@@ -17,10 +17,10 @@
 package utils
 
 import play.api.http.Status
-import uk.gov.hmrc.http.HttpErrorFunctions
-import uk.gov.hmrc.http.HttpResponse
 import play.api.mvc.Result
 import play.api.mvc.Results
+import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpResponse
 
 trait ResponseHelper extends Results with Status with HttpErrorFunctions {
 

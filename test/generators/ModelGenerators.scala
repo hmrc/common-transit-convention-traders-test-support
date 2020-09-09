@@ -16,11 +16,11 @@
 
 package generators
 
-import org.scalacheck.Arbitrary
-import org.scalacheck.Gen
 import models.ArrivalId
 import models.DepartureId
 import models.MessageType
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 
 trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
 
