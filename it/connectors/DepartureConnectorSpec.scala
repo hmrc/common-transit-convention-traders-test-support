@@ -1,16 +1,18 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.test.FakeRequest
-import uk.gov.hmrc.http.HeaderCarrier
-import models.{DepartureId, MessageType}
+import models.DepartureId
+import models.MessageType
+import org.scalatest.concurrent.IntegrationPatience
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.test.Helpers._
 
 class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite with ScalaFutures with IntegrationPatience with ScalaCheckPropertyChecks {
   private val departureId = new DepartureId(1)
@@ -25,7 +27,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
         ).willReturn(aResponse().withStatus(CREATED))
       )
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
@@ -43,7 +45,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
           ).willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
         )
 
-        implicit val hc = HeaderCarrier()
+        implicit val hc            = HeaderCarrier()
         implicit val requestHeader = FakeRequest()
 
         val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
@@ -62,7 +64,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
         ).willReturn(aResponse().withStatus(BAD_REQUEST))
       )
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
@@ -75,10 +77,11 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
     "must return OK when departure is found" in {
       val connector = app.injector.instanceOf[DepartureConnector]
 
-      server.stubFor(get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
-        .willReturn(aResponse().withStatus(OK)))
+      server.stubFor(
+        get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
+          .willReturn(aResponse().withStatus(OK)))
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(departureId).futureValue
@@ -88,10 +91,11 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
 
     "must return HttpResponse with a not found if not found" in {
       val connector = app.injector.instanceOf[DepartureConnector]
-      server.stubFor(get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
-        .willReturn(aResponse().withStatus(NOT_FOUND)))
+      server.stubFor(
+        get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
+          .willReturn(aResponse().withStatus(NOT_FOUND)))
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(departureId).futureValue
@@ -101,10 +105,11 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
 
     "must return HttpResponse with a bad request if there is a bad request" in {
       val connector = app.injector.instanceOf[DepartureConnector]
-      server.stubFor(get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
-        .willReturn(aResponse().withStatus(BAD_REQUEST)))
+      server.stubFor(
+        get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
+          .willReturn(aResponse().withStatus(BAD_REQUEST)))
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(departureId).futureValue
@@ -114,10 +119,11 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
 
     "must return HttpResponse with an internal server if there is an internal server error" in {
       val connector = app.injector.instanceOf[DepartureConnector]
-      server.stubFor(get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
-        .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR)))
+      server.stubFor(
+        get(urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1"))
+          .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR)))
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(departureId).futureValue

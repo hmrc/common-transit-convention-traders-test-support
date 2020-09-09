@@ -16,9 +16,9 @@
 
 package utils
 
-import scala.util.Random
-
 import org.scalacheck.Gen
+
+import scala.util.Random
 
 object Strings {
 

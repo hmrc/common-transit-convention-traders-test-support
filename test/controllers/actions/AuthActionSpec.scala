@@ -17,6 +17,10 @@
 package controllers.actions
 
 import config.AppConfig
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Action
@@ -25,18 +29,10 @@ import play.api.mvc.BodyParsers
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.auth.core.Enrolment
-import uk.gov.hmrc.auth.core.EnrolmentIdentifier
-import uk.gov.hmrc.auth.core.Enrolments
-import uk.gov.hmrc.auth.core.MissingBearerToken
+import uk.gov.hmrc.auth.core._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers.any
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import scala.concurrent.Future
 
 class AuthActionSpec extends AnyFreeSpec with Matchers with MockitoSugar {
 

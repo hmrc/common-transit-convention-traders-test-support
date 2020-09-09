@@ -18,11 +18,11 @@ package controllers.actions
 
 import models.MessageType
 import models.TestMessage
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.HeaderNames
@@ -34,9 +34,9 @@ import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import play.api.mvc.DefaultActionBuilder
 import play.api.mvc.Result
-import play.api.test.Helpers._
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.Messages
 
