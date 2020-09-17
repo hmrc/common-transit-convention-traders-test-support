@@ -18,35 +18,43 @@ package connectors
 
 import config.AppConfig
 import config.Constants
-import connectors.util.CustomHttpReader
 import javax.inject.Inject
 import models.DepartureId
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector(http) {
+
+//  def post(messageType: String, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+//    val eisPath = departureRoute format (departureId.index, Constants.MessageCorrelationId)
+//
+//    val url = appConfig.traderAtDeparturesUrl + eisPath
+//
+//    val newHeaders = hc
+//      .copy()
+//      .withExtraHeaders(Seq("X-Message-Type" -> messageType): _*)
+//
+//    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
+//  }
 
   def post(messageType: String, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val eisPath = departureRoute format (departureId.index, Constants.MessageCorrelationId)
 
     val url = appConfig.traderAtDeparturesUrl + eisPath
 
-    val newHeaders = hc
-      .copy()
-      .withExtraHeaders(Seq("X-Message-Type" -> messageType): _*)
-
-    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
+    super.post(messageType, message, departureId, eisPath, url)
   }
 
-  def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
-
-    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
-  }
+  def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    super.get(departureId, appConfig.traderAtDeparturesUrl + departureGetRoute)
+  //  def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  //    val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
+  //
+  //    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
+  //  }
 }

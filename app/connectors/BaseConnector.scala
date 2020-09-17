@@ -16,14 +16,24 @@
 
 package connectors
 
+import config.Constants
+import connectors.util.CustomHttpReader
+import javax.inject.Inject
+import models.ItemId
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.logging.Authorization
+import utils.Utils
 
-class BaseConnector extends HttpErrorFunctions {
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+class BaseConnector @Inject()(http: HttpClient) extends HttpErrorFunctions {
   protected val requestHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.XML))
 
@@ -42,5 +52,24 @@ class BaseConnector extends HttpErrorFunctions {
       .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
       .withExtraHeaders(extraHeaders: _*)
     newHeaderCarrier
+  }
+
+  def post(messageType: String, message: String, itemId: ItemId, route: String, backendUrl: String)(implicit hc: HeaderCarrier,
+                                                                                                    ec: ExecutionContext): Future[HttpResponse] = {
+    val eisPath = route format (itemId.index, Constants.MessageCorrelationId)
+
+    val url = backendUrl + eisPath
+
+    val newHeaders = hc
+      .copy()
+      .withExtraHeaders(Seq("X-Message-Type" -> messageType): _*)
+
+    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
+  }
+
+  def get(itemId: ItemId, specificUrl: String)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = specificUrl + Utils.urlEncode(itemId.index.toString)
+
+    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
   }
 }
