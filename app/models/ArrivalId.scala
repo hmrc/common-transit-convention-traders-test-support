@@ -21,7 +21,7 @@ import play.api.mvc.PathBindable
 
 import scala.util.Try
 
-case class ArrivalId(index: Int)
+case class ArrivalId(index: Int) extends ItemId
 
 object ArrivalId {
   implicit val formatsArrivalId: Format[ArrivalId] = new Format[ArrivalId] {
