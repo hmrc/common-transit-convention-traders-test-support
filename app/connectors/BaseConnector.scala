@@ -16,9 +16,12 @@
 
 package connectors
 
+import config.AppConfig
 import config.Constants
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
+import models.ArrivalId
+import models.DepartureId
 import models.ItemId
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
@@ -33,7 +36,7 @@ import utils.Utils
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class BaseConnector @Inject()(http: HttpClient) extends HttpErrorFunctions {
+class BaseConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends HttpErrorFunctions {
   protected val requestHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.XML))
 
@@ -54,11 +57,13 @@ class BaseConnector @Inject()(http: HttpClient) extends HttpErrorFunctions {
     newHeaderCarrier
   }
 
-  def post(messageType: String, message: String, itemId: ItemId, route: String, backendUrl: String)(implicit hc: HeaderCarrier,
-                                                                                                    ec: ExecutionContext): Future[HttpResponse] = {
-    val eisPath = route format (itemId.index, Constants.MessageCorrelationId)
-
-    val url = backendUrl + eisPath
+  def post(messageType: String, message: String, itemId: ItemId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = itemId match {
+      case ArrivalId(index) =>
+        appConfig.traderAtDestinationUrl + arrivalRoute format (index, Constants.MessageCorrelationId)
+      case DepartureId(index) =>
+        appConfig.traderAtDeparturesUrl + departureRoute format (index, Constants.MessageCorrelationId)
+    }
 
     val newHeaders = hc
       .copy()
@@ -67,8 +72,11 @@ class BaseConnector @Inject()(http: HttpClient) extends HttpErrorFunctions {
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }
 
-  def get(itemId: ItemId, specificUrl: String)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = specificUrl + Utils.urlEncode(itemId.index.toString)
+  def get(itemId: ItemId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = itemId match {
+      case ArrivalId(index)   => appConfig.traderAtDeparturesUrl + arrivalGetRoute + Utils.urlEncode(index.toString)
+      case DepartureId(index) => appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(index.toString)
+    }
 
     http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
   }
