@@ -18,4 +18,10 @@ package config
 
 object Constants {
   val MessageCorrelationId = 1
+
+  val arrivalRoute   = "/transit-movements-trader-at-destination/movements/arrivals/MDTP-%d-%d/messages/eis"
+  val departureRoute = "/transits-movements-trader-at-departure/movements/departures/MDTP-%d-%d/messages/eis"
+
+  val arrivalGetRoute   = "/transit-movements-trader-at-destination/movements/arrivals/"
+  val departureGetRoute = "/transits-movements-trader-at-departure/movements/departures/"
 }

@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import config.Constants
+import config.Constants._
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
 import models.ArrivalId
@@ -43,12 +43,6 @@ class BaseConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends Ht
   protected val responseHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
 
-  protected val arrivalRoute   = "/transit-movements-trader-at-destination/movements/arrivals/MDTP-%d-%d/messages/eis"
-  protected val departureRoute = "/transits-movements-trader-at-departure/movements/departures/MDTP-%d-%d/messages/eis"
-
-  protected val arrivalGetRoute   = "/transit-movements-trader-at-destination/movements/arrivals/"
-  protected val departureGetRoute = "/transits-movements-trader-at-departure/movements/departures/"
-
   protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
                                                                               headerCarrier: HeaderCarrier): HeaderCarrier = {
     val newHeaderCarrier = headerCarrier
@@ -60,9 +54,9 @@ class BaseConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends Ht
   def post(messageType: String, message: String, itemId: ItemId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url = itemId match {
       case ArrivalId(index) =>
-        appConfig.traderAtDestinationUrl + arrivalRoute format (index, Constants.MessageCorrelationId)
+        appConfig.traderAtDestinationUrl + arrivalRoute format (index, MessageCorrelationId)
       case DepartureId(index) =>
-        appConfig.traderAtDeparturesUrl + departureRoute format (index, Constants.MessageCorrelationId)
+        appConfig.traderAtDeparturesUrl + departureRoute format (index, MessageCorrelationId)
     }
 
     val newHeaders = hc
