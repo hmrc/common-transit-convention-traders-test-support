@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.BaseConnector
+import connectors.ItemConnector
 import controllers.actions.GeneratedMessageRequest
 import javax.inject.Inject
 import models.ItemId
@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 trait MessageAction extends ActionBuilder[GeneratedMessageRequest, AnyContent] with ActionFunction[Request, GeneratedMessageRequest]
 
-class BaseController @Inject()(cc: ControllerComponents, baseConnector: BaseConnector, messageAction: MessageAction)(implicit ec: ExecutionContext)
+class BaseController @Inject()(cc: ControllerComponents, itemConnector: ItemConnector, messageAction: MessageAction)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
     with ResponseHelper {
@@ -39,13 +39,13 @@ class BaseController @Inject()(cc: ControllerComponents, baseConnector: BaseConn
   def injectEISResponse(itemId: ItemId): Action[JsValue] =
     messageAction.async(parse.json) {
       implicit request: GeneratedMessageRequest[JsValue] =>
-        baseConnector
+        itemConnector
           .get(itemId)
           .flatMap {
             getResponse =>
               getResponse.status match {
                 case status if is2xx(status) =>
-                  baseConnector
+                  itemConnector
                     .post(request.testMessage.messageType, request.generatedMessage.toString(), itemId)
                     .map {
                       postResponse =>

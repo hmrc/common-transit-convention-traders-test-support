@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.BaseConnector
+import connectors.DepartureConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateDepartureMessageTypeAction
@@ -29,11 +29,11 @@ import play.api.mvc.ControllerComponents
 import scala.concurrent.ExecutionContext
 
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
-                                                baseConnector: BaseConnector,
+                                                departureConnector: DepartureConnector,
                                                 messageAction: MessageAction,
                                                 authAction: AuthAction,
                                                 validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction)(implicit ec: ExecutionContext)
-    extends BaseController(cc, baseConnector, messageAction) {
+    extends BaseController(cc, departureConnector, messageAction) {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (authAction andThen validateDepartureMessageTypeAction).async(parse.json) {
