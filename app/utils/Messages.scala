@@ -35,13 +35,14 @@ import models.MessageType.UnloadingPermission
 import models.MessageType.UnloadingRemarksRejection
 import models.MessageType.WriteOffNotification
 import models.TestMessage
-import utils.Messages.Arrival.generateGuaranteeRef
 
 import scala.xml.NodeSeq
 
 object Messages {
 
   type GenerateMessage = () => NodeSeq
+
+  val guaranteeRef = s"${Strings.numeric(2)}GB${Strings.alphanumeric(13)}"
 
   object Arrival {
 
@@ -51,9 +52,6 @@ object Messages {
       TestMessage(UnloadingPermission.code)       -> generateIE043Message,
       TestMessage(UnloadingRemarksRejection.code) -> generateIE058Message
     )
-
-    def generateGuaranteeRef(): String =
-      s"${Strings.numeric(2)}GB${Strings.alphanumeric(13)}"
 
     def generateIE008Message(): NodeSeq = {
       val xml =
@@ -266,9 +264,10 @@ object Messages {
           </RESOFCON534>
           <GUAGUA><GuaTypGUA1>1</GuaTypGUA1>
             <GUAREFREF>
-              <GuaRefNumGRNREF1>{Strings.alphanumeric(1, 17)}</GuaRefNumGRNREF1>
+              <GuaRefNumGRNREF1>{guaranteeRef}</GuaRefNumGRNREF1>
               <AccCodREF6>AC01</AccCodREF6>
-              <VALLIMECVLE><NotValForECVLE1>0</NotValForECVLE1>
+              <VALLIMECVLE>
+                <NotValForECVLE1>0</NotValForECVLE1>
               </VALLIMECVLE>
             </GUAREFREF>
           </GUAGUA>
@@ -279,7 +278,8 @@ object Messages {
             <NetMasGDS48>950</NetMasGDS48>
             <RESOFCONROC><ConIndROC1>OR</ConIndROC1>
             </RESOFCONROC>
-            <PACGS2><MarNumOfPacGS21>AB234</MarNumOfPacGS21>
+            <PACGS2>
+              <MarNumOfPacGS21>AB234</MarNumOfPacGS21>
               <KinOfPacGS23>BX</KinOfPacGS23>
               <NumOfPacGS24>10</NumOfPacGS24>
             </PACGS2>
@@ -382,7 +382,7 @@ object Messages {
           <GUAGUA>
             <GuaTypGUA1>1</GuaTypGUA1>
             <GUAREFREF>
-              <GuaRefNumGRNREF1>{generateGuaranteeRef()}</GuaRefNumGRNREF1>
+              <GuaRefNumGRNREF1>{guaranteeRef}</GuaRefNumGRNREF1>
               <AccCodREF6>AC01</AccCodREF6>
               <VALLIMECVLE>
                 <NotValForECVLE1>0</NotValForECVLE1>
@@ -395,7 +395,7 @@ object Messages {
             <GroMasGDS46>1000</GroMasGDS46>
             <NetMasGDS48>950</NetMasGDS48>
             <SPEMENMT2>
-              <AddInfMT21>20.22EUR20GB0000010000GX1</AddInfMT21>
+              <AddInfMT21>20.22EUR{guaranteeRef}</AddInfMT21>
               <AddInfCodMT23>CAL</AddInfCodMT23>
             </SPEMENMT2>
             <PACGS2>
