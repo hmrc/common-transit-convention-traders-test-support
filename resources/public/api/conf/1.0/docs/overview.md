@@ -21,8 +21,8 @@ Follow these steps to get set up for testing.
 5. Use the Test User API to get test ID, password and EORI enrolment.   
 
 6. Apply the ID, password and EORI enrolment to: 
-  * our [postman scripts](https://github.com/hmrc/common-transit-convention-traders-postman). These were created by us in November 2020 and may not be viable.
-  * your own code. See our [mapping document](www.notreadyyet) for reference.   
+  * [Our postman scripts](https://github.com/hmrc/common-transit-convention-traders-postman). These were created by us in November 2020 and may not be viable.
+  * Your own code. [See our mapping document](www.notreadyyet.com) for reference.   
 
 7. Apply scripts to the endpoints below.    
 
