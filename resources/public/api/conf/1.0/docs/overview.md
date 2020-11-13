@@ -30,9 +30,7 @@ Follow these steps to get set up for testing.
 
 **[Look at our XSD files](documentation/xsd-reference.html)** so you can validate your XML. 
 
-**Check the NCTS API channel specifications**
-
-Visit [NCTS Phase 4 Technical Interface Specifications (TIS)](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications) to see a list of messages, message content and sequence diagrams .
+**Check the [NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams .
 
 Note, this is NOT the specifications document for the new CTC Traders API. So, there will be discrepancies. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP.
 
