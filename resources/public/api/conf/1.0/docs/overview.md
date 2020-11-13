@@ -10,13 +10,13 @@ see [Tutorials](/api-documentation/docs/tutorials).
 
 Follow these steps to get set up for testing.
 
-1. Register for a [developer account](https://developer.service.hmrc.gov.uk/developer/registration).    
+1. Register for a [developer account](https://developer.service.hmrc.gov.uk/developer/registration).
 
 2. Create an application.    
 
 3. Subscribe to any API you might be working on. We suggest Create Test User API, CTC Traders API and CTC Traders Test Support API.     
 
-4. Create a [Client ID and Client Secret](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/credentials).    
+4. Create a [Client ID and Client Secret](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/credentials).
 
 5. Use the Test User API to get test ID, password and EORI enrolment.   
 
