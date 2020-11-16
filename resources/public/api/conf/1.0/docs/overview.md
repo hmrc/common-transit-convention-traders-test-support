@@ -14,7 +14,7 @@ Follow these steps to get set up for testing.
 
 2. Create an application.    
 
-3. Subscribe to any API you might be working on. We suggest Create Test User API, CTC Traders API and CTC Traders Test Support API.     
+3. Subscribe to any API you might be working on. We suggest Create Test User API, Common Transit Convention Traders API and Common Transit Convention Traders Test Support API.     
 
 4. Create a [Client ID and Client Secret](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/credentials).
 
