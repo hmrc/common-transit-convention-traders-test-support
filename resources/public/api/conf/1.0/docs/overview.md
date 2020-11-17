@@ -6,7 +6,7 @@ To review our progress and to see what you can test, take at look at our [Roadma
 For more information about how to develop your own client applications, including example clients for this API, 
 see [Tutorials](/api-documentation/docs/tutorials).
 
-## How to test your software
+## How to get set up for testing
 
 Follow these steps to get set up for testing.
 
@@ -20,15 +20,14 @@ Follow these steps to get set up for testing.
 
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-6. Apply the ID, password and EORI enrolment to: 
-   * [Our postman scripts](https://github.com/hmrc/common-transit-convention-traders-postman). These were created by us in November 2020 and may not be viable in the future.
-   * Your own code. [See our mapping document](www.notreadyyet.com) for reference.   
+## Information to help you create test
 
-7. Apply scripts to the endpoints below.    
+**[Our postman scripts]**(https://github.com/hmrc/common-transit-convention-traders-postman). These were created by us in November 2020 and may not be viable in the future.
+**[Trader Test](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)** 
 
-### For further reference
+   
 
-**[Look at our XSD files](documentation/xsd-reference.html)** so you can validate your XML. 
+**[Our XSD files](documentation/xsd-reference.html)** so you can validate your XML. 
 
 **Check the [NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams .
 
