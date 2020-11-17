@@ -20,7 +20,7 @@ Follow these steps to get set up for testing.
 
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-## Information to help you create test
+## Information, files and data to help you
 
 **[Our postman scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020 and may not be viable in the future.
       
