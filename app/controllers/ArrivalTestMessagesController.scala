@@ -22,12 +22,14 @@ import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateArrivalMessageTypeAction
 import javax.inject.Inject
 import models.ArrivalId
+import models.ArrivalWithMessages
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.ResponseHelper
+import utils.XMLTransformer.populateMesRecMES6
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -50,18 +52,30 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
               getResponse.status match {
                 case status if is2xx(status) =>
                   arrivalConnector
-                    .post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId)
-                    .map {
-                      postResponse =>
-                        postResponse.status match {
-                          case status if is2xx(status) =>
-                            Created
-                          case _ =>
-                            handleNon2xx(postResponse)
-                        }
+                    .getMessages(arrivalId)
+                    .flatMap {
+                      case Right(arrivalWithMessages: ArrivalWithMessages) =>
+                        val message = populateMesRecMES6(request.generatedMessage, "IE007", arrivalWithMessages.messages)
+                        arrivalConnector
+                          .post(request.testMessage.messageType, message.toString(), arrivalId)
+                          .map {
+                            postResponse =>
+                              postResponse.status match {
+                                case status if is2xx(status) =>
+                                  Created
+                                case _ =>
+                                  handleNon2xx(postResponse)
+                              }
+                          }
+                          .recover {
+                            case _ =>
+                              InternalServerError
+                          }
+                      case Left(getMessagesResponse) =>
+                        Future.successful(handleNon2xx(getMessagesResponse))
                     }
                     .recover {
-                      case e =>
+                      case _ =>
                         InternalServerError
                     }
                 case _ =>
@@ -69,7 +83,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
               }
           }
           .recover {
-            case e =>
+            case _ =>
               InternalServerError
           }
     }

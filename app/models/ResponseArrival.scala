@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package utils
+package models
 
-import java.net.URI
-import java.net.URLEncoder
+import java.time.LocalDateTime
 
-object Utils {
+import play.api.libs.json.Json
 
-  def lastFragment(location: String): String =
-    URI.create(location).getPath.split("/").last
+object ResponseArrival {
 
-  def urlEncode(str: String): String =
-    URLEncoder.encode(str, "UTF-8")
+  implicit val format = Json.format[ResponseArrival]
+
+  def apply(a: Arrival): ResponseArrival =
+    ResponseArrival(
+      s"/movements/arrivals/${a.arrivalId.toString}",
+      a.created,
+      a.updated,
+      a.movementReferenceNumber,
+      a.status,
+      s"/movements/arrivals/${a.arrivalId.toString}/messages"
+    )
 }
+
+case class ResponseArrival(arrival: String, created: LocalDateTime, updated: LocalDateTime, movementReferenceNumber: String, status: String, messages: String)

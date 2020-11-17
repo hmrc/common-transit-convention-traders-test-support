@@ -21,11 +21,11 @@ import config.Constants
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
 import models.ArrivalId
+import models.ArrivalWithMessages
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -45,8 +45,18 @@ class ArrivalConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends
   }
 
   def get(arrivalId: ArrivalId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = appConfig.traderAtDestinationUrl + arrivalGetRoute + Utils.urlEncode(arrivalId.index.toString)
+    val url = appConfig.traderAtDestinationUrl + arrivalGetRoute + arrivalId.index.toString
 
     http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
+  }
+
+  def getMessages(
+    arrivalId: ArrivalId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, ArrivalWithMessages]] = {
+    val url = appConfig.traderAtDestinationUrl + s"$arrivalGetRoute${arrivalId.index.toString}/messages"
+
+    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec).map {
+      response =>
+        extractIfSuccessful[ArrivalWithMessages](response)
+    }
   }
 }

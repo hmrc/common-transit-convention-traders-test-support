@@ -22,12 +22,14 @@ import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateDepartureMessageTypeAction
 import javax.inject.Inject
 import models.DepartureId
+import models.DepartureWithMessages
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.ResponseHelper
+import utils.XMLTransformer.populateMesRecMES6
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -50,15 +52,27 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
               getResponse.status match {
                 case status if is2xx(status) =>
                   departureConnector
-                    .post(request.testMessage.messageType, request.generatedMessage.toString(), departureId)
-                    .map {
-                      postResponse =>
-                        postResponse.status match {
-                          case status if is2xx(status) =>
-                            Created
-                          case _ =>
-                            handleNon2xx(postResponse)
-                        }
+                    .getMessages(departureId)
+                    .flatMap {
+                      case Right(departureWithMessages: DepartureWithMessages) =>
+                        val message = populateMesRecMES6(request.generatedMessage, "IE015", departureWithMessages.messages)
+                        departureConnector
+                          .post(request.testMessage.messageType, message.toString(), departureId)
+                          .map {
+                            postResponse =>
+                              postResponse.status match {
+                                case status if is2xx(status) =>
+                                  Created
+                                case _ =>
+                                  handleNon2xx(postResponse)
+                              }
+                          }
+                          .recover {
+                            case _ =>
+                              InternalServerError
+                          }
+                      case Left(getMessagesResponse) =>
+                        Future.successful(handleNon2xx(getMessagesResponse))
                     }
                     .recover {
                       case _ =>
