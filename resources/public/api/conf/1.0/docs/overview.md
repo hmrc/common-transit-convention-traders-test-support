@@ -24,6 +24,7 @@ Follow these steps to get set up for testing.
 
 **[Our postman scripts]**(https://github.com/hmrc/common-transit-convention-traders-postman). These were created by us in November 2020 and may not be viable in the future.
 **[Trader Test](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)** 
+**[Mapping document](/docs/ie015-ie016.svg)
 
    
 
