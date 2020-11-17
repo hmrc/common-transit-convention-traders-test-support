@@ -22,6 +22,7 @@ import data.TestXml
 import org.scalacheck.Gen
 import models.ArrivalWithMessages
 import models.DepartureWithMessages
+import models.MessageType
 import models.MovementMessage
 import org.scalatest.StreamlinedXmlEquality
 import org.scalatest.freespec.AnyFreeSpec
@@ -53,7 +54,7 @@ class XMLTransformerSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           forAll(arrivalMessagesGenerator) {
             code: GenerateMessage =>
               val message = code()
-              val updated = XMLTransformer.populateMesRecMES6(message, "IE007", arrivalWithMessages.messages)
+              val updated = XMLTransformer.populateMesRecMES6(message, MessageType.ArrivalNotification.code, arrivalWithMessages.messages)
               (updated \\ "MesRecMES6").text mustEqual (CC007A \\ "MesSenMES3").text
           }
         }
@@ -76,7 +77,7 @@ class XMLTransformerSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           forAll(arrivalMessagesGenerator) {
             code: GenerateMessage =>
               val message = code()
-              val updated = XMLTransformer.populateMesRecMES6(message, "IE007", arrivalWithMessages.messages)
+              val updated = XMLTransformer.populateMesRecMES6(message, MessageType.ArrivalNotification.code, arrivalWithMessages.messages)
               (updated \\ "MesRecMES6").text mustEqual (CC007Av2 \\ "MesSenMES3").text
               (updated \\ "MesRecMES6").text must not equal (CC007A \\ "MesSenMES3").text
           }
@@ -97,7 +98,7 @@ class XMLTransformerSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           forAll(arrivalMessagesGenerator) {
             code: GenerateMessage =>
               val message = code()
-              val updated = XMLTransformer.populateMesRecMES6(message, "IE007", arrivalWithMessages.messages)
+              val updated = XMLTransformer.populateMesRecMES6(message, MessageType.ArrivalNotification.code, arrivalWithMessages.messages)
               (updated \\ "MesRecMES6").text mustEqual (message \\ "MesRecMES6").text
               (updated \\ "MesRecMES6").text must not equal (CC007Av2 \\ "MesSenMES3").text
               (updated \\ "MesRecMES6").text must not equal (CC007A \\ "MesSenMES3").text
@@ -121,7 +122,7 @@ class XMLTransformerSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           forAll(departureMessageGenerator) {
             code: GenerateMessage =>
               val message = code()
-              val updated = XMLTransformer.populateMesRecMES6(message, "IE015", departureWithMessages.messages)
+              val updated = XMLTransformer.populateMesRecMES6(message, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
               (updated \\ "MesRecMES6").text mustEqual (CC015B \\ "MesSenMES3").text
           }
         }
@@ -145,7 +146,7 @@ class XMLTransformerSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           forAll(departureMessageGenerator) {
             code: GenerateMessage =>
               val message = code()
-              val updated = XMLTransformer.populateMesRecMES6(message, "IE015", departureWithMessages.messages)
+              val updated = XMLTransformer.populateMesRecMES6(message, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
               (updated \\ "MesRecMES6").text mustEqual (CC015Bv2 \\ "MesSenMES3").text
               (updated \\ "MesRecMES6").text must not equal (CC015B \\ "MesSenMES3").text
           }
@@ -167,7 +168,7 @@ class XMLTransformerSpec extends AnyFreeSpec with Matchers with ScalaCheckProper
           forAll(departureMessageGenerator) {
             code: GenerateMessage =>
               val message = code()
-              val updated = XMLTransformer.populateMesRecMES6(message, "IE015", departureWithMessages.messages)
+              val updated = XMLTransformer.populateMesRecMES6(message, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
               (updated \\ "MesRecMES6").text mustEqual (message \\ "MesRecMES6").text
               (updated \\ "MesRecMES6").text must not equal (CC015Bv2 \\ "MesSenMES3").text
               (updated \\ "MesRecMES6").text must not equal (CC015B \\ "MesSenMES3").text

@@ -23,6 +23,7 @@ import controllers.actions.ValidateDepartureMessageTypeAction
 import javax.inject.Inject
 import models.DepartureId
 import models.DepartureWithMessages
+import models.MessageType
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
@@ -55,7 +56,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                     .getMessages(departureId)
                     .flatMap {
                       case Right(departureWithMessages: DepartureWithMessages) =>
-                        val message = populateMesRecMES6(request.generatedMessage, "IE015", departureWithMessages.messages)
+                        val message = populateMesRecMES6(request.generatedMessage, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
                         departureConnector
                           .post(request.testMessage.messageType, message.toString(), departureId)
                           .map {

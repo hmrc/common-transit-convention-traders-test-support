@@ -23,6 +23,7 @@ import controllers.actions.ValidateArrivalMessageTypeAction
 import javax.inject.Inject
 import models.ArrivalId
 import models.ArrivalWithMessages
+import models.MessageType
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
@@ -55,7 +56,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                     .getMessages(arrivalId)
                     .flatMap {
                       case Right(arrivalWithMessages: ArrivalWithMessages) =>
-                        val message = populateMesRecMES6(request.generatedMessage, "IE007", arrivalWithMessages.messages)
+                        val message = populateMesRecMES6(request.generatedMessage, MessageType.ArrivalNotification.code, arrivalWithMessages.messages)
                         arrivalConnector
                           .post(request.testMessage.messageType, message.toString(), arrivalId)
                           .map {
