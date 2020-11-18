@@ -20,7 +20,10 @@ Follow these steps to get set up for testing.
 
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-## Information, files and data that can help
+
+## How to use the CTC Trader Test Support API
+
+You can can use this API for any test scenario you choose. It is not connected to the NCTS core. It's up to you to generate your own response messages. You can also try out the ones below. 
 
 ### Response messages you can test now
 
@@ -42,15 +45,14 @@ Follow these steps to get set up for testing.
 
 ### Reference file
 
-**[Our postman scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020 and may not be viable in the future.
+**[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated
 
-**[Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html)** so you can validate your XML. Please note, where headers are different on XSD files compared to the NCTS API channel specifications, the XSD headers are correct.  
+**[Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html)** so you can validate your XML. Please note, there are some known errors and omissions. These are all captured in the mapping document.
 
-**[Trader Test Pack](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)**. This contains test scenarios that we publish. 
-      
 **[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pdf)**. This has plain English header descriptions, XML and EDIFACT code. 
-      
+
+**[Trader Test Pack](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)**. This contains test scenarios that you can use. 
       
 **[NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams.  
-> Note, this is NOT the specifications document for the new CTC Traders API. So, there will be discrepancies. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP.
+> Note, this is NOT the specifications document for the new CTC Traders API. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP. An new version will be issued early in 2021.
 
