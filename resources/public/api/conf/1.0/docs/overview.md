@@ -48,7 +48,7 @@ Follow these steps to get set up for testing.
 
 **[Trader Test Pack](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)**. This contains test scenarios that we publish. 
       
-**[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pd)**. This has plain English header descriptions, XML and EDIFACT code. 
+**[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pdf)**. This has plain English header descriptions, XML and EDIFACT code. 
       
       
 **[NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams.  
