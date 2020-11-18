@@ -22,13 +22,34 @@ Follow these steps to get set up for testing.
 
 ## Information, files and data that can help
 
+### Response messages you can test now
+
+| **Title** | **Description** |
+|------|-------------|
+|**[Test for Arrival Notification rejection message (IE008)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**|Test for a message from the office of destination rejecting the traders Arrival Notification (IE007). Specify IE008 for the messageType field |
+|**[Test for an unloading permission message (IE043)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**| Test for an unloading permission message to the trader at destination. Specify IE043 for the messageType field |
+|**[Test a write-off notification (IE045)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test a message from the office at departure that the transit movement has been discharged. Specify IE045 for the messageType field. |
+|**[Test for an unloading remarks rejection message (IE058)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**| Test for a message from the office at destination that there are errors in the trader's unloading remarks message (IE044). Specify IE058 for the messageType field |
+|**[Test for declaration received message (IE928)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test for a positive acknowledgement of a departure declaration message (IE015). Specify IE928 for the messageType field |
+|**[Test for an MRN allocated message (IE028)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test for a message from the office at departure allocating a Movement Reference Number (MRN). Specify IE028 for the messageType field |
+|**[Test for a goods released for transit message (IE029)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test for a message from the office at departure to say the goods are released for transit. Specify IE029 for the messageType field |
+|**[Test for a cancellation decision message (IE009)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test a message from the office at departure in reference to a cancellation request (IE014). Specify IE009 for the messageType field |
+|**[Test for a Declaration rejection message (IE016)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test a message from the office at departure rejecting a Declaration data message (IE015). Specify IE016 for the messageType field |
+|**[Test for a no release for transit message (IE051)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test a message from the office at departure that the movement cannot be released for transit. Specify IE051 for the messageType field |
+|**[Test for a guarantee not valid message (IE055)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Get a message from the office of departure to the trader at departure that their guarantee is not valid. Specify IE055 for the messageType field |
+|**[Test for a control decision notification (IE060)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Test a message from the office at departure to tell the trader they wish to carry out a control of the goods. Specify IE060 for the messageType field |
+|**[Test for a good release notification (IE025)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**| Test a message from the office at destination that the trader can release the goods. Specify IE025 for the messageType field |
+
+### Reference file
+
 **[Our postman scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020 and may not be viable in the future.
-      
+
+**[Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html)** so you can validate your XML. Please note, where headers are different on XSD files compared to the NCTS API channel specifications, the XSD headers are correct.  
+
 **[Trader Test Pack](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)**. This contains test scenarios that we publish. 
       
 **[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pd)**. This has plain English header descriptions, XML and EDIFACT code. 
       
-**[Our XSD files](documentation/xsd-reference.html)** so you can validate your XML. Please note, where headers are different on XSD files compared to the NCTS API channel specifications, the XSD headers are correct.  
       
 **[NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams.  
 Note, this is NOT the specifications document for the new CTC Traders API. So, there will be discrepancies. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP.
