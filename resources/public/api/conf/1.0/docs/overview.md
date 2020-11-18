@@ -45,7 +45,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 
 ### Reference file
 
-**[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated
+**[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated.
 
 **[Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html)** so you can validate your XML. Please note, there are some known errors and omissions. These are all captured in the mapping document.
 
