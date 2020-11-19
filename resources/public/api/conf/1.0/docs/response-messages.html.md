@@ -5,8 +5,8 @@ weight: 3
 
 # Response messages you can inject
 
-| **Title** | **Description** |**Instruction**
-|------|-------------|----
+| **Title** | **Description** |**Instruction**|
+|------|-------------|----|
 |**[Inject an Arrival Notification rejection message (IE008)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**|Inject a message from the office of destination rejecting the traders Arrival Notification (IE007) | Specify "IE008" for the `messageType` field |
 |**[Inject an unloading permission message (IE043)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**| Inject an unloading permission message to the trader at destination | Specify "IE043" for the `messageType` field |
 |**[Inject a write-off notification (IE045)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Inject a message from the office at departure that the transit movement has been discharged. |Specify "IE045" for the `messageType` field. |
