@@ -6,6 +6,8 @@ To review our progress and to see what you can test, take at look at our [Roadma
 For more information about how to develop your own client applications, including example clients for this API, 
 see [Tutorials](/api-documentation/docs/tutorials).
 
+<br></br>
+
 ## How to get set up for testing
 
 Follow these steps to get set up for testing.
@@ -20,7 +22,7 @@ Follow these steps to get set up for testing.
 
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-
+<br></br>
 
 ## How to use the CTC Trader Test Support API
 
@@ -28,10 +30,11 @@ You can can use this API for any test scenario you choose. It is not connected t
 
 1.  Send message from a trader to the NCTS using the the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
 
-2. [See messages you can inject](docs/messages-inject.html.md) and inject a response using the Common Transit Traders Test Support API. 
+2. Inject a response using the Common Transit Traders Test Support API. See below. 
 
 3. GET messages for this movement from the CTC Traders API. This will include both the trader and the NCTS messages.
 
+<br></br>
 
 ## Messages you can inject now
 
@@ -88,12 +91,9 @@ You can can use this API for any test scenario you choose. It is not connected t
    </tr>
    </tbody>
    </table>
-     
-            
-             
-      
 
-
+<br></br>
+          
 ## Reference materials
 
 **[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated.
