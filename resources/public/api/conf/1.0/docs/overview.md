@@ -27,7 +27,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 
 1.  Send message from a trader to the NCTS using the the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
 
-2. [See messages you can inject](/docs/response-messages.html.md) and inject a response using the Common Transit Traders Test Support API. 
+2. [See messages you can inject](/docs/messages-inject.html.md) and inject a response using the Common Transit Traders Test Support API. 
 
 3. GET messages for this movement from the CTC Traders API. This will include both the trader and the NCTS messages.
 
