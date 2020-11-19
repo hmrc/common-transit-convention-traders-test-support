@@ -1,5 +1,5 @@
 ---
-title: Released |Response messages you can inject
+title: Response messages you can inject
 weight: 3
 ---
 
