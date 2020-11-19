@@ -23,15 +23,17 @@ Follow these steps to get set up for testing.
 
 ## How to use the CTC Trader Test Support API
 
-1.  Send a traders' message to a customs office using the the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
-
-2. Inject a customs office response using the Common Transit Traders Test Support API
-
-3. GET messages for this movement from the CTC Traders API. This will include both the sent and injected message.
-
 You can can use this API for any test scenario you choose. It is not connected to the NCTS core. It’s up to you to trigger the response messages in the order you require.  Valid response message types are listed below.
 
-### Response messages you can Inject
+1.  Send message from a trader to the NCTS using the the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
+
+2. Inject an NCTS response using the Common Transit Traders Test Support API.
+
+3. GET messages for this movement from the CTC Traders API. This will include both the trader and the NCTS messages.
+
+
+
+### Response messages you can inject
 
 | **Title** | **Description** |**Instruction**
 |------|-------------|----|
@@ -49,7 +51,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 |**[Inject a control decision notification (IE060)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion)**| Inject a message from the office at departure to tell the trader they wish to carry out a control of the goods | Specify "IE060" for the `messageType` field |
 |**[Inject a good release notification (IE025)](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion)**| Inject a message from the office at destination that the trader can release the goods | Specify "IE025" for the `messageType` field |
 
-### Reference file
+## Reference materials
 
 **[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated.
 
