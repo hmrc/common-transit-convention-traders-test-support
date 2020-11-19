@@ -21,6 +21,7 @@ Follow these steps to get set up for testing.
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
 
+
 ## How to use the CTC Trader Test Support API
 
 You can can use this API for any test scenario you choose. It is not connected to the NCTS core. It’s up to you to trigger the response messages in the order you require.  Valid response message types are listed below.
@@ -30,6 +31,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 2. [See messages you can inject](docs/messages-inject.html.md) and inject a response using the Common Transit Traders Test Support API. 
 
 3. GET messages for this movement from the CTC Traders API. This will include both the trader and the NCTS messages.
+
 
 ## Messages you can inject now
 
@@ -86,6 +88,11 @@ You can can use this API for any test scenario you choose. It is not connected t
    </tr>
    </tbody>
    </table>
+     
+            
+             
+      
+
 
 ## Reference materials
 
