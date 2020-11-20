@@ -33,13 +33,13 @@ import scala.concurrent.Future
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   def post(messageType: String, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val eisPath = departureRoute format (departureId.index, Constants.MessageCorrelationId)
-
-    val url = appConfig.traderAtDeparturesUrl + eisPath
+    val xMessageRecipient = mdtpString format (departureId.index, Constants.MessageCorrelationId)
 
     val newHeaders = hc
       .copy()
-      .withExtraHeaders(Seq("X-Message-Type" -> messageType): _*)
+      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType): _*)
+
+    val url = appConfig.transitMovementsTraderRouterUrl + routerRoute
 
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }

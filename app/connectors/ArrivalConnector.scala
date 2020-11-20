@@ -33,13 +33,13 @@ import scala.concurrent.Future
 class ArrivalConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   def post(messageType: String, message: String, arrivalId: ArrivalId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val eisPath = arrivalRoute format (arrivalId.index, Constants.MessageCorrelationId)
-
-    val url = appConfig.traderAtDestinationUrl + eisPath
+    val xMessageRecipient = mdtpString format (arrivalId.index, Constants.MessageCorrelationId)
 
     val newHeaders = hc
       .copy()
-      .withExtraHeaders(Seq("X-Message-Type" -> messageType): _*)
+      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType): _*)
+
+    val url = appConfig.transitMovementsTraderRouterUrl + routerRoute
 
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }

@@ -30,8 +30,9 @@ class BaseConnector extends HttpErrorFunctions {
   protected val responseHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
 
-  protected val arrivalRoute   = "/transit-movements-trader-at-destination/movements/arrivals/MDTP-%d-%d/messages/eis"
-  protected val departureRoute = "/transits-movements-trader-at-departure/movements/departures/MDTP-%d-%d/messages/eis"
+  protected val mdtpString = "MDTP-%d-%d"
+
+  protected val routerRoute = "/transit-movements-trader-router/messages"
 
   protected val arrivalGetRoute   = "/transit-movements-trader-at-destination/movements/arrivals/"
   protected val departureGetRoute = "/transits-movements-trader-at-departure/movements/departures/"

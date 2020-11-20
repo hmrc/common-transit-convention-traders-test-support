@@ -17,62 +17,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite with ScalaFutures with IntegrationPatience with ScalaCheckPropertyChecks {
   private val departureId = new DepartureId(1)
 
-  "post" - {
-    "must return CREATED when post is successful" in {
-      val connector = app.injector.instanceOf[DepartureConnector]
-
-      server.stubFor(
-        post(
-          urlEqualTo("/transits-movements-trader-at-departure/movements/departures/MDTP-1-1/messages/eis")
-        ).willReturn(aResponse().withStatus(CREATED))
-      )
-
-      implicit val hc            = HeaderCarrier()
-      implicit val requestHeader = FakeRequest()
-
-      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
-
-      result.status mustEqual CREATED
-    }
-
-    "must return INTERNAL_SERVER_ERROR when post" - {
-      "returns INTERNAL_SERVER_ERROR" in {
-        val connector = app.injector.instanceOf[DepartureConnector]
-
-        server.stubFor(
-          post(
-            urlEqualTo("/transits-movements-trader-at-departure/movements/departures/MDTP-1-1/messages/eis")
-          ).willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
-        )
-
-        implicit val hc            = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
-
-        val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
-
-        result.status mustEqual INTERNAL_SERVER_ERROR
-      }
-
-    }
-
-    "must return BAD_REQUEST when post returns BAD_REQUEST" in {
-      val connector = app.injector.instanceOf[DepartureConnector]
-
-      server.stubFor(
-        post(
-          urlEqualTo("/transits-movements-trader-at-departure/movements/departures/MDTP-1-1/messages/eis")
-        ).willReturn(aResponse().withStatus(BAD_REQUEST))
-      )
-
-      implicit val hc            = HeaderCarrier()
-      implicit val requestHeader = FakeRequest()
-
-      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
-
-      result.status mustEqual BAD_REQUEST
-    }
-  }
-
   "get" - {
     "must return OK when departure is found" in {
       val connector = app.injector.instanceOf[DepartureConnector]
@@ -133,4 +77,72 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
   }
 
   override protected def portConfigKey: String = "microservice.services.transits-movements-trader-at-departure.port"
+}
+
+class DepartureConnectorPostSpec extends AnyFreeSpec with Matchers with WiremockSuite with ScalaFutures with IntegrationPatience with ScalaCheckPropertyChecks {
+  private val departureId = new DepartureId(1)
+
+  "post" - {
+    "must return CREATED when post is successful" in {
+      val connector = app.injector.instanceOf[DepartureConnector]
+
+      server.stubFor(
+        post(
+          urlEqualTo("/transit-movements-trader-router/messages"))
+          .withHeader("X-Message-Recipient", equalTo("MDTP-1-1"))
+          .withHeader("X-Message-Type", equalTo("IE928"))
+          .willReturn(aResponse().withStatus(CREATED))
+      )
+
+      implicit val hc            = HeaderCarrier()
+      implicit val requestHeader = FakeRequest()
+
+      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
+
+      result.status mustEqual CREATED
+    }
+
+    "must return INTERNAL_SERVER_ERROR when post" - {
+      "returns INTERNAL_SERVER_ERROR" in {
+        val connector = app.injector.instanceOf[DepartureConnector]
+
+        server.stubFor(
+          post(
+            urlEqualTo("/transit-movements-trader-router/messages"))
+            .withHeader("X-Message-Recipient", equalTo("MDTP-1-1"))
+            .withHeader("X-Message-Type", equalTo("IE928"))
+            .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
+        )
+
+        implicit val hc            = HeaderCarrier()
+        implicit val requestHeader = FakeRequest()
+
+        val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
+
+        result.status mustEqual INTERNAL_SERVER_ERROR
+      }
+
+    }
+
+    "must return BAD_REQUEST when post returns BAD_REQUEST" in {
+      val connector = app.injector.instanceOf[DepartureConnector]
+
+      server.stubFor(
+        post(
+          urlEqualTo("/transit-movements-trader-router/messages"))
+          .withHeader("X-Message-Recipient", equalTo("MDTP-1-1"))
+          .withHeader("X-Message-Type", equalTo("IE928"))
+          .willReturn(aResponse().withStatus(BAD_REQUEST))
+      )
+
+      implicit val hc            = HeaderCarrier()
+      implicit val requestHeader = FakeRequest()
+
+      val result = connector.post(MessageType.PositiveAcknowledgement.code, "<document></document>", departureId).futureValue
+
+      result.status mustEqual BAD_REQUEST
+    }
+  }
+
+  override protected def portConfigKey: String = "microservice.services.transit-movements-trader-router.port"
 }
