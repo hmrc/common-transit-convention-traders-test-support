@@ -32,7 +32,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 
 2. Inject a response using the Common Transit Traders Test Support API. See below. 
 
-3. GET messages for this movement from the CTC Traders API. This will include both the trader and the NCTS messages.
+3. GET a list of your messages for this movement from the CTC Traders API. This will include both your trader and your injected NCTS messages.
 
 <br></br>
 
