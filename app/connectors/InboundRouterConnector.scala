@@ -17,23 +17,27 @@
 package connectors
 
 import config.AppConfig
+import config.Constants
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
-import models.ArrivalId
-import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ArrivalConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def get(arrivalId: ArrivalId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = appConfig.traderAtDestinationUrl + arrivalGetRoute + Utils.urlEncode(arrivalId.index.toString)
+  def post(messageType: String, message: String, itemId: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val xMessageRecipient = mdtpString format (itemId, Constants.MessageCorrelationId)
 
-    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
+    val newHeaders = hc
+      .copy()
+      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType): _*)
+
+    val url = appConfig.transitMovementsTraderRouterUrl + routerRoute
+
+    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }
 }

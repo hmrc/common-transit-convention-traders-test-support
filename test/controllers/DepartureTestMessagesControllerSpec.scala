@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.DepartureConnector
+import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import controllers.actions.FakeAuthAction
 import generators.ModelGenerators
@@ -57,15 +58,17 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
 
   "POST" - {
     "must send a test message to the departures backend and return Created if successful" in {
-      val mockDepartureConnector = mock[DepartureConnector]
+      val mockDepartureConnector     = mock[DepartureConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[DepartureConnector].toInstance(mockDepartureConnector)
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
@@ -143,15 +146,17 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
     }
 
     "must return BadRequest if departures backend returns BadRequest" in {
-      val mockDepartureConnector = mock[DepartureConnector]
+      val mockDepartureConnector     = mock[DepartureConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
-      when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[DepartureConnector].toInstance(mockDepartureConnector)
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
@@ -165,15 +170,17 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
     }
 
     "must return InternalServerError if departures backend returns InternalServerError" in {
-      val mockDepartureConnector = mock[DepartureConnector]
+      val mockDepartureConnector     = mock[DepartureConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
-      when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[DepartureConnector].toInstance(mockDepartureConnector)
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
@@ -229,15 +236,17 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
     }
 
     "must return InternalServerError if POST fails to send to departures backend" in {
-      val mockDepartureConnector = mock[DepartureConnector]
+      val mockDepartureConnector     = mock[DepartureConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockDepartureConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[DepartureConnector].toInstance(mockDepartureConnector)
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 

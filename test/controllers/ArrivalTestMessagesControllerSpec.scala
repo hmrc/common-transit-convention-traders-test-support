@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.ArrivalConnector
+import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import controllers.actions.FakeAuthAction
 import generators.ModelGenerators
@@ -57,15 +58,17 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
 
   "POST" - {
     "must send a test message to the arrivals backend and return Created if successful" in {
-      val mockArrivalConnector = mock[ArrivalConnector]
+      val mockArrivalConnector       = mock[ArrivalConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+          bind[ArrivalConnector].toInstance(mockArrivalConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
@@ -143,15 +146,17 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     }
 
     "must return BadRequest if arrivals backend returns BadRequest" in {
-      val mockArrivalConnector = mock[ArrivalConnector]
+      val mockArrivalConnector       = mock[ArrivalConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+          bind[ArrivalConnector].toInstance(mockArrivalConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
@@ -165,15 +170,17 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     }
 
     "must return InternalServerError if arrivals backend returns InternalServerError" in {
-      val mockArrivalConnector = mock[ArrivalConnector]
+      val mockArrivalConnector       = mock[ArrivalConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+          bind[ArrivalConnector].toInstance(mockArrivalConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
         )
         .build()
 
@@ -229,15 +236,17 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     }
 
     "must return InternalServerError if POST fails to send to arrivals backend" in {
-      val mockArrivalConnector = mock[ArrivalConnector]
+      val mockArrivalConnector       = mock[ArrivalConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
 
       when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockArrivalConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ArrivalConnector].toInstance(mockArrivalConnector)
+          bind[ArrivalConnector].toInstance(mockArrivalConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 

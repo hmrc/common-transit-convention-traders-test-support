@@ -17,6 +17,7 @@
 package controllers
 
 import connectors.ArrivalConnector
+import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateArrivalMessageTypeAction
@@ -34,6 +35,7 @@ import scala.concurrent.Future
 
 class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                               arrivalConnector: ArrivalConnector,
+                                              inboundRouterConnector: InboundRouterConnector,
                                               authAction: AuthAction,
                                               validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction)(implicit ec: ExecutionContext)
     extends BackendController(cc)
@@ -49,8 +51,8 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
             getResponse =>
               getResponse.status match {
                 case status if is2xx(status) =>
-                  arrivalConnector
-                    .post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId)
+                  inboundRouterConnector
+                    .post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId.index)
                     .map {
                       postResponse =>
                         postResponse.status match {
