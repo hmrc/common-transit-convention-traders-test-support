@@ -102,7 +102,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 
 **[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pdf)**. This has plain English header descriptions, XML and EDIFACT code. 
 
-**[Trader Test Pack](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/782472/NCTS_8_trader_test_pack_version_6.3.2.pdf)**. This contains test scenarios that you can use. 
+**[Trader Test Pack for GB](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/937032/NCTS_4_GB.pdf)**. This contains test scenarios that you can use. 
       
 **[NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams.  
 > Note, this is NOT the specifications document for the new CTC Traders API. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP. An new version will be issued early in 2021.
