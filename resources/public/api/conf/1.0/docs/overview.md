@@ -1,6 +1,6 @@
 This API allows testers to inject departure and arrival movement notifications as if they have come from the office of departure and the office of destination by the New Computerised Transit System (NCTS).
 
-To review our progress and to see what you can test, take at look at our [Roadmap](/roadmaps/common-transit-convention-traders-roadmap).
+To review our progress and to see what you can test, take a look at our [Roadmap](/roadmaps/common-transit-convention-traders-roadmap).
 
 
 For more information about how to develop your own client applications, including example clients for this API, 
@@ -26,9 +26,9 @@ Follow these steps to get set up for testing.
 
 ## How to use the CTC Trader Test Support API
 
-You can can use this API for any test scenario you choose. It is not connected to the NCTS core. It’s up to you to trigger the response messages in the order you require.  Valid response message types are listed below.
+You can use this API for any test scenario you choose. It is not connected to the NCTS core. It’s up to you to trigger the response messages in the order you require.  Valid response message types are listed below.
 
-1.  Send message from a trader to the NCTS using the the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
+1.  Send a message from a trader to the NCTS using the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
 
 2. Inject a response using the Common Transit Traders Test Support API. See below. 
 
@@ -265,5 +265,5 @@ This contains test scenarios that you can use.
 ### [NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications) 
 
 See a list of messages, message content and sequence diagrams.  
-> Note, this is NOT the specifications document for the new CTC Traders API. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP. An new version will be issued early in 2021.
+> Note, this is NOT the specifications document for the new CTC Traders API. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP. A new version will be issued early in 2021.
 
