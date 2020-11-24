@@ -101,7 +101,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 Use these CURL commands to simulate your application’s actions and messages, plus the actions and messages that would come from the NCTS.
 
 <details>
-   <summary><u><a href="blue"><u>POST IE0015</a></u></summary>
+   <summary><a href="blue"><POST IE0015</a></summary>
    
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures' \
@@ -218,7 +218,7 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/tra
 </details>
 
 <details>
-   <summary><strong>POST IE0016</strong></summary>
+     <summary><a href="blue"><POST IE0016</a></summary>
    
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/test/customs/transits/movements/departures/{deptId}/messages' \
@@ -233,7 +233,7 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/test/custom
 </details>
 
 <details>
-   <summary><strong>GET Dept ID</strong></summary>
+   <summary><a href="blue"><strong>GET Dept ID</a></summary>
 
 ```
 curl --location --request GET 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures/{deptId}' \
