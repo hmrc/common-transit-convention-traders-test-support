@@ -17,6 +17,7 @@
 package controllers
 
 import connectors.DepartureConnector
+import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateDepartureMessageTypeAction
@@ -34,6 +35,7 @@ import scala.concurrent.Future
 
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 departureConnector: DepartureConnector,
+                                                inboundRouterConnector: InboundRouterConnector,
                                                 authAction: AuthAction,
                                                 validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction)(implicit ec: ExecutionContext)
     extends BackendController(cc)
@@ -49,8 +51,8 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
             getResponse =>
               getResponse.status match {
                 case status if is2xx(status) =>
-                  departureConnector
-                    .post(request.testMessage.messageType, request.generatedMessage.toString(), departureId)
+                  inboundRouterConnector
+                    .post(request.testMessage.messageType, request.generatedMessage.toString(), departureId.index)
                     .map {
                       postResponse =>
                         postResponse.status match {

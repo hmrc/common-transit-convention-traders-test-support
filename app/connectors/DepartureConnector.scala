@@ -17,7 +17,6 @@
 package connectors
 
 import config.AppConfig
-import config.Constants
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
 import models.DepartureId
@@ -31,18 +30,6 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
-
-  def post(messageType: String, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val xMessageRecipient = mdtpString format (departureId.index, Constants.MessageCorrelationId)
-
-    val newHeaders = hc
-      .copy()
-      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType): _*)
-
-    val url = appConfig.transitMovementsTraderRouterUrl + routerRoute
-
-    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
-  }
 
   def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
