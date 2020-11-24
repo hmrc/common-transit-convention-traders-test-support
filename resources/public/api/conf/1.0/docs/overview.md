@@ -99,7 +99,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 ### CURL commands
 
 <details>
-   <summary><stong>POST IE0015</strong></summary>
+   <summary><strong>POST IE0015</strong></summary>
    
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures' \
@@ -215,7 +215,30 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/tra
 ```
 </details>
 
+<details>
+   <summary><strong>POST IE0016</strong></summary>
+   
+```
+curl --location --request POST 'https://test-api.service.hmrc.gov.uk/test/customs/transits/movements/departures/{deptId}/messages' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <enter your Bearer Token>' \
+--data-raw '{
+     "message": {
+         "messageType": "IE016"
+     }
+ }'
+ ```
+</details>
 
+<details>
+   <summary><strong>GET Dept ID</strong></summary>
+
+```
+curl --location --request GET 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures/{deptId}' \
+--header 'Accept: application/vnd.hmrc.1.0+json' \
+--header 'Authorization: Bearer <enter your Bearer Token>'
+```
+</details>
 
 **[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated.
 
