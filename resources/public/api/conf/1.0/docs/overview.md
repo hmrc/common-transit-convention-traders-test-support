@@ -99,7 +99,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 ### CURL commands
 
 <details>
-  <summary>**POST IE0015**</summary>
+   <summary><stong>POST IE0015</strong></summary>
    
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures' \
@@ -214,6 +214,8 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/tra
 </CC015B>'
 ```
 </details>
+
+
 
 **[Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman)**. These were created by us in November 2020. These will not be monitored or updated.
 
