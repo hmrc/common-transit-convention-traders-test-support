@@ -100,9 +100,9 @@ You can can use this API for any test scenario you choose. It is not connected t
 
 **[Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html)** so you can validate your XML. Please note, there are some known omissions. These are all captured in the mapping document. Also NumOfLoaLisHEA304 has been included in error in IE015 (CC015B), IE029 (CC0029B), IE043 (CC0043A) and IE051 (CC051), but you can ignore this. 
 
-**[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pdf)**. This has plain English header descriptions, XML and EDIFACT code. 
+**[Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pdf)** - this has plain English header descriptions, XML and EDIFACT code. 
 
-**[Trader Test Pack for GB](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/937032/NCTS_4_GB.pdf)**. This contains test scenarios that you can use. 
+**[Trader Test Pack for GB](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/937032/NCTS_4_GB.pdf)** - this contains test scenarios that you can use. 
       
 **[NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications)** to see a list of messages, message content and sequence diagrams.  
 > Note, this is NOT the specifications document for the new CTC Traders API. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP. An new version will be issued early in 2021.
