@@ -99,7 +99,7 @@ You can can use this API for any test scenario you choose. It is not connected t
 ### CURL commands
 
 <details>
-   <summary><strong>POST IE0015</strong></summary>
+   <summary><strong>POST IE0015</strong</summary>
    
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures' \
