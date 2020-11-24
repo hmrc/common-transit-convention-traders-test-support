@@ -102,7 +102,7 @@ Use these CURL commands to simulate your application’s actions and messages, p
 
 
 <details>
-   <summary><a href="blue">See IE015 CURL command</a></summary>
+   <summary><strong>See IE015 CURL command</strong></summary>
 
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures' \
@@ -220,7 +220,7 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/tra
 
 
 <details>
-  <summary><a href="blue">See IE016 CURL command</a></summary>
+  <summary><strong>See IE016 CURL command</strong></summary>
    
 ```
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/test/customs/transits/movements/departures/{deptId}/messages' \
@@ -236,7 +236,7 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/test/custom
 
 
 <details>
-  <summary><a href="blue">See Get Dept Id CURL command</a></summary>
+   <summary><strong>See Get Dept Id CURL command</strong></summary>
 
 ```
 curl --location --request GET 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures/{deptId}' \
