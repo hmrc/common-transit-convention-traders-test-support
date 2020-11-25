@@ -28,7 +28,7 @@ Follow these steps to get set up for testing.
 
 You can use this API for any test scenario you choose. It is not connected to the NCTS core. It’s up to you to trigger the response messages in the order you require.  Valid response message types are listed below.
 
-1.  Send messages from a trader to the NCTS using the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
+1.  Send messages from a trader to NCTS using the [CTC Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0). This could be IE014, IE015, IE007 or IE044. See [message we support](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/supported-messages.html) for more details. 
 
 2. Inject a response using the Common Transit Traders Test Support API. See below. 
 
@@ -98,7 +98,7 @@ You can use this API for any test scenario you choose. It is not connected to th
 
 ### CURL commands
 
-Use these CURL commands to simulate your application’s actions and messages, plus the actions and messages that would come from the NCTS.
+Use these CURL commands to simulate your application’s actions and messages, plus the actions and messages that would come back from NCTS.
 
 
 <details>
