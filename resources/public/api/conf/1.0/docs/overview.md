@@ -1,4 +1,4 @@
-This API allows testers to inject departure and arrival movement notifications as if they have come from the office of departure and the office of destination by the New Computerised Transit System (NCTS).
+This API allows testers to inject departure and arrival movement notifications as if they have come from the office of departure or the office of destination by the New Computerised Transit System (NCTS).
 
 To review our progress and to see what you can test, take a look at our [Roadmap](/roadmaps/common-transit-convention-traders-roadmap).
 
