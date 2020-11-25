@@ -254,7 +254,7 @@ These were created by us in November 2020. These will not be monitored or update
 
 Use these to validate your XML. Please note, there are some known omissions. These are all captured in the mapping document. Also NumOfLoaLisHEA304 has been included in error in IE015 (CC015B), IE029 (CC0029B), IE043 (CC0043A) and IE051 (CC051), but you can ignore this. 
 
-### [Mapping document](/docs/xml-2-edifact-mapping-updated12112020.pdf)
+### [Mapping document](docs/xml-2-edifact-mapping-updated12112020.pdf)
 
 This has plain English header descriptions, XML and EDIFACT code. 
 
