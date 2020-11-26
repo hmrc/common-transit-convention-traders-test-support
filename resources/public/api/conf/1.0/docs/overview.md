@@ -104,7 +104,7 @@ Use these CURL commands to simulate your application’s actions and messages, p
 <details>
    <summary><strong>See IE015 CURL command</strong></summary>
 
-```
+~~~
 curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/transits/movements/departures' \
 --header 'Authorization: Bearer <enter your Bearer Token>' \
 --header 'Content-Type: application/xml' \
@@ -215,7 +215,7 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/customs/tra
         <TINCARTRA254>GB954131533000</TINCARTRA254>
     </CARTRA100>
 </CC015B>'
-```
+~~~
 </details>
 
 
@@ -231,7 +231,7 @@ curl --location --request POST 'https://test-api.service.hmrc.gov.uk/test/custom
          "messageType": "IE016"
      }
  }'
- ```
+```
 </details>
 
 
