@@ -18,7 +18,6 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.AppConfig
-import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
@@ -55,10 +54,8 @@ class AuthAction @Inject()(
     }
   } recover {
     case _: InsufficientEnrolments =>
-      Logger.logger.warn("insufficient enrolments")
       Forbidden("Current user doesn't have a valid EORI enrolment.")
     case _: AuthorisationException =>
-      Logger.logger.warn("auth issues")
       Unauthorized
   }
 }
