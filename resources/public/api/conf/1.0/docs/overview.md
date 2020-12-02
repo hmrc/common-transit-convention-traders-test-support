@@ -268,7 +268,7 @@ These were created by us in November 2020. These will not be monitored or update
 
 ### [Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html) 
 
-Use these to validate your XML. Please note, there are some known omissions. These are all captured in the mapping document. Also NumOfLoaLisHEA304 has been included in error in IE015 (CC015B), IE029 (CC0029B), IE043 (CC0043A) and IE051 (CC051), but you can ignore this. 
+You can check your XML files against our XSD files.
 
 ### [Download the mapping document](https://github.com/hmrc/common-transit-convention-traders-test-support/raw/master/resources/public/api/conf/1.0/docs/xml-2-edifact-mapping-updated12112020.pdf)
 
