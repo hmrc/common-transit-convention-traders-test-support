@@ -16,11 +16,15 @@
 
 package connectors
 
+import connectors.util.CustomHttpReader
+import connectors.util.CustomHttpReader.INTERNAL_SERVER_ERROR
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
+import play.api.libs.json.Reads
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.logging.Authorization
 
 class BaseConnector extends HttpErrorFunctions {
@@ -36,6 +40,14 @@ class BaseConnector extends HttpErrorFunctions {
 
   protected val arrivalGetRoute   = "/transit-movements-trader-at-destination/movements/arrivals/"
   protected val departureGetRoute = "/transits-movements-trader-at-departure/movements/departures/"
+
+  protected def extractIfSuccessful[T](response: HttpResponse)(implicit reads: Reads[T]): Either[HttpResponse, T] =
+    if (is2xx(response.status)) {
+      response.json.asOpt[T] match {
+        case Some(instance) => Right(instance)
+        case _              => Left(CustomHttpReader.recode(INTERNAL_SERVER_ERROR, response))
+      }
+    } else Left(response)
 
   protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
                                                                               headerCarrier: HeaderCarrier): HeaderCarrier = {

@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package config
+package models.domain
 
-object Constants {
-  val MessageCorrelationId = 1
+import java.time.LocalDateTime
 
-  val Context = "/customs/transits"
+import play.api.libs.json.Json
+import utils.NodeSeqFormat
+
+import scala.xml.NodeSeq
+
+object MovementMessage extends NodeSeqFormat {
+  implicit val format = Json.format[MovementMessage]
 }
+
+case class MovementMessage(location: String, dateTime: LocalDateTime, messageType: String, message: NodeSeq)

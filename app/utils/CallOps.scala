@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package utils
+import config.Constants
+import play.api.mvc.Call
 
-object Constants {
-  val MessageCorrelationId = 1
+object CallOps {
+  implicit class CallOps(c: Call) {
 
-  val Context = "/customs/transits"
+    def urlWithContext: String =
+      Constants.Context + c.url
+  }
 }
