@@ -72,7 +72,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                       HateaosArrivalResponse(
                                         arrivalId,
                                         request.testMessage.messageType,
-                                        movementMessage.message,
+                                        request.generatedMessage,
                                         locationValue
                                       )
                                     )

@@ -72,7 +72,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                       HateaosDepartureResponse(
                                         departureId,
                                         request.testMessage.messageType,
-                                        movementMessage.message,
+                                        request.generatedMessage,
                                         locationValue
                                       )
                                     )

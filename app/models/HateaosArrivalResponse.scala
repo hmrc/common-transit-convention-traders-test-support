@@ -28,19 +28,17 @@ object HateaosArrivalResponse {
 
   def apply(arrivalId: ArrivalId, messageType: String, body: NodeSeq, locationValue: String): JsObject = {
     val messagesRoute = routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).urlWithContext
+    val messageId     = Utils.lastFragment(locationValue)
 
     Json.obj(
       "_links" -> Json.arr(
-        Json.obj(
-          "self"    -> Json.obj("href" -> s"$messagesRoute/${Utils.lastFragment(locationValue)}"),
-          "arrival" -> Json.obj("href" -> s"${Utils.dropLastFragment(messagesRoute)}")
-        ),
-        Json.obj(
-          "id"          -> arrivalId.index.toString,
-          "messageType" -> messageType,
-          "body"        -> body.toString()
-        )
-      )
+        Json.obj("self"    -> Json.obj("href" -> s"$messagesRoute/$messageId")),
+        Json.obj("arrival" -> Json.obj("href" -> s"${Utils.dropLastFragment(messagesRoute)}"))
+      ),
+      "arrivalId"   -> arrivalId.index.toString,
+      "messageId"   -> messageId,
+      "messageType" -> messageType,
+      "body"        -> body.toString()
     )
   }
 }
