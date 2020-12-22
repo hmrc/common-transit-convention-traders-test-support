@@ -16,19 +16,24 @@
 
 package controllers
 
-import connectors.ArrivalConnector
 import connectors.InboundRouterConnector
+import connectors.ArrivalConnector
+import connectors.ArrivalMessageConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateArrivalMessageTypeAction
+import models.domain.MovementMessage
+
 import javax.inject.Inject
 import models.ArrivalId
+import models.HateaosArrivalResponse
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.ResponseHelper
+import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -36,6 +41,7 @@ import scala.concurrent.Future
 class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                               arrivalConnector: ArrivalConnector,
                                               inboundRouterConnector: InboundRouterConnector,
+                                              arrivalMessageConnector: ArrivalMessageConnector,
                                               authAction: AuthAction,
                                               validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction)(implicit ec: ExecutionContext)
     extends BackendController(cc)
@@ -53,13 +59,31 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                 case status if is2xx(status) =>
                   inboundRouterConnector
                     .post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId.index)
-                    .map {
+                    .flatMap {
                       postResponse =>
                         postResponse.status match {
                           case status if is2xx(status) =>
-                            Created
+                            postResponse.header(LOCATION) match {
+                              case Some(locationValue) =>
+                                val messageId = Utils.lastFragment(locationValue)
+                                arrivalMessageConnector.get(arrivalId.index.toString, messageId).map {
+                                  case Right(movementMessage: MovementMessage) =>
+                                    Created(
+                                      HateaosArrivalResponse(
+                                        arrivalId,
+                                        request.testMessage.messageType,
+                                        request.generatedMessage,
+                                        locationValue
+                                      )
+                                    )
+                                  case Left(getMessageResponse) =>
+                                    handleNon2xx(getMessageResponse)
+                                }
+                              case None =>
+                                Future.successful(InternalServerError)
+                            }
                           case _ =>
-                            handleNon2xx(postResponse)
+                            Future.successful(handleNon2xx(postResponse))
                         }
                     }
                     .recover {

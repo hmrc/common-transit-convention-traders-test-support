@@ -24,6 +24,9 @@ object Utils {
   def lastFragment(location: String): String =
     URI.create(location).getPath.split("/").last
 
+  def dropLastFragment(location: String): String =
+    URI.create(location).getPath.split("/").dropRight(1).mkString("/")
+
   def urlEncode(str: String): String =
     URLEncoder.encode(str, "UTF-8")
 }

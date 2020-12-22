@@ -18,12 +18,18 @@ package controllers
 
 import base.SpecBase
 import connectors.DepartureConnector
+import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import controllers.actions.FakeAuthAction
 import generators.ModelGenerators
 import models.DepartureId
+import models.MessageType
+import models.TestMessage
+import models.MessageType.PositiveAcknowledgement
+import models.domain.MovementMessage
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.IntegrationPatience
@@ -33,6 +39,7 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.AnyContentAsXml
+import play.api.mvc.Result
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
@@ -41,12 +48,19 @@ import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+import utils.Messages
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
+import scala.xml.Elem
+import scala.xml.NodeSeq
+import scala.xml.XML
 
 class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with IntegrationPatience {
 
   val departureId = new DepartureId(1)
+
+  val movement = MovementMessage("/transits-movements-trader-at-departure/movements/departures/1/messages/2", LocalDateTime.now, "abc", <test>default</test>)
 
   val exampleRequest = Json.parse(
     """{
@@ -56,19 +70,28 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
       | }""".stripMargin
   )
 
+  private def contentAsXml(xml: String): Elem = XML.loadString(xml)
+
+  private def numberOfNodes(nodes: NodeSeq): Int =
+    nodes.head.child.filterNot(_.toString().trim.isEmpty).length
+
   "POST" - {
     "must send a test message to the departures backend and return Created if successful" in {
-      val mockDepartureConnector     = mock[DepartureConnector]
-      val mockInboundRouterConnector = mock[InboundRouterConnector]
+      val mockDepartureConnector        = mock[DepartureConnector]
+      val mockInboundRouterConnector    = mock[InboundRouterConnector]
+      val mockDepartureMessageConnector = mock[DepartureMessageConnector]
 
       when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+      when(mockDepartureMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(movement)))
 
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
-          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
+          bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
         )
         .build()
 
@@ -77,7 +100,17 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
 
         val result = route(application, request).value
 
+        val ie928: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.PositiveAcknowledgement.code))()
+        val xml            = contentAsXml((contentAsJson(result) \ "body").as[String])
+
         status(result) mustEqual CREATED
+        (contentAsJson(result) \ "_links" \ 0 \ "self" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1/messages/2"
+        (contentAsJson(result) \ "_links" \ 1 \ "departure" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1"
+        (contentAsJson(result) \ "departureId").as[String] mustEqual "1"
+        (contentAsJson(result) \ "messageId").as[String] mustEqual "2"
+        (contentAsJson(result) \ "messageType").as[String] mustEqual PositiveAcknowledgement.code
+        xml.head.label mustEqual PositiveAcknowledgement.rootNode
+        numberOfNodes(xml) mustEqual numberOfNodes(ie928)
       }
     }
 
@@ -169,6 +202,35 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
       }
     }
 
+    "must return BadRequest if GET message returns BadRequest" in {
+      val mockDepartureConnector        = mock[DepartureConnector]
+      val mockInboundRouterConnector    = mock[InboundRouterConnector]
+      val mockDepartureMessageConnector = mock[DepartureMessageConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+      when(mockDepartureMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(BAD_REQUEST, "bad_request"))))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
+          bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual "bad_request"
+      }
+    }
+
     "must return InternalServerError if departures backend returns InternalServerError" in {
       val mockDepartureConnector     = mock[DepartureConnector]
       val mockInboundRouterConnector = mock[InboundRouterConnector]
@@ -247,6 +309,87 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
           bind[AuthAction].to[FakeAuthAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return InternalServerError if inbound router returns no location header" in {
+      val mockDepartureConnector     = mock[DepartureConnector]
+      val mockInboundRouterConnector = mock[InboundRouterConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return InternalServerError if GET message returns InternalServerError" in {
+      val mockDepartureConnector        = mock[DepartureConnector]
+      val mockInboundRouterConnector    = mock[InboundRouterConnector]
+      val mockDepartureMessageConnector = mock[DepartureMessageConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+      when(mockDepartureMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(INTERNAL_SERVER_ERROR, ""))))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
+          bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "must return InternalServerError if GET message operation fails" in {
+      val mockDepartureConnector        = mock[DepartureConnector]
+      val mockInboundRouterConnector    = mock[InboundRouterConnector]
+      val mockDepartureMessageConnector = mock[DepartureMessageConnector]
+
+      when(mockDepartureConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+      when(mockDepartureMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
+
+      val application = baseApplicationBuilder
+        .overrides(
+          bind[AuthAction].to[FakeAuthAction],
+          bind[DepartureConnector].toInstance(mockDepartureConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
+          bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
         )
         .build()
 

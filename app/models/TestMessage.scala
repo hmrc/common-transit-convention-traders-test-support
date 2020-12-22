@@ -25,4 +25,6 @@ object TestMessage {
   implicit val readsTestMessage: Reads[TestMessage] =
     (__ \ "message" \ "messageType").read[String].map(v => TestMessage(v))
   (TestMessage.apply _)
+
+  implicit val writes: Writes[TestMessage] = Json.writes[TestMessage]
 }
