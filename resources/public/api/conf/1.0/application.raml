@@ -52,6 +52,28 @@ traits:
           responses:
             201:
               description: When a test message has been successfully injected.
+              body:
+                application/json:
+                    description: JSON Payload
+                    example: |
+                        {
+                          "_links": [
+                            {
+                              "self": {
+                                "href": "/customs/transits/movements/arrivals/1/messages/2"
+                              }
+                            },
+                            {
+                              "arrival": {
+                                "href": "/customs/transits/movements/arrivals/1"
+                              }
+                            }
+                          ],
+                          "arrivalId": "1",
+                          "messageId": "2",
+                          "messageType": "IEXXX",
+                          "body": "<CCXXX></CCXXX>"
+                        }
             404:
               description: When the Arrival Movement does not exist, has been archived or is not available to the EORI number.
             400:
@@ -84,6 +106,28 @@ traits:
           responses:
             201:
               description: When a test message has been successfully injected.
+              body:
+                application/json:
+                    description: JSON Payload
+                    example: |
+                        {
+                          "_links": [
+                            {
+                              "self": {
+                                "href": "/customs/transits/movements/departures/1/messages/2"
+                              }
+                            },
+                            {
+                              "departure": {
+                                "href": "/customs/transits/movements/departures/1"
+                              }
+                            }
+                          ],
+                          "departureId": "1",
+                          "messageId": "2",
+                          "messageType": "IEXXX",
+                          "body": "<CCXXX></CCXXX>"
+                        }
             404:
               description: When the Movement Departure does not exist, has been archived or is not available to the EORI number.
             400:
