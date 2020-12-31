@@ -57,22 +57,18 @@ traits:
                     description: JSON Payload
                     example: |
                         {
-                          "_links": [
-                            {
-                              "self": {
-                                "href": "/customs/transits/movements/arrivals/1/messages/2"
-                              }
+                          "_links": {
+                            "self": {
+                              "href": "/customs/transits/movements/arrivals/1/messages/2"
                             },
-                            {
-                              "arrival": {
-                                "href": "/customs/transits/movements/arrivals/1"
-                              }
+                            "arrival": {
+                              "href": "/customs/transits/movements/arrivals/1"
                             }
-                          ],
+                          },
                           "arrivalId": "1",
                           "messageId": "2",
                           "messageType": "IEXXX",
-                          "body": "<CCXXX></CCXXX>"
+                          "body": "<CCXXX>...</CCXXX>"
                         }
             404:
               description: When the Arrival Movement does not exist, has been archived or is not available to the EORI number.
@@ -111,22 +107,18 @@ traits:
                     description: JSON Payload
                     example: |
                         {
-                          "_links": [
-                            {
-                              "self": {
-                                "href": "/customs/transits/movements/departures/1/messages/2"
-                              }
+                          "_links": {
+                            "self": {
+                              "href": "/customs/transits/movements/departures/1/messages/2"
                             },
-                            {
-                              "departure": {
-                                "href": "/customs/transits/movements/departures/1"
-                              }
+                            "departure": {
+                              "href": "/customs/transits/movements/departures/1"
                             }
-                          ],
+                          },
                           "departureId": "1",
                           "messageId": "2",
                           "messageType": "IEXXX",
-                          "body": "<CCXXX></CCXXX>"
+                          "body": "<CCXXX>...</CCXXX>"
                         }
             404:
               description: When the Movement Departure does not exist, has been archived or is not available to the EORI number.
