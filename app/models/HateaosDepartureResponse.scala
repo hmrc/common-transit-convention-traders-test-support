@@ -31,9 +31,9 @@ object HateaosDepartureResponse {
     val messageId     = Utils.lastFragment(locationValue)
 
     Json.obj(
-      "_links" -> Json.arr(
-        Json.obj("self"      -> Json.obj("href" -> s"$messagesRoute/$messageId")),
-        Json.obj("departure" -> Json.obj("href" -> s"${Utils.dropLastFragment(messagesRoute)}"))
+      "_links" -> Json.obj(
+        "self"      -> Json.obj("href" -> s"$messagesRoute/$messageId"),
+        "departure" -> Json.obj("href" -> s"${Utils.dropLastFragment(messagesRoute)}")
       ),
       "departureId" -> departureId.index.toString,
       "messageId"   -> messageId,

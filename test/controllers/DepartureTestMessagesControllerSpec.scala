@@ -104,8 +104,8 @@ class DepartureTestMessagesControllerSpec extends SpecBase with ScalaCheckProper
         val xml            = contentAsXml((contentAsJson(result) \ "body").as[String])
 
         status(result) mustEqual CREATED
-        (contentAsJson(result) \ "_links" \ 0 \ "self" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1/messages/2"
-        (contentAsJson(result) \ "_links" \ 1 \ "departure" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1"
+        (contentAsJson(result) \ "_links" \ "self" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1/messages/2"
+        (contentAsJson(result) \ "_links" \ "departure" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1"
         (contentAsJson(result) \ "departureId").as[String] mustEqual "1"
         (contentAsJson(result) \ "messageId").as[String] mustEqual "2"
         (contentAsJson(result) \ "messageType").as[String] mustEqual PositiveAcknowledgement.code

@@ -103,8 +103,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         val xml            = contentAsXml((contentAsJson(result) \ "body").as[String])
 
         status(result) mustEqual CREATED
-        (contentAsJson(result) \ "_links" \ 0 \ "self" \ "href").as[String] mustEqual "/customs/transits/movements/arrivals/1/messages/2"
-        (contentAsJson(result) \ "_links" \ 1 \ "arrival" \ "href").as[String] mustEqual "/customs/transits/movements/arrivals/1"
+        (contentAsJson(result) \ "_links" \ "self" \ "href").as[String] mustEqual "/customs/transits/movements/arrivals/1/messages/2"
+        (contentAsJson(result) \ "_links" \ "arrival" \ "href").as[String] mustEqual "/customs/transits/movements/arrivals/1"
         (contentAsJson(result) \ "arrivalId").as[String] mustEqual "1"
         (contentAsJson(result) \ "messageId").as[String] mustEqual "2"
         (contentAsJson(result) \ "messageType").as[String] mustEqual ArrivalRejection.code
