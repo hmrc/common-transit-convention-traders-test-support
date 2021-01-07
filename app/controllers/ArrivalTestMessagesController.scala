@@ -67,7 +67,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                               case Some(locationValue) =>
                                 val messageId = Utils.lastFragment(locationValue)
                                 arrivalMessageConnector.get(arrivalId.index.toString, messageId).map {
-                                  case Right(movementMessage: MovementMessage) =>
+                                  case Right(_) =>
                                     Created(
                                       HateaosArrivalResponse(
                                         arrivalId,

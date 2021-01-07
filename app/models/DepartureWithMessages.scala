@@ -16,8 +16,9 @@
 
 package models
 
-import java.time.LocalDateTime
+import models.domain.MovementMessage
 
+import java.time.LocalDateTime
 import play.api.libs.json.Json
 
 object DepartureWithMessages {

@@ -16,7 +16,7 @@
 
 package utils
 
-import models.MovementMessage
+import models.domain.MovementMessage
 
 import scala.xml.Elem
 import scala.xml.Node

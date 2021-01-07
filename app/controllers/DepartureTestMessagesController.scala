@@ -70,7 +70,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                           case Some(locationValue) =>
                             val messageId = Utils.lastFragment(locationValue)
                             departureMessageConnector.get(departureId.index.toString, messageId).map {
-                              case Right(movementMessage: MovementMessage) =>
+                              case Right(_) =>
                                 Created(
                                   HateaosDepartureResponse(
                                     departureId,

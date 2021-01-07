@@ -33,12 +33,6 @@ import scala.concurrent.Future
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
-
-    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
-  }
-
   def getMessages(departureId: DepartureId)(implicit requestHeader: RequestHeader,
                                             hc: HeaderCarrier,
                                             ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
