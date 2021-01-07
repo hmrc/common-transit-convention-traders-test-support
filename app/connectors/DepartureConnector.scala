@@ -18,8 +18,9 @@ package connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
+
 import javax.inject.Inject
-import models.DepartureId
+import models.{DepartureId, DepartureWithMessages}
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
@@ -35,5 +36,16 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
 
     http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
+  }
+
+  def getMessages(departureId: DepartureId)(implicit requestHeader: RequestHeader,
+                                            hc: HeaderCarrier,
+                                            ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
+    val url = appConfig.traderAtDeparturesUrl + s"$departureGetRoute${departureId.index.toString}/messages"
+
+    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec).map {
+      response =>
+        extractIfSuccessful[DepartureWithMessages](response)
+    }
   }
 }

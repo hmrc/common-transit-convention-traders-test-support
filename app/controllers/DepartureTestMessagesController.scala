@@ -25,7 +25,9 @@ import controllers.actions.ValidateDepartureMessageTypeAction
 
 import javax.inject.Inject
 import models.DepartureId
+import models.DepartureWithMessages
 import models.HateaosDepartureResponse
+import models.MessageType
 import models.domain.MovementMessage
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
@@ -34,6 +36,7 @@ import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import utils.ResponseHelper
 import utils.Utils
+import utils.XMLTransformer
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -52,47 +55,46 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
     (authAction andThen validateDepartureMessageTypeAction).async(parse.json) {
       implicit request: GeneratedMessageRequest[JsValue] =>
         departureConnector
-          .get(departureId)
+          .getMessages(departureId)
           .flatMap {
-            getResponse =>
-              getResponse.status match {
-                case status if is2xx(status) =>
-                  inboundRouterConnector
-                    .post(request.testMessage.messageType, request.generatedMessage.toString(), departureId.index)
-                    .flatMap {
-                      postResponse =>
-                        postResponse.status match {
-                          case status if is2xx(status) =>
-                            postResponse.header(LOCATION) match {
-                              case Some(locationValue) =>
-                                val messageId = Utils.lastFragment(locationValue)
-                                departureMessageConnector.get(departureId.index.toString, messageId).map {
-                                  case Right(movementMessage: MovementMessage) =>
-                                    Created(
-                                      HateaosDepartureResponse(
-                                        departureId,
-                                        request.testMessage.messageType,
-                                        request.generatedMessage,
-                                        locationValue
-                                      )
-                                    )
-                                  case Left(getMessageResponse) =>
-                                    handleNon2xx(getMessageResponse)
-                                }
-                              case None =>
-                                Future.successful(InternalServerError)
+            case Right(departureWithMessages: DepartureWithMessages) =>
+              val generatedMessage =
+                XMLTransformer.populateRefNumEPT1(request.generatedMessage, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
+              inboundRouterConnector
+                .post(request.testMessage.messageType, generatedMessage.toString(), departureId.index)
+                .flatMap {
+                  postResponse =>
+                    postResponse.status match {
+                      case status if is2xx(status) =>
+                        postResponse.header(LOCATION) match {
+                          case Some(locationValue) =>
+                            val messageId = Utils.lastFragment(locationValue)
+                            departureMessageConnector.get(departureId.index.toString, messageId).map {
+                              case Right(movementMessage: MovementMessage) =>
+                                Created(
+                                  HateaosDepartureResponse(
+                                    departureId,
+                                    request.testMessage.messageType,
+                                    generatedMessage,
+                                    locationValue
+                                  )
+                                )
+                              case Left(getMessageResponse) =>
+                                handleNon2xx(getMessageResponse)
                             }
-                          case _ =>
-                            Future.successful(handleNon2xx(postResponse))
+                          case None =>
+                            Future.successful(InternalServerError)
                         }
-                    }
-                    .recover {
                       case _ =>
-                        InternalServerError
+                        Future.successful(handleNon2xx(postResponse))
                     }
-                case _ =>
-                  Future.successful(handleNon2xx(getResponse))
-              }
+                }
+                .recover {
+                  case _ =>
+                    InternalServerError
+                }
+            case Left(getMessagesResponse) =>
+              Future.successful(handleNon2xx(getMessagesResponse))
           }
           .recover {
             case _ =>
