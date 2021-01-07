@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ import config.AppConfig
 import connectors.util.CustomHttpReader
 
 import javax.inject.Inject
-import models.{DepartureId, DepartureWithMessages}
+import models.DepartureId
+import models.DepartureWithMessages
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
