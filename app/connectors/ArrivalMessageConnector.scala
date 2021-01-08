@@ -33,7 +33,7 @@ class ArrivalMessageConnector @Inject()(http: HttpClient, appConfig: AppConfig) 
 
   def get(arrivalId: String,
           messageId: String)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, MovementMessage]] = {
-    val url = appConfig.traderAtDestinationUrl + s"$arrivalGetRoute${Utils.urlEncode(arrivalId)}/messages/${Utils.urlEncode(messageId)}"
+    val url = s"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId)}/messages/${Utils.urlEncode(messageId)}"
 
     http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec).map {
       response =>
