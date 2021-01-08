@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
+
 import javax.inject.Inject
 import models.DepartureId
+import models.DepartureWithMessages
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
@@ -31,9 +33,14 @@ import scala.concurrent.Future
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def get(departureId: DepartureId)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = appConfig.traderAtDeparturesUrl + departureGetRoute + Utils.urlEncode(departureId.index.toString)
+  def getMessages(departureId: DepartureId)(implicit requestHeader: RequestHeader,
+                                            hc: HeaderCarrier,
+                                            ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
+    val url = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute${departureId.index.toString}/messages"
 
-    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec)
+    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec).map {
+      response =>
+        extractIfSuccessful[DepartureWithMessages](response)
+    }
   }
 }

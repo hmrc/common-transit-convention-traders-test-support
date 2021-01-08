@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class DepartureMessageConnector @Inject()(http: HttpClient, appConfig: AppConfig
 
   def get(departureId: String,
           messageId: String)(implicit request: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, MovementMessage]] = {
-    val url = appConfig.traderAtDeparturesUrl + s"$departureGetRoute${Utils.urlEncode(departureId)}/messages/${Utils.urlEncode(messageId)}"
+    val url = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute${Utils.urlEncode(departureId)}/messages/${Utils.urlEncode(messageId)}"
 
     http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec).map {
       response =>
