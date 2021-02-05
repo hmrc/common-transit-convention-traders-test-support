@@ -32,7 +32,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.http.HttpErrorFunctions
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import utils.ResponseHelper
 import utils.Utils
 import utils.XMLTransformer
