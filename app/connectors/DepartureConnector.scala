@@ -26,7 +26,6 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

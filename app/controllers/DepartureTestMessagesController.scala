@@ -28,7 +28,6 @@ import models.DepartureId
 import models.DepartureWithMessages
 import models.HateaosDepartureResponse
 import models.MessageType
-import models.domain.MovementMessage
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents

@@ -22,7 +22,6 @@ import connectors.ArrivalMessageConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateArrivalMessageTypeAction
-import models.domain.MovementMessage
 
 import javax.inject.Inject
 import models.ArrivalId
