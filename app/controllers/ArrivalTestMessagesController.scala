@@ -22,7 +22,6 @@ import connectors.ArrivalMessageConnector
 import controllers.actions.AuthAction
 import controllers.actions.GeneratedMessageRequest
 import controllers.actions.ValidateArrivalMessageTypeAction
-import models.domain.MovementMessage
 
 import javax.inject.Inject
 import models.ArrivalId
@@ -31,7 +30,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.http.HttpErrorFunctions
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import utils.ResponseHelper
 import utils.Utils
 
