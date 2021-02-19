@@ -16,10 +16,10 @@
 
 package controllers.actions
 
-import models.TestMessage
+import models.{MessageType, TestMessage}
 import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 
 import scala.xml.NodeSeq
 
-case class GeneratedMessageRequest[A](request: Request[A], testMessage: TestMessage, generatedMessage: NodeSeq) extends WrappedRequest[A](request)
+case class MessageRequest[A](request: Request[A], messageType: MessageType) extends WrappedRequest[A](request)

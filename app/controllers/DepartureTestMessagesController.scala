@@ -20,7 +20,7 @@ import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
-import controllers.actions.GeneratedMessageRequest
+import controllers.actions.MessageRequest
 import controllers.actions.ValidateDepartureMessageTypeAction
 
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (authAction andThen validateDepartureMessageTypeAction).async(parse.json) {
-      implicit request: GeneratedMessageRequest[JsValue] =>
+      implicit request: MessageRequest[JsValue] =>
         departureConnector
           .getMessages(departureId)
           .flatMap {

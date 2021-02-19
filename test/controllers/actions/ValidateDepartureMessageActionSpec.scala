@@ -63,7 +63,7 @@ class ValidateDepartureMessageTypeActionSpec
   class Harness(validateMessageTypeAction: ValidateDepartureMessageTypeAction, cc: ControllerComponents) extends BackendController(cc) {
 
     def post: Action[JsValue] = (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen validateMessageTypeAction).async(cc.parsers.json) {
-      request: GeneratedMessageRequest[JsValue] =>
+      request: MessageRequest[JsValue] =>
         Future.successful(Ok(request.generatedMessage))
     }
   }

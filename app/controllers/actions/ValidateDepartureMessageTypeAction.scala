@@ -32,8 +32,8 @@ import utils.Messages.GenerateMessage
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ValidateDepartureMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, GeneratedMessageRequest] {
-  override protected def refine[A](request: Request[A]): Future[Either[Result, GeneratedMessageRequest[A]]] =
+class ValidateDepartureMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, MessageRequest] {
+  override protected def refine[A](request: Request[A]): Future[Either[Result, MessageRequest[A]]] =
     request.body match {
       case body: JsValue =>
         body.validate[TestMessage] match {
@@ -44,7 +44,7 @@ class ValidateDepartureMessageTypeAction @Inject()()(implicit val executionConte
               case None =>
                 Future.successful(Left(NotImplemented))
               case Some(generateMessage: GenerateMessage) =>
-                Future.successful(Right(GeneratedMessageRequest(request, testMessage, generateMessage())))
+                Future.successful(Right(MessageRequest(request, testMessage, generateMessage())))
             }
         }
       case _ =>

@@ -20,15 +20,15 @@ import connectors.InboundRouterConnector
 import connectors.ArrivalConnector
 import connectors.ArrivalMessageConnector
 import controllers.actions.AuthAction
-import controllers.actions.GeneratedMessageRequest
+import controllers.actions.MessageRequest
 import controllers.actions.ValidateArrivalMessageTypeAction
-
 import javax.inject.Inject
 import models.ArrivalId
 import models.HateaosArrivalResponse
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
+import services.MessageGenerationService
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import utils.ResponseHelper
@@ -42,14 +42,20 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                               inboundRouterConnector: InboundRouterConnector,
                                               arrivalMessageConnector: ArrivalMessageConnector,
                                               authAction: AuthAction,
-                                              validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction)(implicit ec: ExecutionContext)
+                                              validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction,
+                                              msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
     with ResponseHelper {
 
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
     (authAction andThen validateArrivalMessageTypeAction).async(parse.json) {
-      implicit request: GeneratedMessageRequest[JsValue] =>
+      implicit request: MessageRequest[JsValue] =>
+
+        val message = msgGenService.generateMessage(request)
+
+        request.messageType
+
         arrivalConnector
           .get(arrivalId)
           .flatMap {
