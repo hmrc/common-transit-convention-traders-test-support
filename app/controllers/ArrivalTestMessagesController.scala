@@ -20,11 +20,12 @@ import connectors.InboundRouterConnector
 import connectors.ArrivalConnector
 import connectors.ArrivalMessageConnector
 import controllers.actions.AuthAction
-import controllers.actions.MessageRequest
+import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateArrivalMessageTypeAction
 import javax.inject.Inject
 import models.ArrivalId
 import models.HateaosArrivalResponse
+import models.request.MessageRequest
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
@@ -42,6 +43,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                               inboundRouterConnector: InboundRouterConnector,
                                               arrivalMessageConnector: ArrivalMessageConnector,
                                               authAction: AuthAction,
+                                              messageRequestAction: MessageRequestAction,
                                               validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction,
                                               msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
     extends BackendController(cc)
@@ -49,12 +51,9 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
     with ResponseHelper {
 
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
-    (authAction andThen validateArrivalMessageTypeAction).async(parse.json) {
+    (authAction andThen messageRequestAction andThen validateArrivalMessageTypeAction).async(parse.json) {
       implicit request: MessageRequest[JsValue] =>
-
         val message = msgGenService.generateMessage(request)
-
-        request.messageType
 
         arrivalConnector
           .get(arrivalId)
@@ -63,7 +62,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
               getResponse.status match {
                 case status if is2xx(status) =>
                   inboundRouterConnector
-                    .post(request.testMessage.messageType, request.generatedMessage.toString(), arrivalId.index)
+                    .post(request.messageType, message.toString(), arrivalId.index)
                     .flatMap {
                       postResponse =>
                         postResponse.status match {
@@ -76,8 +75,8 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                     Created(
                                       HateaosArrivalResponse(
                                         arrivalId,
-                                        request.testMessage.messageType,
-                                        request.generatedMessage,
+                                        request.messageType,
+                                        message,
                                         locationValue
                                       )
                                     )

@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package models.generation
 
-import models.{MessageType, TestMessage}
-import play.api.mvc.Request
-import play.api.mvc.WrappedRequest
-
-import scala.xml.NodeSeq
-
-case class MessageRequest[A](request: Request[A], messageType: MessageType) extends WrappedRequest[A](request)
+trait GenInstructions

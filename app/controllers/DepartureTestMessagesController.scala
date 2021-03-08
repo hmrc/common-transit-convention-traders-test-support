@@ -20,17 +20,18 @@ import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
-import controllers.actions.MessageRequest
+import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateDepartureMessageTypeAction
-
 import javax.inject.Inject
 import models.DepartureId
 import models.DepartureWithMessages
 import models.HateaosDepartureResponse
 import models.MessageType
+import models.request.MessageRequest
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
+import services.MessageGenerationService
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import utils.ResponseHelper
@@ -45,22 +46,26 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 inboundRouterConnector: InboundRouterConnector,
                                                 departureMessageConnector: DepartureMessageConnector,
                                                 authAction: AuthAction,
-                                                validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction)(implicit ec: ExecutionContext)
+                                                messageRequestAction: MessageRequestAction,
+                                                validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
+                                                msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
     with ResponseHelper {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
-    (authAction andThen validateDepartureMessageTypeAction).async(parse.json) {
+    (authAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
       implicit request: MessageRequest[JsValue] =>
+        val message = msgGenService.generateMessage(request)
+
         departureConnector
           .getMessages(departureId)
           .flatMap {
             case Right(departureWithMessages: DepartureWithMessages) =>
               val generatedMessage =
-                XMLTransformer.populateRefNumEPT1(request.generatedMessage, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
+                XMLTransformer.populateRefNumEPT1(message, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
               inboundRouterConnector
-                .post(request.testMessage.messageType, generatedMessage.toString(), departureId.index)
+                .post(request.messageType, generatedMessage.toString(), departureId.index)
                 .flatMap {
                   postResponse =>
                     postResponse.status match {
@@ -73,7 +78,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                 Created(
                                   HateaosDepartureResponse(
                                     departureId,
-                                    request.testMessage.messageType,
+                                    request.messageType,
                                     generatedMessage,
                                     locationValue
                                   )

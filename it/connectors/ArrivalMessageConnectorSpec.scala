@@ -1,10 +1,11 @@
 package connectors
 
 import java.time.LocalDateTime
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.MessageType.ArrivalRejection
-import models.TestMessage
 import models.domain.MovementMessage
+import models.generation.TestMessage
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

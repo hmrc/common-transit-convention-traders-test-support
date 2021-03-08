@@ -26,7 +26,7 @@ import scala.xml.NodeSeq
 
 object HateaosDepartureResponse {
 
-  def apply(departureId: DepartureId, messageType: String, body: NodeSeq, locationValue: String): JsObject = {
+  def apply(departureId: DepartureId, messageType: MessageType, body: NodeSeq, locationValue: String): JsObject = {
     val messagesRoute = routes.DepartureTestMessagesController.injectEISResponse(departureId).urlWithContext
     val messageId     = Utils.lastFragment(locationValue)
 
@@ -37,7 +37,7 @@ object HateaosDepartureResponse {
       ),
       "departureId" -> departureId.index.toString,
       "messageId"   -> messageId,
-      "messageType" -> messageType,
+      "messageType" -> messageType.code,
       "body"        -> body.toString()
     )
   }
