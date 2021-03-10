@@ -122,8 +122,6 @@ class DepartureTestMessagesControllerSpec
 
         val result = route(application, request).value
 
-        //TODO: Replace by having generator test specs
-        //val ie928: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.PositiveAcknowledgement.code))()
         val xml = contentAsXml((contentAsJson(result) \ "body").as[String])
 
         status(result) mustEqual CREATED
@@ -133,8 +131,6 @@ class DepartureTestMessagesControllerSpec
         (contentAsJson(result) \ "messageId").as[String] mustEqual "2"
         (contentAsJson(result) \ "messageType").as[String] mustEqual PositiveAcknowledgement.code
         xml.head.label mustEqual PositiveAcknowledgement.rootNode
-        //TODO: Replace by having generator test specs
-        //numberOfNodes(xml) mustEqual numberOfNodes(ie928)
       }
     }
 

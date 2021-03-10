@@ -100,8 +100,6 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
 
         val result = route(application, request).value
 
-        //TODO: Replace by having generator test specs
-        //val ie008: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.ArrivalRejection.code))()
         val xml = contentAsXml((contentAsJson(result) \ "body").as[String])
 
         status(result) mustEqual CREATED
@@ -111,8 +109,6 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         (contentAsJson(result) \ "messageId").as[String] mustEqual "2"
         (contentAsJson(result) \ "messageType").as[String] mustEqual ArrivalRejection.code
         xml.head.label mustEqual ArrivalRejection.rootNode
-        //TODO: Replace by having generator test specs
-        //numberOfNodes(xml) mustEqual numberOfNodes(ie008)
       }
     }
 

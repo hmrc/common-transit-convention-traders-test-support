@@ -180,9 +180,6 @@ class ValidateArrivalMessageTypeActionSpec
 
       val controller = new Harness(messageRequestAction, validateMessageType, cc)
 
-      //TODO: Replace by having generator test specs
-      //val ie008: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.ArrivalRejection.code))()
-
       val exampleRequest: JsValue = Json.parse(
         """{
           |     "message": {
@@ -197,8 +194,6 @@ class ValidateArrivalMessageTypeActionSpec
       val result = controller.post()(req)
 
       status(result) mustEqual OK
-      //TODO: Replace by having generator test specs
-      //numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie008)
     }
 
     "must generate correct IE025 message in executed block" in {
@@ -207,9 +202,6 @@ class ValidateArrivalMessageTypeActionSpec
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(messageRequestAction, validateMessageType, cc)
-
-      //TODO: Replace by having generator test specs
-      //val ie025: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.GoodsReleased.code))()
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -225,8 +217,6 @@ class ValidateArrivalMessageTypeActionSpec
       val result = controller.post()(req)
 
       status(result) mustEqual OK
-      //TODO: Replace by having generator test specs
-      //numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie025)
     }
 
     "must generate correct IE043 message in executed block" in {
@@ -235,9 +225,6 @@ class ValidateArrivalMessageTypeActionSpec
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(messageRequestAction, validateMessageType, cc)
-
-      //TODO: Replace by having generator test specs
-      //val ie043: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.UnloadingPermission.code))()
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -257,8 +244,6 @@ class ValidateArrivalMessageTypeActionSpec
       val result = controller.post()(req)
 
       status(result) mustEqual OK
-      //TODO: Replace by having generator test specs
-      //numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie043)
     }
 
     "must generate correct IE058 message in executed block" in {
@@ -267,9 +252,6 @@ class ValidateArrivalMessageTypeActionSpec
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
       val controller = new Harness(messageRequestAction, validateMessageType, cc)
-
-      //TODO: Replace by having generator test specs
-      //val ie058: NodeSeq = Messages.Arrival.SupportedMessageTypes(TestMessage(MessageType.UnloadingRemarksRejection.code))()
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -285,8 +267,6 @@ class ValidateArrivalMessageTypeActionSpec
       val result = controller.post()(req)
 
       status(result) mustEqual OK
-      //TODO: Replace by having generator test specs
-      //numberOfNodes(contentAsXml(result)) mustEqual numberOfNodes(ie058)
     }
   }
 }

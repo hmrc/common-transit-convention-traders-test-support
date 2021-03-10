@@ -24,7 +24,6 @@ import scala.xml.NodeSeq
 
 class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMentionsGenerator: SpecialMentionsGenerator, sealGenerator: SealGenerator) {
 
-  //TODO: Complete Generator with missing 0-occurs fields
   def generate(goodsCount: Int, productCount: Int, specialMentionsCount: Int): NodeSeq = {
     @tailrec
     def gen_internal(count: Int, accumulator: NodeSeq): NodeSeq =
