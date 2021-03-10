@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package models.generation
+package generators
 
 import utils.Strings
 
 import scala.annotation.tailrec
 import scala.xml.NodeSeq
 
-class ProductGenerator {
+class SpecialMentionsGenerator {
 
   def generate(count: Int): NodeSeq = {
     @tailrec
@@ -32,13 +32,11 @@ class ProductGenerator {
           gen_internal(
             count - 1,
             accumulator ++
-              <PRODOCDC2>
-              <DocTypDC21>{Strings.alphanumeric(4)}</DocTypDC21>
-              <DocRefDC23>{Strings.alphanumeric(35)}</DocRefDC23>
-              <DocRefDCLNG>{Strings.alpha(2)}</DocRefDCLNG>
-              <ComOfInfDC25>{Strings.alphanumeric(26)}</ComOfInfDC25>
-              <ComOfInfDC25LNG>{Strings.alpha(2)}</ComOfInfDC25LNG>
-            </PRODOCDC2>
+              <SPEMENMT2>
+            <AddInfCodMT23>{Strings.alphanumeric(5)}</AddInfCodMT23>
+            <ExpFroECMT24>{Strings.numeric(1)}</ExpFroECMT24>
+            <ExpFroCouMT25>{Strings.alpha(2)}</ExpFroCouMT25>
+          </SPEMENMT2>
           )
         }
       }

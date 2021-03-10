@@ -21,7 +21,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 import com.google.inject.Inject
-import models.generation.SealGenerator
 import models.generation.UnloadingPermissionGenInstructions
 import utils.Strings
 
@@ -41,7 +40,10 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
         <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
         <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
         <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
-        {sealGenerator.generate(instructions.sealsCount)}
+        <SEAINFSLI>
+          <SeaNumSLI2>{Strings.numeric(4)}</SeaNumSLI2>
+          {sealGenerator.generate(instructions.sealsCount)}
+        </SEAINFSLI>
         {GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
       </CC043A>
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.generation
+package generators
 
 import utils.Strings
 
@@ -29,10 +29,14 @@ class SealGenerator {
       count match {
         case 0 => accumulator
         case _ => {
-          gen_internal(count - 1,
-                       accumulator ++
-                         <SeaIdeSID1>{Strings.alphanumeric(20)}</SeaIdeSID1>
-            <SeaIdeSID1LNG>{Strings.alpha(2)}</SeaIdeSID1LNG>)
+          gen_internal(
+            count - 1,
+            accumulator ++
+              <SEAIDSID>
+             <SeaIdeSID1>{Strings.alphanumeric(20)}</SeaIdeSID1>
+             <SeaIdeSID1LNG>{Strings.alpha(2)}</SeaIdeSID1LNG>
+           </SEAIDSID>
+          )
         }
       }
 

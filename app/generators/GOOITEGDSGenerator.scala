@@ -17,9 +17,6 @@
 package generators
 
 import com.google.inject.Inject
-import models.generation.ProductGenerator
-import models.generation.SealGenerator
-import models.generation.SpecialMentionsGenerator
 import utils.Strings
 
 import scala.annotation.tailrec
