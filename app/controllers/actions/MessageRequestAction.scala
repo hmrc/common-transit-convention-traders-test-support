@@ -46,15 +46,25 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
             Future.successful(Left(BadRequest))
           case JsSuccess(testMessage, _) =>
             parseGenInstructions(testMessage.messageType, body) match {
-              case None               => println(testMessage.messageType); println("badParse"); Future.successful(Left(BadRequest("No instructions found")))
-              case Some(instructions) => Future.successful(Right(MessageRequest(request, testMessage.messageType, instructions)))
+              case None => Future.successful(Left(BadRequest("No instructions found")))
+              case Some(instructions) =>
+                validateGenInstructions(testMessage.messageType, instructions) match {
+                  case Left(message) => Future.successful(Left(BadRequest(message)))
+                  case Right(i)      => Future.successful(Right(MessageRequest(request, testMessage.messageType, i)))
+                }
             }
         }
     }
 
+  private def validateGenInstructions(messageType: MessageType, instructions: GenInstructions): Either[String, GenInstructions] =
+    messageType match {
+      case UnloadingPermission => UnloadingPermissionGenInstructions.validate(instructions.asInstanceOf[UnloadingPermissionGenInstructions])
+      case _                   => Right(EmptyGenInstructions())
+    }
+
   private def parseGenInstructions(messageType: MessageType, json: JsValue): Option[GenInstructions] =
     messageType match {
-      case UnloadingPermission => println("unloadingPermission"); println(json); extractInstructionsOrNone(json.validate[UnloadingPermissionGenInstructions])
+      case UnloadingPermission => extractInstructionsOrNone(json.validate[UnloadingPermissionGenInstructions])
       case _                   => Some(EmptyGenInstructions())
     }
 

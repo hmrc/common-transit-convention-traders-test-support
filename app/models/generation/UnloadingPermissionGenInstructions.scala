@@ -20,23 +20,18 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
 import play.api.libs.json.__
 
-case class UnloadingPermissionGenInstructions(goodsCount: Int, productCount: Int, specialMentionsCount: Int, sealsCount: Int) extends GenInstructions {
+case class UnloadingPermissionGenInstructions(goodsCount: Int, productCount: Int, specialMentionsCount: Int, sealsCount: Int) extends GenInstructions {}
 
-  def apply(goodsCount: Int = 1,
-            productCount: Int = 1,
-            specialMentionsCount: Int = 1,
-            sealsCount: Int = 1): Either[String, UnloadingPermissionGenInstructions] =
-    (goodsCount, productCount, specialMentionsCount, sealsCount) match {
+object UnloadingPermissionGenInstructions {
+
+  def validate(i: UnloadingPermissionGenInstructions): Either[String, UnloadingPermissionGenInstructions] =
+    (i.goodsCount, i.productCount, i.specialMentionsCount, i.sealsCount) match {
       case (gc, _, _, _) if gc > 999  => Left("Too many goods requested, max 999")
       case (_, pc, _, _) if pc > 99   => Left("Too many products requested, max 99")
       case (_, _, smc, _) if smc > 99 => Left("Too many special mentions requested, max 99")
       case (_, _, _, sc) if sc > 9999 => Left("Too many seals requested, max 9999")
-      case (_, _, _, _)               => Right(new UnloadingPermissionGenInstructions(goodsCount, productCount, specialMentionsCount, sealsCount))
+      case (_, _, _, _)               => Right(i)
     }
-
-}
-
-object UnloadingPermissionGenInstructions {
 
   implicit val readsUnloadingPermissionGenInstructions: Reads[UnloadingPermissionGenInstructions] =
     (
