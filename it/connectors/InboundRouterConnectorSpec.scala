@@ -30,7 +30,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.post(MessageType.ArrivalRejection.code, "<document></document>", itemId).futureValue
+      val result = connector.post(MessageType.ArrivalRejection, "<document></document>", itemId).futureValue
 
       result.status mustEqual CREATED
     }
@@ -50,7 +50,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         implicit val hc = HeaderCarrier()
         implicit val requestHeader = FakeRequest()
 
-        val result = connector.post(MessageType.ArrivalRejection.code, "<document></document>", itemId).futureValue
+        val result = connector.post(MessageType.ArrivalRejection, "<document></document>", itemId).futureValue
 
         result.status mustEqual INTERNAL_SERVER_ERROR
       }
@@ -71,7 +71,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.post(MessageType.ArrivalRejection.code, "<document></document>", itemId).futureValue
+      val result = connector.post(MessageType.ArrivalRejection, "<document></document>", itemId).futureValue
 
       result.status mustEqual BAD_REQUEST
     }
