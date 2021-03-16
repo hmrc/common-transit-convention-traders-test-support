@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package generatorSpecs
 
-import models.TestMessage
-import play.api.mvc.Request
-import play.api.mvc.WrappedRequest
+import base.SpecBase
+import generators.ProductGenerator
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-import scala.xml.NodeSeq
+class ProductGeneratorSpec extends SpecBase with ScalaCheckPropertyChecks with BeforeAndAfterEach {
 
-case class GeneratedMessageRequest[A](request: Request[A], testMessage: TestMessage, generatedMessage: NodeSeq) extends WrappedRequest[A](request)
+  "generate" - {
+    "must return requested number of PRODOCDC2 nodes" in {
+      val application = baseApplicationBuilder.build()
+
+      val xml = application.injector.instanceOf[ProductGenerator].generate(5)
+      (xml \\ "PRODOCDC2").length mustEqual 5
+    }
+  }
+}

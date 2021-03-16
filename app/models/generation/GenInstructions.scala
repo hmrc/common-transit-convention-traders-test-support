@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-package models
+package models.generation
 
-import play.api.libs.json.Reads
-import play.api.libs.json._
-
-case class TestMessage(messageType: String)
-
-object TestMessage {
-  implicit val readsTestMessage: Reads[TestMessage] =
-    (__ \ "message" \ "messageType").read[String].map(v => TestMessage(v))
-  (TestMessage.apply _)
-
-  implicit val writes: Writes[TestMessage] = Json.writes[TestMessage]
-}
+trait GenInstructions

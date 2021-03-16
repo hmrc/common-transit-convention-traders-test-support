@@ -27,6 +27,7 @@ sealed trait MessageType extends IeMetadata {
 
 object MessageType extends Enumerable.Implicits {
 
+  case object DepartureDeclaration        extends IeMetadata("IE015", "CC015B") with MessageType
   case object PositiveAcknowledgement     extends IeMetadata("IE928", "CC928A") with MessageType
   case object NoReleaseForTransit         extends IeMetadata("IE051", "CC051B") with MessageType
   case object ReleaseForTransit           extends IeMetadata("IE029", "CC029B") with MessageType
@@ -42,7 +43,20 @@ object MessageType extends Enumerable.Implicits {
   case object UnloadingRemarksRejection extends IeMetadata("IE058", "CC058A") with MessageType
   case object GoodsReleased             extends IeMetadata("IE025", "CC025A") with MessageType
 
-  case object DepartureDeclaration extends IeMetadata("IE015", "CC015B") with MessageType
+  val departureMessages = Seq(
+    DepartureDeclaration,
+    PositiveAcknowledgement,
+    NoReleaseForTransit,
+    ReleaseForTransit,
+    ControlDecisionNotification,
+    MrnAllocated,
+    DeclarationRejected,
+    CancellationDecision,
+    WriteOffNotification,
+    GuaranteeNotValid
+  )
+
+  val arrivalMessages = Seq(ArrivalRejection, UnloadingPermission, UnloadingRemarksRejection, GoodsReleased)
 
   val values: Seq[MessageType] = Seq(
     PositiveAcknowledgement,

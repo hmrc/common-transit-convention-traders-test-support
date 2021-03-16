@@ -21,21 +21,6 @@ import java.time.LocalTime
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import models.MessageType.ArrivalRejection
-import models.MessageType.CancellationDecision
-import models.MessageType.ControlDecisionNotification
-import models.MessageType.DeclarationRejected
-import models.MessageType.GoodsReleased
-import models.MessageType.GuaranteeNotValid
-import models.MessageType.MrnAllocated
-import models.MessageType.NoReleaseForTransit
-import models.MessageType.PositiveAcknowledgement
-import models.MessageType.ReleaseForTransit
-import models.MessageType.UnloadingPermission
-import models.MessageType.UnloadingRemarksRejection
-import models.MessageType.WriteOffNotification
-import models.TestMessage
-
 import scala.xml.NodeSeq
 
 object Messages {
@@ -45,13 +30,6 @@ object Messages {
   val guaranteeRef = s"${Strings.numeric(2)}GB${Strings.alphanumeric(13)}"
 
   object Arrival {
-
-    val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
-      TestMessage(ArrivalRejection.code)          -> generateIE008Message,
-      TestMessage(GoodsReleased.code)             -> generateIE025Message,
-      TestMessage(UnloadingPermission.code)       -> generateIE043Message,
-      TestMessage(UnloadingRemarksRejection.code) -> generateIE058Message
-    )
 
     def generateIE008Message(): NodeSeq = {
       val xml =
@@ -99,23 +77,6 @@ object Messages {
       xml
     }
 
-    def generateIE043Message(): NodeSeq = {
-      val xml =
-        <CC043A>
-          <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
-          <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
-          <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
-          <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
-          <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
-          <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
-          <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
-          <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
-          <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
-        </CC043A>
-
-      xml
-    }
-
     def generateIE058Message(): NodeSeq = {
       val xml =
         <CC058A>
@@ -139,18 +100,6 @@ object Messages {
   }
 
   object Departure {
-
-    val SupportedMessageTypes: Map[TestMessage, GenerateMessage] = Map(
-      TestMessage(PositiveAcknowledgement.code)     -> generateIE928Message,
-      TestMessage(NoReleaseForTransit.code)         -> generateIE051Message,
-      TestMessage(ReleaseForTransit.code)           -> generateIE029Message,
-      TestMessage(ControlDecisionNotification.code) -> generateIE060Message,
-      TestMessage(MrnAllocated.code)                -> generateIE028Message,
-      TestMessage(DeclarationRejected.code)         -> generateIE016Message,
-      TestMessage(CancellationDecision.code)        -> generateIE009Message,
-      TestMessage(WriteOffNotification.code)        -> generateIE045Message,
-      TestMessage(GuaranteeNotValid.code)           -> generateIE055Message
-    )
 
     def generateIE928Message(): NodeSeq = {
       val xml =

@@ -1,10 +1,11 @@
 package connectors
 
 import java.time.LocalDateTime
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.MessageType.ArrivalRejection
-import models.TestMessage
 import models.domain.MovementMessage
+import models.generation.TestMessage
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -39,7 +40,7 @@ class ArrivalMessageConnectorSpec extends AnyFreeSpec with Matchers with Wiremoc
     "must return HttpResponse with an internal server error if there is a model mismatch" in {
       val connector = app.injector.instanceOf[ArrivalMessageConnector]
 
-      val response = TestMessage(ArrivalRejection.code)
+      val response = TestMessage(ArrivalRejection)
       server.stubFor(
         get(
           urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1/messages/1")

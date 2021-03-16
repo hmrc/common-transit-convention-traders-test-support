@@ -28,7 +28,6 @@ import models.Departure
 import models.DepartureId
 import models.DepartureWithMessages
 import models.MessageType
-import models.TestMessage
 import models.MessageType.PositiveAcknowledgement
 import models.domain.MovementMessage
 import org.mockito.ArgumentMatchers.any
@@ -52,8 +51,10 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import utils.Messages
-
 import java.time.LocalDateTime
+
+import models.generation.TestMessage
+
 import scala.concurrent.Future
 import scala.xml.Elem
 import scala.xml.NodeSeq
@@ -121,8 +122,7 @@ class DepartureTestMessagesControllerSpec
 
         val result = route(application, request).value
 
-        val ie928: NodeSeq = Messages.Departure.SupportedMessageTypes(TestMessage(MessageType.PositiveAcknowledgement.code))()
-        val xml            = contentAsXml((contentAsJson(result) \ "body").as[String])
+        val xml = contentAsXml((contentAsJson(result) \ "body").as[String])
 
         status(result) mustEqual CREATED
         (contentAsJson(result) \ "_links" \ "self" \ "href").as[String] mustEqual "/customs/transits/movements/departures/1/messages/2"
@@ -131,7 +131,6 @@ class DepartureTestMessagesControllerSpec
         (contentAsJson(result) \ "messageId").as[String] mustEqual "2"
         (contentAsJson(result) \ "messageType").as[String] mustEqual PositiveAcknowledgement.code
         xml.head.label mustEqual PositiveAcknowledgement.rootNode
-        numberOfNodes(xml) mustEqual numberOfNodes(ie928)
       }
     }
 
@@ -195,7 +194,7 @@ class DepartureTestMessagesControllerSpec
 
         val result = route(application, request).value
 
-        status(result) mustEqual NOT_IMPLEMENTED
+        status(result) mustEqual BAD_REQUEST
       }
     }
 

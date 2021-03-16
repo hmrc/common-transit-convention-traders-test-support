@@ -20,6 +20,7 @@ import config.AppConfig
 import config.Constants
 import connectors.util.CustomHttpReader
 import javax.inject.Inject
+import models.MessageType
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -29,12 +30,12 @@ import scala.concurrent.Future
 
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def post(messageType: String, message: String, itemId: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def post(messageType: MessageType, message: String, itemId: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val xMessageRecipient = mdtpString format (itemId, Constants.MessageCorrelationId)
 
     val newHeaders = hc
       .copy()
-      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType): _*)
+      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType.code): _*)
 
     val url = appConfig.transitMovementsTraderRouterUrl + routerRoute
 
