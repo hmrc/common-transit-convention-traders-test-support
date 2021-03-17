@@ -35,9 +35,9 @@ object UnloadingPermissionGenInstructions {
 
   implicit val readsUnloadingPermissionGenInstructions: Reads[UnloadingPermissionGenInstructions] =
     (
-      (__ \ "message" \ "goodsCount").read[Int] and
-        (__ \ "message" \ "productCount").read[Int] and
-        (__ \ "message" \ "specialMentionsCount").read[Int] and
-        (__ \ "message" \ "sealsCount").read[Int]
+      (__ \ "message" \ "goodsCount").readWithDefault[Int](1) and
+        (__ \ "message" \ "productCount").readWithDefault[Int](1) and
+        (__ \ "message" \ "specialMentionsCount").readWithDefault[Int](1) and
+        (__ \ "message" \ "sealsCount").readWithDefault[Int](1)
     )(UnloadingPermissionGenInstructions.apply _)
 }
