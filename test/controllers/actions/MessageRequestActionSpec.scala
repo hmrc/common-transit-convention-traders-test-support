@@ -24,6 +24,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.JsNumber
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsString
 import play.api.libs.json.JsValue
@@ -51,12 +52,34 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
     val request: FakeRequest[JsValue] =
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
-    val result = harness.execute(request).futureValue
-    val eitherRight = result.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
+    val result = harness.execute(request).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
-    eitherRight.sealsCount mustBe 1
-    eitherRight.goodsCount mustBe 1
-    eitherRight.specialMentionsCount mustBe 1
-    eitherRight.productCount mustBe 1
+    result.sealsCount mustBe 1
+    result.goodsCount mustBe 1
+    result.specialMentionsCount mustBe 1
+    result.productCount mustBe 1
+  }
+
+  "must produce IE043 with assigned values if provided" in {
+    val harness = new Harness
+
+    val body = JsObject(
+      Seq(
+        "message" -> JsObject(
+          Seq("messageType"          -> JsString("IE043"),
+              "goodsCount"           -> JsNumber(4),
+              "productCount"         -> JsNumber(5),
+              "specialMentionsCount" -> JsNumber(6),
+              "sealsCount"           -> JsNumber(7)))))
+
+    val request: FakeRequest[JsValue] =
+      FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
+
+    val result = harness.execute(request).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
+
+    result.goodsCount mustBe 4
+    result.productCount mustBe 5
+    result.specialMentionsCount mustBe 6
+    result.sealsCount mustBe 7
   }
 }
