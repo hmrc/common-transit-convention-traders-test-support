@@ -18,26 +18,21 @@ package connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
+import models.request.MessageRequest
+import models.{DepartureId, DepartureWithMessages}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import javax.inject.Inject
-import models.DepartureId
-import models.DepartureWithMessages
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HttpResponse
-
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def getMessages(departureId: DepartureId)(implicit requestHeader: RequestHeader,
+  def getMessages(departureId: DepartureId)(implicit requestHeader: MessageRequest[_],
                                             hc: HeaderCarrier,
                                             ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
     val url = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute${departureId.index.toString}/messages"
 
-    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders), ec).map {
+    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders(requestHeader.request.channel))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(requestHeader.request.channel)), ec).map {
       response =>
         extractIfSuccessful[DepartureWithMessages](response)
     }

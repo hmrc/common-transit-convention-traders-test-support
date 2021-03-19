@@ -19,9 +19,8 @@ package controllers
 import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
-import controllers.actions.AuthAction
-import controllers.actions.MessageRequestAction
-import controllers.actions.ValidateDepartureMessageTypeAction
+import controllers.actions.{AuthAction, ChannelAction, MessageRequestAction, ValidateDepartureMessageTypeAction}
+
 import javax.inject.Inject
 import models.DepartureId
 import models.DepartureWithMessages
@@ -46,6 +45,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 inboundRouterConnector: InboundRouterConnector,
                                                 departureMessageConnector: DepartureMessageConnector,
                                                 authAction: AuthAction,
+                                                channelAction: ChannelAction,
                                                 messageRequestAction: MessageRequestAction,
                                                 validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
                                                 msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
@@ -54,7 +54,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
     with ResponseHelper {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
-    (authAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
+    (authAction andThen channelAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
       implicit request: MessageRequest[JsValue] =>
         val message = msgGenService.generateMessage(request)
 
