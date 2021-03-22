@@ -62,7 +62,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
         val message = msgGenService.generateMessage(request)
 
         departureConnector
-          .getMessages(departureId)
+          .getMessages(departureId, request.channel)
           .flatMap {
             case Right(departureWithMessages: DepartureWithMessages) =>
               val generatedMessage =
@@ -76,7 +76,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                         postResponse.header(LOCATION) match {
                           case Some(locationValue) =>
                             val messageId = Utils.lastFragment(locationValue)
-                            departureMessageConnector.get(departureId.index.toString, messageId).map {
+                            departureMessageConnector.get(departureId.index.toString, messageId, request.channel).map {
                               case Right(_) =>
                                 Created(
                                   HateaosDepartureResponse(

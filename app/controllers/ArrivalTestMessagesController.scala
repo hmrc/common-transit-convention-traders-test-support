@@ -59,7 +59,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
         val message = msgGenService.generateMessage(request)
 
         arrivalConnector
-          .get(arrivalId)
+          .get(arrivalId, request.channel)
           .flatMap {
             getResponse =>
               getResponse.status match {
@@ -73,7 +73,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                             postResponse.header(LOCATION) match {
                               case Some(locationValue) =>
                                 val messageId = Utils.lastFragment(locationValue)
-                                arrivalMessageConnector.get(arrivalId.index.toString, messageId).map {
+                                arrivalMessageConnector.get(arrivalId.index.toString, messageId, request.channel).map {
                                   case Right(_) =>
                                     Created(
                                       HateaosArrivalResponse(

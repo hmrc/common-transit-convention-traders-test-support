@@ -35,14 +35,13 @@ import scala.concurrent.Future
 
 class DepartureMessageConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def get(departureId: String,
-          messageId: String)(implicit request: MessageRequest[_], hc: HeaderCarrier, ec: ExecutionContext): Future[Either[HttpResponse, MovementMessage]] = {
+  def get(departureId: String, messageId: String, channelType: ChannelType)(implicit request: RequestHeader,
+                                                                            hc: HeaderCarrier,
+                                                                            ec: ExecutionContext): Future[Either[HttpResponse, MovementMessage]] = {
     val url = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute${Utils.urlEncode(departureId)}/messages/${Utils.urlEncode(messageId)}"
 
     http
-      .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(request.request.channel))(CustomHttpReader,
-                                                                                             enforceAuthHeaderCarrier(responseHeaders(request.request.channel)),
-                                                                                             ec)
+      .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
       .map {
         response =>
           extractIfSuccessful[MovementMessage](response)

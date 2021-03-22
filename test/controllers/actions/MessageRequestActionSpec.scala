@@ -54,7 +54,7 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
     val request: FakeRequest[JsValue] =
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
-    val channelRequest = ChannelRequest(request, ChannelType.api)
+    val channelRequest = new ChannelRequest(request, ChannelType.api)
     val result         = harness.execute(channelRequest).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
     result.sealsCount mustBe 1
@@ -78,7 +78,7 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
     val request: FakeRequest[JsValue] =
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
-    val channelRequest = ChannelRequest(request, ChannelType.api)
+    val channelRequest = new ChannelRequest(request, ChannelType.api)
     val result         = harness.execute(channelRequest).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
     result.goodsCount mustBe 4

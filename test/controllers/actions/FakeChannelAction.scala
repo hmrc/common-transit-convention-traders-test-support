@@ -29,6 +29,6 @@ case class FakeChannelAction @Inject()()(implicit override val executionContext:
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
     val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
-    Future.successful(Right(ChannelRequest(request, channel)))
+    Future.successful(Right(new ChannelRequest(request, channel)))
   }
 }

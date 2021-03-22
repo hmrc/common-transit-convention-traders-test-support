@@ -32,17 +32,18 @@ import scala.concurrent.Future
 class ChannelAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, ChannelRequest] {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
+
     val channelOpt: Option[ChannelType] = request.headers.get("channel") match {
       case Some(channel) if channel.equals(api.toString) => Some(api)
       case Some(channel) if channel.equals(web.toString) => Some(web)
-      case _                                             => None
+      case _                                             => Some(api) //TODO: Retire defaulting(should be NONE)
     }
 
     channelOpt match {
       case None =>
         Future.successful(Left(BadRequest("Missing channel header or incorrect value specified in channel header")))
       case Some(channel) =>
-        Future.successful(Right(ChannelRequest(request, channel)))
+        Future.successful(Right(new ChannelRequest(request, channel)))
     }
 
   }

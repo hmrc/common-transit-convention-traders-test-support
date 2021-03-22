@@ -16,12 +16,14 @@
 
 package models.request
 
+import models.ChannelType
 import models.MessageType
 import models.generation.GenInstructions
 import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 
-abstract class BaseMessageRequest[A](request: Request[A], messageType: MessageType, instructions: GenInstructions) extends WrappedRequest[A](request)
+abstract class BaseMessageRequest[A](request: Request[A], channel: ChannelType, messageType: MessageType, instructions: GenInstructions)
+    extends ChannelRequest[A](request: Request[A], channel: ChannelType)
 
-case class MessageRequest[A](request: ChannelRequest[A], messageType: MessageType, instructions: GenInstructions)
-    extends BaseMessageRequest[A](request, messageType, instructions)
+case class MessageRequest[A](request: Request[A], override val channel: ChannelType, messageType: MessageType, instructions: GenInstructions)
+    extends BaseMessageRequest[A](request, channel, messageType, instructions)

@@ -83,10 +83,10 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockInboundRouterConnector  = mock[InboundRouterConnector]
       val mockArrivalMessageConnector = mock[ArrivalMessageConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transit-movements-trader-at-destination/movements/arrivals/1/messages/2")))))
-      when(mockArrivalMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(movement)))
+      when(mockArrivalMessageConnector.get(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(movement)))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -186,7 +186,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockArrivalConnector       = mock[ArrivalConnector]
       val mockInboundRouterConnector = mock[InboundRouterConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val application = baseApplicationBuilder
@@ -212,10 +212,11 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockInboundRouterConnector  = mock[InboundRouterConnector]
       val mockArrivalMessageConnector = mock[ArrivalMessageConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transit-movements-trader-at-destination/movements/arrivals/1/messages/2")))))
-      when(mockArrivalMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(BAD_REQUEST, "bad_request"))))
+      when(mockArrivalMessageConnector.get(any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Left(HttpResponse(BAD_REQUEST, "bad_request"))))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -241,7 +242,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockArrivalConnector       = mock[ArrivalConnector]
       val mockInboundRouterConnector = mock[InboundRouterConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
       val application = baseApplicationBuilder
@@ -265,7 +266,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must return NotFound if arrivals backend returns NotFound" in {
       val mockArrivalConnector = mock[ArrivalConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -287,7 +288,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must return InternalServerError if GET fails in arrival id check" in {
       val mockArrivalConnector = mock[ArrivalConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -310,7 +311,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockArrivalConnector       = mock[ArrivalConnector]
       val mockInboundRouterConnector = mock[InboundRouterConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
@@ -335,7 +336,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockArrivalConnector       = mock[ArrivalConnector]
       val mockInboundRouterConnector = mock[InboundRouterConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -362,10 +363,11 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockInboundRouterConnector  = mock[InboundRouterConnector]
       val mockArrivalMessageConnector = mock[ArrivalMessageConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transit-movements-trader-at-destination/movements/arrivals/1/messages/2")))))
-      when(mockArrivalMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(INTERNAL_SERVER_ERROR, ""))))
+      when(mockArrivalMessageConnector.get(any(), any(), any())(any(), any(), any()))
+        .thenReturn(Future.successful(Left(HttpResponse(INTERNAL_SERVER_ERROR, ""))))
 
       val application = baseApplicationBuilder
         .overrides(
@@ -391,10 +393,10 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val mockInboundRouterConnector  = mock[InboundRouterConnector]
       val mockArrivalMessageConnector = mock[ArrivalMessageConnector]
 
-      when(mockArrivalConnector.get(any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockArrivalConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transit-movements-trader-at-destination/movements/arrivals/1/messages/2")))))
-      when(mockArrivalMessageConnector.get(any(), any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
+      when(mockArrivalMessageConnector.get(any(), any(), any())(any(), any(), any())).thenReturn(Future.failed(new Exception("failed")))
 
       val application = baseApplicationBuilder
         .overrides(

@@ -20,4 +20,4 @@ import models.ChannelType
 import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 
-case class ChannelRequest[A](request: Request[A], channel: ChannelType) extends WrappedRequest[A](request)
+class ChannelRequest[A](request: Request[A], val channel: ChannelType) extends WrappedRequest[A](request)

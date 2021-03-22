@@ -17,6 +17,7 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import models.ChannelType
 import models.MessageType
 import models.MessageType.UnloadingPermission
 import models.generation.EmptyGenInstructions
@@ -49,7 +50,7 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
               case Some(instructions) =>
                 validateGenInstructions(testMessage.messageType, instructions) match {
                   case Left(message) => Future.successful(Left(BadRequest(message)))
-                  case Right(i)      => Future.successful(Right(MessageRequest(request, testMessage.messageType, i)))
+                  case Right(i)      => Future.successful(Right(MessageRequest(request, request.channel, testMessage.messageType, i)))
                 }
             }
         }
