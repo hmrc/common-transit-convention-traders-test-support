@@ -21,6 +21,8 @@ import connectors.ArrivalConnector
 import connectors.ArrivalMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
+import controllers.actions.ChannelAction
+import controllers.actions.FakeChannelAction
 import controllers.actions.FakeAuthAction
 import generators.ModelGenerators
 import models.MessageType.ArrivalRejection
@@ -47,8 +49,8 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import utils.Messages
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.generation.TestMessage
 
 import scala.concurrent.Future
@@ -89,6 +91,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
@@ -115,7 +118,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must return UnsupportedMediaType when no Content-Type specified" in {
       val application = baseApplicationBuilder
         .overrides(
-          bind[AuthAction].to[FakeAuthAction]
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction]
         )
         .build()
 
@@ -134,7 +138,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
     "must return UnsupportedMediaType when invalid Content-Type specified" in {
       val application = baseApplicationBuilder
         .overrides(
-          bind[AuthAction].to[FakeAuthAction]
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction]
         )
         .build()
 
@@ -163,7 +168,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
 
       val application = baseApplicationBuilder
         .overrides(
-          bind[AuthAction].to[FakeAuthAction]
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction]
         )
         .build()
 
@@ -186,6 +192,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -213,6 +220,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
@@ -239,6 +247,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
         )
@@ -261,6 +270,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector)
         )
         .build()
@@ -282,6 +292,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector)
         )
         .build()
@@ -305,6 +316,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -330,6 +342,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
         )
@@ -357,6 +370,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
@@ -385,6 +399,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)

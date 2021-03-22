@@ -19,7 +19,10 @@ package controllers
 import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
-import controllers.actions.{AuthAction, ChannelAction, MessageRequestAction, ValidateDepartureMessageTypeAction}
+import controllers.actions.AuthAction
+import controllers.actions.ChannelAction
+import controllers.actions.MessageRequestAction
+import controllers.actions.ValidateDepartureMessageTypeAction
 
 import javax.inject.Inject
 import models.DepartureId

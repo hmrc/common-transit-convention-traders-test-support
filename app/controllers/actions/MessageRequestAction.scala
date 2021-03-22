@@ -19,13 +19,22 @@ package controllers.actions
 import com.google.inject.Inject
 import models.MessageType
 import models.MessageType.UnloadingPermission
-import models.generation.{EmptyGenInstructions, GenInstructions, TestMessage, UnloadingPermissionGenInstructions}
-import models.request.{ChannelRequest, MessageRequest}
-import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue}
-import play.api.mvc.{ActionRefiner, Result}
+import models.generation.EmptyGenInstructions
+import models.generation.GenInstructions
+import models.generation.TestMessage
+import models.generation.UnloadingPermissionGenInstructions
+import models.request.ChannelRequest
+import models.request.MessageRequest
+import play.api.libs.json.JsError
+import play.api.libs.json.JsResult
+import play.api.libs.json.JsSuccess
+import play.api.libs.json.JsValue
+import play.api.mvc.ActionRefiner
+import play.api.mvc.Result
 import play.api.mvc.Results.BadRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[ChannelRequest, MessageRequest] {
   override protected def refine[A](request: ChannelRequest[A]): Future[Either[Result, MessageRequest[A]]] =
@@ -40,7 +49,7 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
               case Some(instructions) =>
                 validateGenInstructions(testMessage.messageType, instructions) match {
                   case Left(message) => Future.successful(Left(BadRequest(message)))
-                  case Right(i)      => Future.successful(Right(MessageRequest(request, testMessage.messageType,i)))
+                  case Right(i)      => Future.successful(Right(MessageRequest(request, testMessage.messageType, i)))
                 }
             }
         }

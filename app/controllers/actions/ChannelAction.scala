@@ -18,22 +18,24 @@ package controllers.actions
 
 import com.google.inject.Inject
 import models.ChannelType
-import models.ChannelType.{api, web}
+import models.ChannelType.api
+import models.ChannelType.web
 import models.request.ChannelRequest
 import play.api.mvc.Results.BadRequest
-import play.api.mvc.{ActionRefiner, Request, Result}
+import play.api.mvc.ActionRefiner
+import play.api.mvc.Request
+import play.api.mvc.Result
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
-class ChannelAction @Inject()()(
-  implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[Request, ChannelRequest] {
+class ChannelAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, ChannelRequest] {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
     val channelOpt: Option[ChannelType] = request.headers.get("channel") match {
       case Some(channel) if channel.equals(api.toString) => Some(api)
       case Some(channel) if channel.equals(web.toString) => Some(web)
-      case _ => None
+      case _                                             => None
     }
 
     channelOpt match {

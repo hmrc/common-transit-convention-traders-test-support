@@ -18,7 +18,8 @@ package models.request
 
 import models.MessageType
 import models.generation.GenInstructions
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
 abstract class BaseMessageRequest[A](request: Request[A], messageType: MessageType, instructions: GenInstructions) extends WrappedRequest[A](request)
 

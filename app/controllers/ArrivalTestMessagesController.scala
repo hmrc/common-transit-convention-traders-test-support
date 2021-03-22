@@ -20,8 +20,10 @@ import connectors.InboundRouterConnector
 import connectors.ArrivalConnector
 import connectors.ArrivalMessageConnector
 import controllers.actions.AuthAction
+import controllers.actions.ChannelAction
 import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateArrivalMessageTypeAction
+
 import javax.inject.Inject
 import models.ArrivalId
 import models.HateaosArrivalResponse
@@ -43,6 +45,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
                                               inboundRouterConnector: InboundRouterConnector,
                                               arrivalMessageConnector: ArrivalMessageConnector,
                                               authAction: AuthAction,
+                                              channelAction: ChannelAction,
                                               messageRequestAction: MessageRequestAction,
                                               validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction,
                                               msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
@@ -51,7 +54,7 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
     with ResponseHelper {
 
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
-    (authAction andThen messageRequestAction andThen validateArrivalMessageTypeAction).async(parse.json) {
+    (authAction andThen channelAction andThen messageRequestAction andThen validateArrivalMessageTypeAction).async(parse.json) {
       implicit request: MessageRequest[JsValue] =>
         val message = msgGenService.generateMessage(request)
 

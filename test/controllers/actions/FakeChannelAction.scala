@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package models.request
+package controllers.actions
 
+import com.google.inject.Inject
 import models.ChannelType
-import play.api.mvc.Request
-import play.api.mvc.WrappedRequest
+import models.request.ChannelRequest
+import org.scalacheck.Gen
+import play.api.mvc._
 
-case class ChannelRequest[A](request: Request[A], channel: ChannelType) extends WrappedRequest[A](request)
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+case class FakeChannelAction @Inject()()(implicit override val executionContext: ExecutionContext) extends ChannelAction {
+
+  override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
+    val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
+    Future.successful(Right(ChannelRequest(request, channel)))
+  }
+}

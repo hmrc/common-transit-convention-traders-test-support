@@ -21,7 +21,9 @@ import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
+import controllers.actions.ChannelAction
 import controllers.actions.FakeAuthAction
+import controllers.actions.FakeChannelAction
 import data.TestXml
 import generators.ModelGenerators
 import models.Departure
@@ -41,6 +43,7 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.AnyContentAsXml
+import play.api.mvc.Request
 import play.api.mvc.Result
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
@@ -51,9 +54,10 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import utils.Messages
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import models.generation.TestMessage
+import models.request.ChannelRequest
 
 import scala.concurrent.Future
 import scala.xml.Elem
@@ -111,6 +115,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
@@ -137,7 +142,8 @@ class DepartureTestMessagesControllerSpec
     "must return UnsupportedMediaType when no Content-Type specified" in {
       val application = baseApplicationBuilder
         .overrides(
-          bind[AuthAction].to[FakeAuthAction]
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction]
         )
         .build()
 
@@ -156,7 +162,8 @@ class DepartureTestMessagesControllerSpec
     "must return UnsupportedMediaType when invalid Content-Type specified" in {
       val application = baseApplicationBuilder
         .overrides(
-          bind[AuthAction].to[FakeAuthAction]
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction]
         )
         .build()
 
@@ -185,7 +192,8 @@ class DepartureTestMessagesControllerSpec
 
       val application = baseApplicationBuilder
         .overrides(
-          bind[AuthAction].to[FakeAuthAction]
+          bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction]
         )
         .build()
 
@@ -211,6 +219,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -236,6 +245,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -264,6 +274,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
@@ -293,6 +304,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector)
         )
         .build()
@@ -315,6 +327,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector)
         )
         .build()
@@ -342,6 +355,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -367,6 +381,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -395,6 +410,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
@@ -422,6 +438,7 @@ class DepartureTestMessagesControllerSpec
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
+          bind[ChannelAction].to[FakeChannelAction],
           bind[DepartureConnector].toInstance(mockDepartureConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
