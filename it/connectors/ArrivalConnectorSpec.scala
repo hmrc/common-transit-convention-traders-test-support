@@ -1,7 +1,8 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.ArrivalId
+import models.{ArrivalId, ChannelType}
+import org.scalacheck.Gen
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -17,6 +18,7 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
 
   "get" - {
     "must return OK when arrival is found" in {
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[ArrivalConnector]
 
       server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
@@ -25,12 +27,13 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.get(arrivalId).futureValue
+      val result = connector.get(arrivalId, channel).futureValue
 
       result.status mustEqual OK
     }
 
     "must return HttpResponse with a not found if not found" in {
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[ArrivalConnector]
       server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
         .willReturn(aResponse().withStatus(NOT_FOUND)))
@@ -38,12 +41,13 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.get(arrivalId).futureValue
+      val result = connector.get(arrivalId, channel).futureValue
 
       result.status mustEqual NOT_FOUND
     }
 
     "must return HttpResponse with a bad request if there is a bad request" in {
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[ArrivalConnector]
       server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
         .willReturn(aResponse().withStatus(BAD_REQUEST)))
@@ -51,12 +55,13 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.get(arrivalId).futureValue
+      val result = connector.get(arrivalId, channel).futureValue
 
       result.status mustEqual BAD_REQUEST
     }
 
     "must return HttpResponse with an internal server if there is an internal server error" in {
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[ArrivalConnector]
       server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
         .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR)))
@@ -64,7 +69,7 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.get(arrivalId).futureValue
+      val result = connector.get(arrivalId, channel).futureValue
 
       result.status mustEqual INTERNAL_SERVER_ERROR
     }
