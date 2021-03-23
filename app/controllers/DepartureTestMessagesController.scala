@@ -20,8 +20,10 @@ import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
+import controllers.actions.ChannelAction
 import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateDepartureMessageTypeAction
+
 import javax.inject.Inject
 import models.DepartureId
 import models.DepartureWithMessages
@@ -46,6 +48,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 inboundRouterConnector: InboundRouterConnector,
                                                 departureMessageConnector: DepartureMessageConnector,
                                                 authAction: AuthAction,
+                                                channelAction: ChannelAction,
                                                 messageRequestAction: MessageRequestAction,
                                                 validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
                                                 msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
@@ -54,12 +57,12 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
     with ResponseHelper {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
-    (authAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
+    (authAction andThen channelAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
       implicit request: MessageRequest[JsValue] =>
         val message = msgGenService.generateMessage(request)
 
         departureConnector
-          .getMessages(departureId)
+          .getMessages(departureId, request.channel)
           .flatMap {
             case Right(departureWithMessages: DepartureWithMessages) =>
               val generatedMessage =
@@ -73,7 +76,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                         postResponse.header(LOCATION) match {
                           case Some(locationValue) =>
                             val messageId = Utils.lastFragment(locationValue)
-                            departureMessageConnector.get(departureId.index.toString, messageId).map {
+                            departureMessageConnector.get(departureId.index.toString, messageId, request.channel).map {
                               case Right(_) =>
                                 Created(
                                   HateaosDepartureResponse(

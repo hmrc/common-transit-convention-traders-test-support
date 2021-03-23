@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package models.request
+package controllers.actions
 
+import com.google.inject.Inject
 import models.ChannelType
-import models.MessageType
-import models.generation.UnloadingPermissionGenInstructions
-import play.api.mvc.Request
+import models.request.ChannelRequest
+import org.scalacheck.Gen
+import play.api.mvc._
 
-case class UnloadingPermissionMessageRequest[A](request: Request[A],
-                                                override val channel: ChannelType,
-                                                messageType: MessageType,
-                                                instructions: UnloadingPermissionGenInstructions)
-    extends BaseMessageRequest[A](request, channel, messageType, instructions)
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+case class FakeChannelAction @Inject()()(implicit override val executionContext: ExecutionContext) extends ChannelAction {
+
+  override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
+    val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
+    Future.successful(Right(new ChannelRequest(request, channel)))
+  }
+}

@@ -2,7 +2,8 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.domain.MovementMessage
-import models.{Departure, DepartureId, DepartureWithMessages, ResponseDeparture}
+import models.{ChannelType, Departure, DepartureId, DepartureWithMessages, ResponseDeparture}
+import org.scalacheck.Gen
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
@@ -21,6 +22,8 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
 
   "getMessages" - {
     "must return Departure when departure is found" in {
+
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[DepartureConnector]
       val departure = DepartureWithMessages(1, "/movements/departures/1", "/movements/departures/1/messages", Some("MRN"), "ref", "status", LocalDateTime.now, LocalDateTime.now,
         Seq(
@@ -37,12 +40,14 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.getMessages(departureId).futureValue
+      val result = connector.getMessages(departureId, channel).futureValue
 
       result mustEqual Right(departure)
     }
 
     "must return HttpResponse with an internal server error if there is a model mismatch" in {
+
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[DepartureConnector]
       val departure = Departure(1, "/movements/departures/1", "/movements/departures/1/messages", Some("MRN"), "ref", "status", LocalDateTime.now, LocalDateTime.now)
 
@@ -56,13 +61,15 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.getMessages(departureId).futureValue
+      val result = connector.getMessages(departureId, channel).futureValue
 
       result.isLeft mustEqual true
       result.left.map { x => x.status mustEqual INTERNAL_SERVER_ERROR }
     }
 
     "must return HttpResponse with a not found if not found" in {
+
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[DepartureConnector]
       server.stubFor(
         get(
@@ -72,13 +79,15 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.getMessages(departureId).futureValue
+      val result = connector.getMessages(departureId, channel).futureValue
 
       result.isLeft mustEqual true
       result.left.map { x => x.status mustEqual NOT_FOUND }
     }
 
     "must return HttpResponse with a bad request if there is a bad request" in {
+
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[DepartureConnector]
       server.stubFor(
         get(
@@ -88,13 +97,15 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.getMessages(departureId).futureValue
+      val result = connector.getMessages(departureId, channel).futureValue
 
       result.isLeft mustEqual true
       result.left.map { x => x.status mustEqual BAD_REQUEST }
     }
 
     "must return HttpResponse with an internal server if there is an internal server error" in {
+
+      val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector = app.injector.instanceOf[DepartureConnector]
       server.stubFor(
         get(
@@ -104,7 +115,7 @@ class DepartureConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuit
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.getMessages(departureId).futureValue
+      val result = connector.getMessages(departureId, channel).futureValue
 
       result.isLeft mustEqual true
       result.left.map { x => x.status mustEqual INTERNAL_SERVER_ERROR }

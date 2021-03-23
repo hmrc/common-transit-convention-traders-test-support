@@ -16,7 +16,9 @@
 
 package controllers.actions
 
+import models.ChannelType
 import models.generation.UnloadingPermissionGenInstructions
+import models.request.ChannelRequest
 import models.request.MessageRequest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
@@ -40,7 +42,7 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
 
   class Harness extends MessageRequestAction() {
 
-    def execute[A](request: Request[A]): Future[Either[Result, MessageRequest[A]]] =
+    def execute[A](request: ChannelRequest[A]): Future[Either[Result, MessageRequest[A]]] =
       refine(request)
   }
 
@@ -52,7 +54,8 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
     val request: FakeRequest[JsValue] =
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
-    val result = harness.execute(request).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
+    val channelRequest = new ChannelRequest(request, ChannelType.api)
+    val result         = harness.execute(channelRequest).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
     result.sealsCount mustBe 1
     result.goodsCount mustBe 1
@@ -75,7 +78,8 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
     val request: FakeRequest[JsValue] =
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
-    val result = harness.execute(request).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
+    val channelRequest = new ChannelRequest(request, ChannelType.api)
+    val result         = harness.execute(channelRequest).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
     result.goodsCount mustBe 4
     result.productCount mustBe 5

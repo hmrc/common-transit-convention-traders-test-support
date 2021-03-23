@@ -16,9 +16,6 @@
 
 package controllers.actions
 
-import models.MessageType
-import models.generation.TestMessage
-import models.request.MessageRequest
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -40,7 +37,6 @@ import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.controller.BackendController
-import utils.Messages
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -62,14 +58,18 @@ class ValidateDepartureMessageTypeActionSpec
   override def beforeEach(): Unit =
     super.beforeEach()
 
-  class Harness(messageRequestAction: MessageRequestAction, validateMessageTypeAction: ValidateDepartureMessageTypeAction, cc: ControllerComponents)
+  class Harness(channelAction: ChannelAction,
+                messageRequestAction: MessageRequestAction,
+                validateMessageTypeAction: ValidateDepartureMessageTypeAction,
+                cc: ControllerComponents)
       extends BackendController(cc) {
 
     def post: Action[JsValue] =
-      (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen messageRequestAction andThen validateMessageTypeAction).async(cc.parsers.json) {
-        _ =>
-          Future.successful(Ok(JsString("test")))
-      }
+      (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen channelAction andThen messageRequestAction andThen validateMessageTypeAction)
+        .async(cc.parsers.json) {
+          _ =>
+            Future.successful(Ok(JsString("test")))
+        }
   }
 
   private def contentAsXml(of: Future[Result]): Elem = XML.loadString(contentAsString(of))
@@ -79,11 +79,12 @@ class ValidateDepartureMessageTypeActionSpec
 
   "ValidateDepartureMessageTypeAction" - {
     "must execute the block when passed in a valid IE928 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -102,11 +103,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE051 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -125,11 +127,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE029 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -148,11 +151,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE060 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -171,11 +175,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE028 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -194,11 +199,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE016 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -217,11 +223,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE009 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -240,11 +247,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE045 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -263,11 +271,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must execute the block when passed in a valid IE055 TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -286,11 +295,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE928 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -309,11 +319,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE051 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -332,11 +343,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE029 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -355,11 +367,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE060 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -378,11 +391,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE028 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -401,11 +415,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE016 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -424,11 +439,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE009 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -447,11 +463,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE045 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -470,11 +487,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE055 message in executed block" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -493,11 +511,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must return BadRequest when passed in an invalid TestMessage" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{
@@ -516,11 +535,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must return BadRequest when passed in an empty request" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val req: FakeRequest[JsValue] = FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), JsNull)
 
@@ -530,11 +550,12 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must return NotImplemented when passed in TestMessage has unsupported message type" in {
+      val channelAction        = app.injector.instanceOf[FakeChannelAction]
       val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
 
-      val controller = new Harness(messageRequestAction, validateMessageType, cc)
+      val controller = new Harness(channelAction, messageRequestAction, validateMessageType, cc)
 
       val exampleRequest: JsValue = Json.parse(
         """{

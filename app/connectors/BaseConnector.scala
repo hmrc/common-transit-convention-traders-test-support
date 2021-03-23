@@ -18,6 +18,7 @@ package connectors
 
 import connectors.util.CustomHttpReader
 import connectors.util.CustomHttpReader.INTERNAL_SERVER_ERROR
+import models.ChannelType
 import models.ChannelType.api
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
@@ -29,13 +30,12 @@ import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.logging.Authorization
 
 class BaseConnector extends HttpErrorFunctions {
-  protected val channelHeader: (String, String) = ("channel", api.toString)
 
   protected val requestHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.XML))
 
-  protected val responseHeaders: Seq[(String, String)] =
-    Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON), channelHeader)
+  def responseHeaders(channel: ChannelType): Seq[(String, String)] =
+    Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON), ("channel", channel.toString))
 
   protected val mdtpString = "MDTP-%d-%d"
 
