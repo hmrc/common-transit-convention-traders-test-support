@@ -31,7 +31,7 @@ import scala.concurrent.Future
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   def post(messageType: MessageType, message: String, itemId: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val xMessageRecipient = mdtpString format (itemId, Constants.MessageCorrelationId)
+    val xMessageRecipient = mdtpString format (messageType.source, itemId, Constants.MessageCorrelationId)
 
     val newHeaders = hc
       .copy()

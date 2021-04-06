@@ -16,6 +16,6 @@
 
 package models
 
-abstract class IeMetadata(val code: String, val rootNode: String) {
+abstract class IeMetadata(val code: String, val rootNode: String, val source: String) {
   override val toString: String = code
 }
