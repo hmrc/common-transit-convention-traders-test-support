@@ -37,7 +37,7 @@ class BaseConnector extends HttpErrorFunctions {
   def responseHeaders(channel: ChannelType): Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON), ("channel", channel.toString))
 
-  protected val mdtpString = "MDTP-%d-%d"
+  protected val mdtpString = "MDTP-%s-%d-%d"
 
   protected val routerRoute = "/transit-movements-trader-router/messages"
 

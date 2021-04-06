@@ -22,7 +22,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       server.stubFor(
         post(
           urlEqualTo("/transit-movements-trader-router/messages"))
-          .withHeader("X-Message-Recipient", equalTo("MDTP-1-1"))
+          .withHeader("X-Message-Recipient", equalTo("MDTP-ARR-1-1"))
           .withHeader("X-Message-Type", equalTo("IE008"))
           .willReturn(aResponse().withStatus(CREATED))
       )
@@ -42,7 +42,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         server.stubFor(
           post(
             urlEqualTo("/transit-movements-trader-router/messages"))
-            .withHeader("X-Message-Recipient", equalTo("MDTP-1-1"))
+            .withHeader("X-Message-Recipient", equalTo("MDTP-ARR-1-1"))
             .withHeader("X-Message-Type", equalTo("IE008"))
             .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
         )
@@ -63,15 +63,15 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       server.stubFor(
         post(
           urlEqualTo("/transit-movements-trader-router/messages"))
-          .withHeader("X-Message-Recipient", equalTo("MDTP-1-1"))
-          .withHeader("X-Message-Type", equalTo("IE008"))
+          .withHeader("X-Message-Recipient", equalTo("MDTP-DEP-1-1"))
+          .withHeader("X-Message-Type", equalTo("IE016"))
           .willReturn(aResponse().withStatus(BAD_REQUEST))
       )
 
       implicit val hc = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
-      val result = connector.post(MessageType.ArrivalRejection, "<document></document>", itemId).futureValue
+      val result = connector.post(MessageType.DeclarationRejected, "<document></document>", itemId).futureValue
 
       result.status mustEqual BAD_REQUEST
     }
