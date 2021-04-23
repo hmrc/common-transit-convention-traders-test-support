@@ -23,6 +23,7 @@ import controllers.actions.AuthAction
 import controllers.actions.ChannelAction
 import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateDepartureMessageTypeAction
+import logging.Logging
 
 import javax.inject.Inject
 import models.DepartureId
@@ -31,6 +32,7 @@ import models.HateaosDepartureResponse
 import models.MessageType
 import models.request.MessageRequest
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import services.MessageGenerationService
@@ -42,6 +44,7 @@ import utils.XMLTransformer
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.xml.NodeSeq
 
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 departureConnector: DepartureConnector,
@@ -54,7 +57,8 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
-    with ResponseHelper {
+    with ResponseHelper
+    with Logging {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (authAction andThen channelAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
@@ -108,4 +112,33 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
               InternalServerError
           }
     }
+
+  def declarationMessageToCore: Action[NodeSeq] = (authAction andThen channelAction).async(parse.xml) {
+    implicit request =>
+      departureConnector
+        .createDeclarationMessage(request.body, request.channel)
+        .map {
+          response =>
+            response.status match {
+              case status if is2xx(status) =>
+                response.header(LOCATION) match {
+                  case Some(locationValue) =>
+                    val departureId = Utils.lastFragment(locationValue)
+                    Accepted(
+                      Json.toJson(
+                        HateaosDepartureResponse(
+                          DepartureId(departureId.toInt),
+                          MessageType.DepartureDeclaration,
+                          request.body,
+                          locationValue
+                        )))
+                  case None =>
+                    InternalServerError
+                }
+              case _ =>
+                InternalServerError
+            }
+        }
+  }
+
 }

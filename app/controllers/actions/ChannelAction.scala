@@ -36,7 +36,7 @@ class ChannelAction @Inject()()(implicit val executionContext: ExecutionContext)
     val channelOpt: Option[ChannelType] = request.headers.get("channel") match {
       case Some(channel) if channel.equals(api.toString) => Some(api)
       case Some(channel) if channel.equals(web.toString) => Some(web)
-      case _                                             => Some(api) //TODO: Retire defaulting(should be NONE)
+      case _                                             => None
     }
 
     channelOpt match {
