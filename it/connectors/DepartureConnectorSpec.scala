@@ -52,9 +52,6 @@ class DepartureConnectorSpec extends AnyFreeSpec
           ).willReturn(aResponse().withStatus(OK)
             .withBody(Json.toJson(departure).toString())))
 
-        implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
-
         val result = connector.getMessages(departureId, channel).futureValue
 
         result mustEqual Right(departure)
@@ -73,10 +70,7 @@ class DepartureConnectorSpec extends AnyFreeSpec
           ).willReturn(aResponse().withStatus(OK)
             .withBody(Json.toJson(response).toString())))
 
-        implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
-
-        val result = connector.getMessages(departureId, channel).futureValue
+         val result = connector.getMessages(departureId, channel).futureValue
 
         result.isLeft mustEqual true
         result.left.map { x => x.status mustEqual INTERNAL_SERVER_ERROR }
@@ -90,9 +84,6 @@ class DepartureConnectorSpec extends AnyFreeSpec
           get(
             urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1/messages")
           ).willReturn(aResponse().withStatus(NOT_FOUND)))
-
-        implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
 
         val result = connector.getMessages(departureId, channel).futureValue
 
@@ -109,9 +100,6 @@ class DepartureConnectorSpec extends AnyFreeSpec
             urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1/messages")
           ).willReturn(aResponse().withStatus(BAD_REQUEST)))
 
-        implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
-
         val result = connector.getMessages(departureId, channel).futureValue
 
         result.isLeft mustEqual true
@@ -127,9 +115,6 @@ class DepartureConnectorSpec extends AnyFreeSpec
             urlEqualTo("/transits-movements-trader-at-departure/movements/departures/1/messages")
           ).willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR)))
 
-        implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
-
         val result = connector.getMessages(departureId, channel).futureValue
 
         result.isLeft mustEqual true
@@ -142,11 +127,8 @@ class DepartureConnectorSpec extends AnyFreeSpec
         val connector = app.injector.instanceOf[DepartureConnector]
         val channelType = Gen.oneOf(ChannelType.values).sample.value
 
-        stubResponse("/transits-movements-trader-at-departure/movements/departures/",
+        stubPostResponse("/transits-movements-trader-at-departure/movements/departures/",
           ACCEPTED, channelType)
-
-        implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
 
         val result = connector.createDeclarationMessage(<xml>test</xml>, channelType).futureValue
 
@@ -158,7 +140,7 @@ class DepartureConnectorSpec extends AnyFreeSpec
         forAll(Gen.chooseNum(400, 599)) {
           (errorResponseCode) =>
             val channelType = Gen.oneOf(ChannelType.values).sample.value
-            stubResponse("/transits-movements-trader-at-departure/movements/departures/", errorResponseCode, channelType)
+            stubPostResponse("/transits-movements-trader-at-departure/movements/departures/", errorResponseCode, channelType)
             val inputXml = <xml>test</xml>
 
             val result = connector.createDeclarationMessage(inputXml, channelType)
@@ -168,7 +150,7 @@ class DepartureConnectorSpec extends AnyFreeSpec
     }
   }
 
-  private def stubResponse(stubUrl: String, expectedStatus: Int, channelType: ChannelType): StubMapping = {
+  private def stubPostResponse(stubUrl: String, expectedStatus: Int, channelType: ChannelType): StubMapping = {
     server.stubFor(
       post(urlEqualTo(stubUrl))
         .withHeader("Channel", containing(channelType.toString))
