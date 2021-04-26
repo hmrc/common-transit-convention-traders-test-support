@@ -37,6 +37,7 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
                                                                       hc: HeaderCarrier,
                                                                       ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
     val url = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute${departureId.index.toString}/messages"
+
     http
       .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
       .map {
