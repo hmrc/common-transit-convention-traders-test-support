@@ -18,13 +18,17 @@ package connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
-import models.{ChannelType, DepartureId, DepartureWithMessages}
+import models.ChannelType
+import models.DepartureId
+import models.DepartureWithMessages
 import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.xml.NodeSeq
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {

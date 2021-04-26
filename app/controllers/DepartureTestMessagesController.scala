@@ -113,7 +113,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
           }
     }
 
-  def declarationMessageToCore: Action[NodeSeq] = (authAction andThen channelAction).async(parse.xml) {
+  def submitDepartureDeclaration: Action[NodeSeq] = (authAction andThen channelAction).async(parse.xml) {
     implicit request =>
       departureConnector
         .createDeclarationMessage(request.body, request.channel)
@@ -133,9 +133,11 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                           locationValue
                         )))
                   case None =>
+                    logger.error("Failed to submit departure declaration: 'LOCATION' is missing in response.header")
                     InternalServerError
                 }
-              case _ =>
+              case status =>
+                logger.error(s"Failed to submit departure declaration: Received the status - $status")
                 InternalServerError
             }
         }
