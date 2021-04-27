@@ -36,7 +36,7 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
   def getMessages(departureId: DepartureId, channelType: ChannelType)(implicit requestHeader: RequestHeader,
                                                                       hc: HeaderCarrier,
                                                                       ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
-    val url = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute${departureId.index.toString}/messages"
+    val url = s"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
 
     http
       .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
@@ -49,7 +49,7 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
   def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit requestHeader: RequestHeader,
                                                                                hc: HeaderCarrier,
                                                                                ec: ExecutionContext): Future[HttpResponse] = {
-    val url                            = s"${appConfig.traderAtDeparturesUrl}$departureGetRoute"
+    val url                            = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
     val headers: Seq[(String, String)] = requestHeaders :+ ("Channel", channelType.toString)
 
     http.POSTString[HttpResponse](url, requestData.toString, headers)(CustomHttpReader, enforceAuthHeaderCarrier(Seq.empty), ec)

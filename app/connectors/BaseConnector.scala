@@ -41,8 +41,8 @@ class BaseConnector extends HttpErrorFunctions {
 
   protected val routerRoute = "/transit-movements-trader-router/messages"
 
-  protected val arrivalGetRoute   = "/transit-movements-trader-at-destination/movements/arrivals/"
-  protected val departureGetRoute = "/transits-movements-trader-at-departure/movements/departures/"
+  protected val arrivalGetRoute = "/transit-movements-trader-at-destination/movements/arrivals/"
+  protected val departureRoute  = "/transits-movements-trader-at-departure/movements/departures/"
 
   protected def extractIfSuccessful[T](response: HttpResponse)(implicit reads: Reads[T]): Either[HttpResponse, T] =
     if (is2xx(response.status)) {
