@@ -523,5 +523,29 @@ object Messages {
 
       xml
     }
+
+    def generateIE917Message(): NodeSeq = {
+      val xml =
+        <CC917A><SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+          <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+          <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
+          <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
+          <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+          <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+          <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+          <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+          <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
+          <HEAHEA>
+            <OriMesIdeMES22>{Strings.alphanumeric(1, 14)}</OriMesIdeMES22>
+            <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+            <RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4>
+          </HEAHEA>
+          <FUNERRER1><ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
+            <ErrPoiER12>{Strings.alphanumeric(1, 35)}</ErrPoiER12>
+            <ErrReaER13>{Strings.alphanumeric(1, 35)}</ErrReaER13>
+          </FUNERRER1>
+        </CC917A>
+      xml
+    }
   }
 }

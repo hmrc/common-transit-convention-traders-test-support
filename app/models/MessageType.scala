@@ -27,16 +27,17 @@ sealed trait MessageType extends IeMetadata {
 
 object MessageType extends Enumerable.Implicits {
 
-  case object DepartureDeclaration        extends IeMetadata("IE015", "CC015B", "DEP") with MessageType
-  case object PositiveAcknowledgement     extends IeMetadata("IE928", "CC928A", "DEP") with MessageType
-  case object NoReleaseForTransit         extends IeMetadata("IE051", "CC051B", "DEP") with MessageType
-  case object ReleaseForTransit           extends IeMetadata("IE029", "CC029B", "DEP") with MessageType
-  case object ControlDecisionNotification extends IeMetadata("IE060", "CC060A", "DEP") with MessageType
-  case object MrnAllocated                extends IeMetadata("IE028", "CC028A", "DEP") with MessageType
-  case object DeclarationRejected         extends IeMetadata("IE016", "CC016A", "DEP") with MessageType
-  case object CancellationDecision        extends IeMetadata("IE009", "CC009A", "DEP") with MessageType
-  case object WriteOffNotification        extends IeMetadata("IE045", "CC045A", "DEP") with MessageType
-  case object GuaranteeNotValid           extends IeMetadata("IE055", "CC055A", "DEP") with MessageType
+  case object DepartureDeclaration                 extends IeMetadata("IE015", "CC015B", "DEP") with MessageType
+  case object PositiveAcknowledgement              extends IeMetadata("IE928", "CC928A", "DEP") with MessageType
+  case object NoReleaseForTransit                  extends IeMetadata("IE051", "CC051B", "DEP") with MessageType
+  case object ReleaseForTransit                    extends IeMetadata("IE029", "CC029B", "DEP") with MessageType
+  case object ControlDecisionNotification          extends IeMetadata("IE060", "CC060A", "DEP") with MessageType
+  case object MrnAllocated                         extends IeMetadata("IE028", "CC028A", "DEP") with MessageType
+  case object DeclarationRejected                  extends IeMetadata("IE016", "CC016A", "DEP") with MessageType
+  case object CancellationDecision                 extends IeMetadata("IE009", "CC009A", "DEP") with MessageType
+  case object WriteOffNotification                 extends IeMetadata("IE045", "CC045A", "DEP") with MessageType
+  case object GuaranteeNotValid                    extends IeMetadata("IE055", "CC055A", "DEP") with MessageType
+  case object XMLSubmissionNegativeAcknowledgement extends IeMetadata("IE917", "CC917A", "DEP") with MessageType
 
   case object ArrivalRejection          extends IeMetadata("IE008", "CC008A", "ARR") with MessageType
   case object UnloadingPermission       extends IeMetadata("IE043", "CC043A", "ARR") with MessageType
@@ -53,7 +54,8 @@ object MessageType extends Enumerable.Implicits {
     DeclarationRejected,
     CancellationDecision,
     WriteOffNotification,
-    GuaranteeNotValid
+    GuaranteeNotValid,
+    XMLSubmissionNegativeAcknowledgement
   )
 
   val arrivalMessages = Seq(ArrivalRejection, UnloadingPermission, UnloadingRemarksRejection, GoodsReleased)
@@ -72,7 +74,8 @@ object MessageType extends Enumerable.Implicits {
     CancellationDecision,
     WriteOffNotification,
     GuaranteeNotValid,
-    DepartureDeclaration
+    DepartureDeclaration,
+    XMLSubmissionNegativeAcknowledgement
   )
 
   def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
