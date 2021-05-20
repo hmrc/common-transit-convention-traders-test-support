@@ -31,6 +31,7 @@ import models.MessageType.ReleaseForTransit
 import models.MessageType.UnloadingPermission
 import models.MessageType.UnloadingRemarksRejection
 import models.MessageType.WriteOffNotification
+import models.MessageType.XMLSubmissionNegativeAcknowledgement
 import models.generation.UnloadingPermissionGenInstructions
 import models.request.MessageRequest
 import play.api.libs.json.JsValue
@@ -42,15 +43,16 @@ class MessageGenerationService @Inject()(unloadingPermissionGenerator: Unloading
 
   def generateMessage(request: MessageRequest[JsValue]): NodeSeq = request.messageType match {
 
-    case PositiveAcknowledgement     => Messages.Departure.generateIE928Message()
-    case NoReleaseForTransit         => Messages.Departure.generateIE051Message()
-    case ReleaseForTransit           => Messages.Departure.generateIE029Message
-    case ControlDecisionNotification => Messages.Departure.generateIE060Message()
-    case MrnAllocated                => Messages.Departure.generateIE028Message()
-    case DeclarationRejected         => Messages.Departure.generateIE016Message()
-    case CancellationDecision        => Messages.Departure.generateIE009Message()
-    case WriteOffNotification        => Messages.Departure.generateIE045Message()
-    case GuaranteeNotValid           => Messages.Departure.generateIE055Message()
+    case PositiveAcknowledgement              => Messages.Departure.generateIE928Message()
+    case NoReleaseForTransit                  => Messages.Departure.generateIE051Message()
+    case ReleaseForTransit                    => Messages.Departure.generateIE029Message()
+    case ControlDecisionNotification          => Messages.Departure.generateIE060Message()
+    case MrnAllocated                         => Messages.Departure.generateIE028Message()
+    case DeclarationRejected                  => Messages.Departure.generateIE016Message()
+    case CancellationDecision                 => Messages.Departure.generateIE009Message()
+    case WriteOffNotification                 => Messages.Departure.generateIE045Message()
+    case GuaranteeNotValid                    => Messages.Departure.generateIE055Message()
+    case XMLSubmissionNegativeAcknowledgement => Messages.Departure.generateIE917Message()
 
     case ArrivalRejection          => Messages.Arrival.generateIE008Message()
     case UnloadingPermission       => unloadingPermissionGenerator.generate(request.instructions.asInstanceOf[UnloadingPermissionGenInstructions])
