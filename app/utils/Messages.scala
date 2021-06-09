@@ -452,7 +452,7 @@ object Messages {
           <HEAHEA>
             <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
             <CanIniByCusHEA94>{Strings.numeric(1)}</CanIniByCusHEA94>
-            <DatOfCanDecHEA146>{Strings.numeric(8)}</DatOfCanDecHEA146>
+            <DatOfCanDecHEA146>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfCanDecHEA146>
           </HEAHEA>
           <TRAPRIPC1/>
           <CUSOFFDEPEPT>
