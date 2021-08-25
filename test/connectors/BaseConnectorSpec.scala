@@ -28,7 +28,7 @@ import play.api.http.MimeTypes
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.Authorization
 
 class BaseConnectorSpec
     extends AnyFreeSpec
@@ -54,7 +54,6 @@ class BaseConnectorSpec
 
       val result: HeaderCarrier = harness.enforceAuth(Seq.empty)
 
-      result.headers must contain(HeaderNames.AUTHORIZATION -> "a5sesqerTyi135/")
       result.authorization mustBe Some(Authorization("a5sesqerTyi135/"))
     }
 
@@ -66,7 +65,6 @@ class BaseConnectorSpec
 
       val result: HeaderCarrier = harness.enforceAuth(Seq.empty)
 
-      result.headers must contain(HeaderNames.AUTHORIZATION -> "")
       result.authorization mustBe Some(Authorization(""))
     }
 
@@ -78,7 +76,7 @@ class BaseConnectorSpec
 
       val result: HeaderCarrier = harness.enforceAuth(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON))
 
-      result.headers must contain(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)
+      result.extraHeaders must contain(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)
     }
   }
 }
