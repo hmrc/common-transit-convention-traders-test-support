@@ -1,18 +1,17 @@
 import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.SbtArtifactory
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "common-transit-convention-traders-test-support"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(inConfig(IntegrationTest)(scalafmtSettings): _*)
   .settings(inConfig(Test)(testSettings): _*)
-  .settings(scalaVersion := "2.12.11")
+  .settings(scalaVersion := "2.12.14")
   .settings(unmanagedResourceDirectories in Compile += baseDirectory.value / "resources")
   .settings(
     majorVersion := 0,
