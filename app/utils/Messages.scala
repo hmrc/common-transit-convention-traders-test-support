@@ -517,6 +517,7 @@ object Messages {
             <GuaRefNumGRNREF21>{Strings.alphanumeric(1, 24)}</GuaRefNumGRNREF21>
             <INVGUARNS>
               <InvGuaReaCodRNS11>{Strings.alphanumeric(1, 3)}</InvGuaReaCodRNS11>
+              <InvGuaReaRNS12>{Strings.alphanumeric(1, 10)}</InvGuaReaRNS12>
             </INVGUARNS>
           </GUAREF2>
         </CC055A>
