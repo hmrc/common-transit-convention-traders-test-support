@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.Authorization
 
 class BaseConnector extends HttpErrorFunctions {
 
