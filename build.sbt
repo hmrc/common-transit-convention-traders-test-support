@@ -12,7 +12,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(inConfig(IntegrationTest)(itSettings): _*)
   .settings(inConfig(IntegrationTest)(scalafmtSettings): _*)
   .settings(inConfig(Test)(testSettings): _*)
-  .settings(scalaVersion := "2.12.11")
+  .settings(scalaVersion := "2.12.12")
   .settings(unmanagedResourceDirectories in Compile += baseDirectory.value / "resources")
   .settings(
     majorVersion := 0,

@@ -19,15 +19,14 @@ package connectors
 import connectors.util.CustomHttpReader
 import connectors.util.CustomHttpReader.INTERNAL_SERVER_ERROR
 import models.ChannelType
-import models.ChannelType.api
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
 import play.api.libs.json.Reads
 import play.api.mvc.RequestHeader
+import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.http.logging.Authorization
 
 class BaseConnector extends HttpErrorFunctions {
 
