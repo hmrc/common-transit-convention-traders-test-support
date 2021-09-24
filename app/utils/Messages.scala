@@ -432,6 +432,10 @@ object Messages {
             <TypOfDecHEA24>{Strings.alphanumeric(1, 9)}</TypOfDecHEA24>
             <DecRejDatHEA159>{Strings.numeric8()}</DecRejDatHEA159>
           </HEAHEA>
+          <FUNERRER1>
+            <ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
+            <ErrPoiER12>{Strings.alphanumeric(1, 35)}</ErrPoiER12>
+          </FUNERRER1>
         </CC016A>
 
       xml
