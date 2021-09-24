@@ -18,17 +18,15 @@ package connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
-
-import javax.inject.Inject
 import models.ArrivalId
 import models.ChannelType
-import models.request.MessageRequest
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
 import utils.Utils
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 

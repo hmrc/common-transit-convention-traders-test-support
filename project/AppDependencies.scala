@@ -6,7 +6,7 @@ object AppDependencies {
   private val catsVersion = "2.6.1"
 
   val compile = Seq(
-    "uk.gov.hmrc"       %% "bootstrap-backend-play-27"               % "5.12.0",
+    "uk.gov.hmrc"       %% "bootstrap-backend-play-27"       % "5.14.0",
     "com.typesafe.play" %% "play-iteratees"                  % "2.6.1",
     "com.typesafe.play" %% "play-iteratees-reactive-streams" % "2.6.1",
     "org.scalacheck"    %% "scalacheck"                      % "1.15.4",

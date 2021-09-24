@@ -432,6 +432,10 @@ object Messages {
             <TypOfDecHEA24>{Strings.alphanumeric(1, 9)}</TypOfDecHEA24>
             <DecRejDatHEA159>{Strings.numeric8()}</DecRejDatHEA159>
           </HEAHEA>
+          <FUNERRER1>
+            <ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
+            <ErrPoiER12>{Strings.alphanumeric(1, 35)}</ErrPoiER12>
+          </FUNERRER1>
         </CC016A>
 
       xml
@@ -517,6 +521,7 @@ object Messages {
             <GuaRefNumGRNREF21>{Strings.alphanumeric(1, 24)}</GuaRefNumGRNREF21>
             <INVGUARNS>
               <InvGuaReaCodRNS11>{Strings.alphanumeric(1, 3)}</InvGuaReaCodRNS11>
+              <InvGuaReaRNS12>{Strings.alphanumeric(1, 10)}</InvGuaReaRNS12>
             </INVGUARNS>
           </GUAREF2>
         </CC055A>
