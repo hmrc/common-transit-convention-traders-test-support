@@ -58,7 +58,7 @@ object MessageType extends Enumerable.Implicits {
     XMLSubmissionNegativeAcknowledgement
   )
 
-  val arrivalMessages = Seq(ArrivalRejection, UnloadingPermission, UnloadingRemarksRejection, GoodsReleased)
+  val arrivalMessages = Seq(ArrivalRejection, UnloadingPermission, UnloadingRemarksRejection, GoodsReleased, XMLSubmissionNegativeAcknowledgement)
 
   val values: Seq[MessageType] = Seq(
     PositiveAcknowledgement,
