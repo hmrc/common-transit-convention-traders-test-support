@@ -39,10 +39,11 @@ object MessageType extends Enumerable.Implicits {
   case object GuaranteeNotValid                    extends IeMetadata("IE055", "CC055A", "DEP") with MessageType
   case object XMLSubmissionNegativeAcknowledgement extends IeMetadata("IE917", "CC917A", "DEP") with MessageType
 
-  case object ArrivalRejection          extends IeMetadata("IE008", "CC008A", "ARR") with MessageType
-  case object UnloadingPermission       extends IeMetadata("IE043", "CC043A", "ARR") with MessageType
-  case object UnloadingRemarksRejection extends IeMetadata("IE058", "CC058A", "ARR") with MessageType
-  case object GoodsReleased             extends IeMetadata("IE025", "CC025A", "ARR") with MessageType
+  case object ArrivalRejection               extends IeMetadata("IE008", "CC008A", "ARR") with MessageType
+  case object UnloadingPermission            extends IeMetadata("IE043", "CC043A", "ARR") with MessageType
+  case object UnloadingRemarksRejection      extends IeMetadata("IE058", "CC058A", "ARR") with MessageType
+  case object GoodsReleased                  extends IeMetadata("IE025", "CC025A", "ARR") with MessageType
+  case object ArrivalNegativeAcknowledgement extends IeMetadata("IE917", "CC917A", "ARR") with MessageType
 
   val departureMessages = Seq(
     DepartureDeclaration,
@@ -58,7 +59,7 @@ object MessageType extends Enumerable.Implicits {
     XMLSubmissionNegativeAcknowledgement
   )
 
-  val arrivalMessages = Seq(ArrivalRejection, UnloadingPermission, UnloadingRemarksRejection, GoodsReleased, XMLSubmissionNegativeAcknowledgement)
+  val arrivalMessages = Seq(ArrivalRejection, UnloadingPermission, UnloadingRemarksRejection, GoodsReleased, ArrivalNegativeAcknowledgement)
 
   val values: Seq[MessageType] = Seq(
     PositiveAcknowledgement,
@@ -75,7 +76,7 @@ object MessageType extends Enumerable.Implicits {
     WriteOffNotification,
     GuaranteeNotValid,
     DepartureDeclaration,
-    XMLSubmissionNegativeAcknowledgement
+    ArrivalNegativeAcknowledgement
   )
 
   def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
