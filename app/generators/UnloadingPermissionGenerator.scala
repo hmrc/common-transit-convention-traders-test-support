@@ -30,60 +30,48 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
 
   def generate(instructions: UnloadingPermissionGenInstructions): NodeSeq = {
     val xml =
-      <CC043A><SynIdeMES1>UNOC</SynIdeMES1>
-        <SynVerNumMES2>3</SynVerNumMES2>
-        <MesSenMES3>NTA.GB</MesSenMES3>
+      <CC043A>
+        <SynIdeMES1>{Strings.alpha(4)}</SynIdeMES1>
+        <SynVerNumMES2>{Strings.numeric(1)}</SynVerNumMES2>
+        <MesSenMES3>{Strings.alphanumeric(1, 35)}</MesSenMES3>
         <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
         <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
         <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
-        <IntConRefMES11>66390912144854</IntConRefMES11>
-        <AppRefMES14>NCTS</AppRefMES14>
-        <TesIndMES18>0</TesIndMES18>
-        <MesIdeMES19>66390912144854</MesIdeMES19>
-        <MesTypMES20>GB043A</MesTypMES20>
+        <IntConRefMES11>{Strings.alphanumeric(1, 14)}</IntConRefMES11>
+        <AppRefMES14>{Strings.alphanumeric(1, 14)}</AppRefMES14>
+        <TesIndMES18>{Strings.numeric(1)}</TesIndMES18>
+        <MesIdeMES19>{Strings.alphanumeric(1, 14)}</MesIdeMES19>
+        <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
         <HEAHEA>
-          <DocNumHEA5>99IT9876AB88901209</DocNumHEA5>
-          <TypOfDecHEA24>T1</TypOfDecHEA24>
-          <CouOfDesCodHEA30>GB</CouOfDesCodHEA30>
-          <CouOfDisCodHEA55>IT</CouOfDisCodHEA55>
-          <ConIndHEA96>0</ConIndHEA96>
-          <AccDatHEA158>20190912</AccDatHEA158>
-          <TotNumOfIteHEA305>1</TotNumOfIteHEA305>
-          <TotNumOfPacHEA306>1</TotNumOfPacHEA306>
-          <TotGroMasHEA307>1000</TotGroMasHEA307>
+          <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
+          <TypOfDecHEA24>{Strings.alphanumeric(1, 9)}</TypOfDecHEA24>
+          <CouOfDesCodHEA30>{Strings.alpha(2)}</CouOfDesCodHEA30>
+          <CouOfDisCodHEA55>{Strings.alpha(2)}</CouOfDisCodHEA55>
+          <ConIndHEA96>{Strings.numeric(1)}</ConIndHEA96>
+          <AccDatHEA158>{Strings.numeric(8)}</AccDatHEA158>
+          <TotNumOfIteHEA305>{Strings.numeric(1, 5)}</TotNumOfIteHEA305>
+          <TotNumOfPacHEA306>{Strings.numeric(1, 7)}</TotNumOfPacHEA306>
+          <TotGroMasHEA307>{Strings.numeric(1, 11)}</TotGroMasHEA307>
         </HEAHEA>
         <TRADESTRD>
-          <NamTRD7>The Luggage Carriers</NamTRD7>
-          <StrAndNumTRD22>225 Suedopolish Yard,</StrAndNumTRD22>
-          <PosCodTRD23>SS8 2BB</PosCodTRD23>
-          <CitTRD24>,</CitTRD24>
-          <CouTRD25>GB</CouTRD25>
-          <TINTRD59>IT444100201000</TINTRD59>
+          <NamTRD7>{Strings.alphanumeric(1, 35)}</NamTRD7>
+          <StrAndNumTRD22>{Strings.alphanumeric(1, 35)}</StrAndNumTRD22>
+          <PosCodTRD23>{Strings.alphanumeric(9)}</PosCodTRD23>
+          <CitTRD24>{Strings.alphanumeric(1, 35)}</CitTRD24>
+          <CouTRD25>{Strings.alpha(2)}</CouTRD25>
+          <TINTRD59>{Strings.alphanumeric(1, 17)}</TINTRD59>
         </TRADESTRD>
         <CUSOFFDEPEPT>
-          <RefNumEPT1>IT021100</RefNumEPT1>
+          <RefNumEPT1>{Strings.alphanumeric(8)}</RefNumEPT1>
         </CUSOFFDEPEPT>
         <CUSOFFPREOFFRES>
-          <RefNumRES1>GB000060</RefNumRES1>
+          <RefNumRES1>{Strings.alphanumeric(8)}</RefNumRES1>
         </CUSOFFPREOFFRES>
         <SEAINFSLI>
           <SeaNumSLI2>{Strings.numeric(4)}</SeaNumSLI2>
           {sealGenerator.generate(instructions.sealsCount)}
         </SEAINFSLI>
-        <GOOITEGDS>
-          <IteNumGDS7>1</IteNumGDS7>
-          <GooDesGDS23>Flowers</GooDesGDS23>
-          <GroMasGDS46>1000</GroMasGDS46>
-          <NetMasGDS48>999</NetMasGDS48>
-          <PRODOCDC2><DocTypDC21>235</DocTypDC21>
-            <DocRefDC23>Ref.</DocRefDC23>
-          </PRODOCDC2>
-          <PACGS2>
-            <MarNumOfPacGS21>Ref.</MarNumOfPacGS21>
-            <KinOfPacGS23>BX</KinOfPacGS23>
-            <NumOfPacGS24>1</NumOfPacGS24>
-          </PACGS2>
-        </GOOITEGDS>
+        {GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
       </CC043A>
 
     xml

@@ -16,11 +16,8 @@
 
 package utils
 
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime, LocalTime}
 import java.time.format.DateTimeFormatter
-
 import scala.xml.NodeSeq
 
 object Messages {
@@ -95,34 +92,15 @@ object Messages {
             <UnlRemRejReaHEA280>The IE044 Message was invalid</UnlRemRejReaHEA280>
           </HEAHEA>
           <FUNERRER1>
-            <ErrTypER11>12</ErrTypER11>
-            <ErrPoiER12>REM.Unloading Date</ErrPoiER12>
-            <OriAttValER14>20190101</OriAttValER14>
-          </FUNERRER1> <FUNERRER1>
-          <ErrTypER11>12</ErrTypER11>
-          <ErrPoiER12>HEA.Total number of items</ErrPoiER12>
-          <OriAttValER14>1000</OriAttValER14>
-        </FUNERRER1><FUNERRER1>
-          <ErrTypER11>12</ErrTypER11>
-          <ErrPoiER12>HEA.Total gross mass</ErrPoiER12>
-          <OriAttValER14>1000.123</OriAttValER14>
-        </FUNERRER1><FUNERRER1>
-          <ErrTypER11>12</ErrTypER11>
-          <ErrPoiER12>HEA.Identity of means of transport at departure (exp/trans)</ErrPoiER12>
-          <OriAttValER14>RegNumber</OriAttValER14>
-        </FUNERRER1><FUNERRER1>
-          <ErrTypER11>12</ErrTypER11>
-          <ErrPoiER12>HEA.Total number of packages</ErrPoiER12>    <OriAttValER14>12345</OriAttValER14>
-        </FUNERRER1><FUNERRER1>
-          <ErrTypER11>12</ErrTypER11>
-          <ErrPoiER12>TRD.Country</ErrPoiER12>    <OriAttValER14>GB</OriAttValER14>
-        </FUNERRER1><FUNERRER1>
-          <ErrTypER11>15</ErrTypER11>
-          <ErrPoiER12>SLI.Seals number</ErrPoiER12>    <ErrReaER13>R206</ErrReaER13>
-        </FUNERRER1><FUNERRER1>
-          <ErrTypER11>13</ErrTypER11>
-          <ErrPoiER12>GDS(1).ROC</ErrPoiER12>
-        </FUNERRER1>
+            <ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
+            <ErrPoiER12>{Strings.alphanumeric(1, 210)}</ErrPoiER12>
+            <OriAttValER14>{Strings.alphanumeric(1, 140)}</OriAttValER14>
+          </FUNERRER1>
+          <FUNERRER1>
+            <ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
+            <ErrPoiER12>{Strings.alphanumeric(1, 210)}</ErrPoiER12>
+            <OriAttValER14>{Strings.alphanumeric(1, 140)}</OriAttValER14>
+          </FUNERRER1>
         </CC058A>
 
       xml
@@ -575,7 +553,8 @@ object Messages {
             <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
             <RefNumHEA4>{Strings.alphanumeric(1, 22)}</RefNumHEA4>
           </HEAHEA>
-          <FUNERRER1><ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
+          <FUNERRER1>
+            <ErrTypER11>{Strings.numeric(2)}</ErrTypER11>
             <ErrPoiER12>{Strings.alphanumeric(1, 35)}</ErrPoiER12>
             <ErrReaER13>{Strings.alphanumeric(1, 35)}</ErrReaER13>
           </FUNERRER1>
