@@ -18,6 +18,7 @@ package services
 
 import com.google.inject.Inject
 import generators.UnloadingPermissionGenerator
+import models.MessageType.ArrivalNegativeAcknowledgement
 import models.MessageType.ArrivalRejection
 import models.MessageType.CancellationDecision
 import models.MessageType.ControlDecisionNotification
@@ -53,6 +54,7 @@ class MessageGenerationService @Inject()(unloadingPermissionGenerator: Unloading
     case WriteOffNotification                 => Messages.Departure.generateIE045Message()
     case GuaranteeNotValid                    => Messages.Departure.generateIE055Message()
     case XMLSubmissionNegativeAcknowledgement => Messages.Departure.generateIE917Message()
+    case ArrivalNegativeAcknowledgement       => Messages.Departure.generateIE917Message()
 
     case ArrivalRejection          => Messages.Arrival.generateIE008Message()
     case UnloadingPermission       => unloadingPermissionGenerator.generate(request.instructions.asInstanceOf[UnloadingPermissionGenInstructions])
