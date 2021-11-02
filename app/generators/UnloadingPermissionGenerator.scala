@@ -70,20 +70,7 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
           <SeaNumSLI2>{Strings.numeric(4)}</SeaNumSLI2>
           {sealGenerator.generate(instructions.sealsCount)}
         </SEAINFSLI>
-        <GOOITEGDS>
-          <IteNumGDS7>1</IteNumGDS7>
-          <GooDesGDS23>Flowers</GooDesGDS23>
-          <GroMasGDS46>1000</GroMasGDS46>
-          <NetMasGDS48>999</NetMasGDS48>
-          <PRODOCDC2><DocTypDC21>235</DocTypDC21>
-            <DocRefDC23>Ref.</DocRefDC23>
-          </PRODOCDC2>
-          <PACGS2>
-            <MarNumOfPacGS21>Ref.</MarNumOfPacGS21>
-            <KinOfPacGS23>BX</KinOfPacGS23>
-            <NumOfPacGS24>1</NumOfPacGS24>
-          </PACGS2>
-        </GOOITEGDS>
+        {GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
       </CC043A>
 
     xml
