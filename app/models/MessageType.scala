@@ -76,7 +76,8 @@ object MessageType extends Enumerable.Implicits {
     WriteOffNotification,
     GuaranteeNotValid,
     DepartureDeclaration,
-    ArrivalNegativeAcknowledgement
+    ArrivalNegativeAcknowledgement,
+    XMLSubmissionNegativeAcknowledgement
   )
 
   def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
