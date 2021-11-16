@@ -17,7 +17,9 @@
 package models.generation
 
 import models.MessageType
-import models.generation
+import models.MessageType.ArrivalNegativeAcknowledgement
+import models.MessageType.XMLSubmissionNegativeAcknowledgement
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
 import play.api.libs.json._
 
@@ -25,8 +27,14 @@ case class TestMessage(messageType: MessageType)
 
 object TestMessage {
   implicit val readsTestMessage: Reads[TestMessage] =
-    (__ \ "message" \ "messageType").read[MessageType].map(v => generation.TestMessage(v))
-  (TestMessage.apply _)
+    (
+      (__ \ "message" \ "messageType").read[String] and
+        (__ \ "message" \ "source").readNullable[String]
+    ).tupled.flatMap {
+      case ("IE917", Some("DEP")) => Reads.pure(TestMessage(XMLSubmissionNegativeAcknowledgement))
+      case ("IE917", Some("ARR")) => Reads.pure(TestMessage(ArrivalNegativeAcknowledgement))
+      case _                      => (__ \ "message" \ "messageType").read[MessageType].map(TestMessage.apply)
+    }
 
   implicit val writes: Writes[TestMessage] = Json.writes[TestMessage]
 }
