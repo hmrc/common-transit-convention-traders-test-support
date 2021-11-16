@@ -17,7 +17,6 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import models.ChannelType
 import models.MessageType
 import models.MessageType.UnloadingPermission
 import models.generation.EmptyGenInstructions

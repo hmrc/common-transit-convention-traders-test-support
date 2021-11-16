@@ -16,10 +16,6 @@
 
 package models
 
-import cats.data.ReaderT
-
-import scala.xml.NodeSeq
-
 sealed trait MessageType extends IeMetadata {
   def code: String
   def rootNode: String
@@ -75,16 +71,8 @@ object MessageType extends Enumerable.Implicits {
     CancellationDecision,
     WriteOffNotification,
     GuaranteeNotValid,
-    DepartureDeclaration,
-    ArrivalNegativeAcknowledgement,
-    XMLSubmissionNegativeAcknowledgement
+    DepartureDeclaration
   )
-
-  def getMessageType: ReaderT[Option, NodeSeq, MessageType] =
-    ReaderT[Option, NodeSeq, MessageType] {
-      nodeSeq =>
-        values.find(_.rootNode == nodeSeq.head.label)
-    }
 
   implicit val enumerable: Enumerable[MessageType] =
     Enumerable(values.map(v => v.code -> v): _*)
