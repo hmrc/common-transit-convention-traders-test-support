@@ -491,7 +491,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.submitDepartureDeclaration().url)
+          val request = FakeRequest(POST, routes.DepartureTestMessagesController.submitDepartureDeclaration.url)
             .withHeaders("channel" -> channel.toString)
             .withXmlBody(requestXmlBody.map(trim))
 
@@ -520,7 +520,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.submitDepartureDeclaration().url)
+          val request = FakeRequest(POST, routes.DepartureTestMessagesController.submitDepartureDeclaration.url)
             .withHeaders("channel" -> channel.toString)
             .withXmlBody(requestXmlBody.map(trim))
 
@@ -545,7 +545,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.submitDepartureDeclaration().url)
+          val request = FakeRequest(POST, routes.DepartureTestMessagesController.submitDepartureDeclaration.url)
             .withHeaders("channel" -> channel.toString)
             .withXmlBody(requestXmlBody.map(trim))
 

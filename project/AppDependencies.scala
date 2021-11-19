@@ -6,7 +6,7 @@ object AppDependencies {
   private val catsVersion = "2.6.1"
 
   val compile = Seq(
-    "uk.gov.hmrc"       %% "bootstrap-backend-play-27"       % "5.14.0",
+    "uk.gov.hmrc"       %% "bootstrap-backend-play-28"       % "5.16.0",
     "com.typesafe.play" %% "play-iteratees"                  % "2.6.1",
     "com.typesafe.play" %% "play-iteratees-reactive-streams" % "2.6.1",
     "org.scalacheck"    %% "scalacheck"                      % "1.15.4",
@@ -15,7 +15,7 @@ object AppDependencies {
 
   val test = Seq(
     "org.mockito"            % "mockito-core"          % "3.3.3",
-    "org.scalatest"          %% "scalatest"            % "3.2.9",
+    "org.scalatest"          %% "scalatest"            % "3.2.10",
     "com.typesafe.play"      %% "play-test"            % current,
     "org.scalatestplus.play" %% "scalatestplus-play"   % "4.0.3",
     "org.scalatestplus"      %% "mockito-3-2"          % "3.1.2.0",
@@ -24,6 +24,6 @@ object AppDependencies {
     "org.typelevel"          %% "cats-laws"            % catsVersion,
     "org.typelevel"          %% "discipline-core"      % "1.1.5",
     "org.typelevel"          %% "discipline-scalatest" % "2.1.5",
-    "com.vladsch.flexmark"   % "flexmark-all"          % "0.36.8"
+    "com.vladsch.flexmark"   % "flexmark-all"          % "0.62.2"
   ).map(_ % "test, it")
 }
