@@ -45,6 +45,9 @@ class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMe
                 <CouOfDesGDS59>{Strings.alpha(2)}</CouOfDesGDS59>
                 {productGenerator.generate(productCount)}
                 {specialMentionsGenerator.generate(specialMentionsCount)}
+                <PACGS2>
+                  <KinOfPacGS23>Foo</KinOfPacGS23>
+                </PACGS2>
               </GOOITEGDS>
           )
         }
