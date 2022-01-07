@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package controllers.actions
 
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.HeaderNames
@@ -32,17 +32,13 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
 import play.api.mvc.DefaultActionBuilder
-import play.api.mvc.Result
+import play.api.test.Helpers._
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.xml.Elem
-import scala.xml.NodeSeq
-import scala.xml.XML
 
 class ValidateDepartureMessageTypeActionSpec
     extends AnyFreeSpec
@@ -71,11 +67,6 @@ class ValidateDepartureMessageTypeActionSpec
             Future.successful(Ok(JsString("test")))
         }
   }
-
-  private def contentAsXml(of: Future[Result]): Elem = XML.loadString(contentAsString(of))
-
-  private def numberOfNodes(nodes: NodeSeq): Int =
-    nodes.head.child.filterNot(_.toString().trim.isEmpty).length
 
   "ValidateDepartureMessageTypeAction" - {
     "must execute the block when passed in a valid IE928 TestMessage" in {

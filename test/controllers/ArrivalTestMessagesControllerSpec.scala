@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,11 @@ import connectors.ArrivalMessageConnector
 import connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import controllers.actions.ChannelAction
-import controllers.actions.FakeChannelAction
 import controllers.actions.FakeAuthAction
+import controllers.actions.FakeChannelAction
 import generators.ModelGenerators
-import models.MessageType.ArrivalRejection
 import models.ArrivalId
-import models.MessageType
+import models.MessageType.ArrivalRejection
 import models.domain.MovementMessage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -39,7 +38,6 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.AnyContentAsXml
-import play.api.mvc.Result
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
@@ -48,14 +46,10 @@ import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import utils.Messages
 
 import java.time.LocalDateTime
-import models.generation.TestMessage
-
 import scala.concurrent.Future
 import scala.xml.Elem
-import scala.xml.NodeSeq
 import scala.xml.XML
 
 class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with IntegrationPatience {
@@ -73,9 +67,6 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
   )
 
   private def contentAsXml(xml: String): Elem = XML.loadString(xml)
-
-  private def numberOfNodes(nodes: NodeSeq): Int =
-    nodes.head.child.filterNot(_.toString().trim.isEmpty).length
 
   "POST" - {
     "must send a test message to the arrivals backend and return Created if successful" in {

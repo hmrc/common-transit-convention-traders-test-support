@@ -6,7 +6,6 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -28,7 +27,6 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       )
 
       implicit val hc = HeaderCarrier()
-      implicit val requestHeader = FakeRequest()
 
       val result = connector.post(MessageType.ArrivalRejection, "<document></document>", itemId).futureValue
 
@@ -48,7 +46,6 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         )
 
         implicit val hc = HeaderCarrier()
-        implicit val requestHeader = FakeRequest()
 
         val result = connector.post(MessageType.ArrivalRejection, "<document></document>", itemId).futureValue
 
@@ -69,7 +66,6 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       )
 
       implicit val hc = HeaderCarrier()
-      implicit val requestHeader = FakeRequest()
 
       val result = connector.post(MessageType.DeclarationRejected, "<document></document>", itemId).futureValue
 

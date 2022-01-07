@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package models.request
 
+import models.generation.GenInstructions
 import models.ChannelType
 import models.MessageType
-import models.generation.GenInstructions
 import play.api.mvc.Request
-import play.api.mvc.WrappedRequest
 
 abstract class BaseMessageRequest[A](request: Request[A], channel: ChannelType, messageType: MessageType, instructions: GenInstructions)
     extends ChannelRequest[A](request: Request[A], channel: ChannelType)

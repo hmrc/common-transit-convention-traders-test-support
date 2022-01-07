@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import models.DepartureId
 import models.DepartureWithMessages
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -49,8 +49,9 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
   def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit requestHeader: RequestHeader,
                                                                                hc: HeaderCarrier,
                                                                                ec: ExecutionContext): Future[HttpResponse] = {
-    val url                            = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
-    val headers: Seq[(String, String)] = requestHeaders :+ ("Channel", channelType.toString)
+    val url                             = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
+    val channelHeader: (String, String) = ("Channel", channelType.toString)
+    val headers: Seq[(String, String)]  = requestHeaders :+ channelHeader
 
     http.POSTString[HttpResponse](url, requestData.toString, headers)(CustomHttpReader, enforceAuthHeaderCarrier(Seq.empty), ec)
   }

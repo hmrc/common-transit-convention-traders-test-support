@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ import controllers.actions.FakeAuthAction
 import controllers.actions.FakeChannelAction
 import data.TestXml
 import generators.ModelGenerators
+import models.MessageType.DepartureDeclaration
+import models.MessageType.PositiveAcknowledgement
+import models.domain.MovementMessage
 import models.ChannelType
 import models.Departure
 import models.DepartureId
 import models.DepartureWithMessages
-import models.MessageType.DepartureDeclaration
-import models.MessageType.PositiveAcknowledgement
-import models.domain.MovementMessage
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalacheck.Gen
@@ -44,13 +44,13 @@ import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.AnyContentAsXml
-import play.api.test.FakeHeaders
-import play.api.test.FakeRequest
 import play.api.test.Helpers.POST
 import play.api.test.Helpers.route
 import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import play.api.test.Helpers._
+import play.api.test.FakeHeaders
+import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HttpResponse
 import utils.Format
 
@@ -60,7 +60,6 @@ import java.time.LocalTime
 import scala.concurrent.Future
 import scala.xml.Utility.trim
 import scala.xml.Elem
-import scala.xml.NodeSeq
 import scala.xml.XML
 
 class DepartureTestMessagesControllerSpec
@@ -108,9 +107,6 @@ class DepartureTestMessagesControllerSpec
     </CC015B>
 
   private def contentAsXml(xml: String): Elem = XML.loadString(xml)
-
-  private def numberOfNodes(nodes: NodeSeq): Int =
-    nodes.head.child.filterNot(_.toString().trim.isEmpty).length
 
   "DepartureTestMessagesController" - {
     "POST" - {
