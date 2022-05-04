@@ -485,7 +485,9 @@ object Messages {
           <MesTypMES20>{Strings.alphanumeric(1, 6)}</MesTypMES20>
           <HEAHEA>
             <DocNumHEA5>{Strings.alphanumeric(1, 21)}</DocNumHEA5>
-            <CanIniByCusHEA94>{Strings.numeric(1)}</CanIniByCusHEA94>
+            <CanDecHEA93>1</CanDecHEA93>
+            <DatOfCanReqHEA147>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfCanReqHEA147>
+            <CanIniByCusHEA94>1</CanIniByCusHEA94>
             <DatOfCanDecHEA146>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfCanDecHEA146>
           </HEAHEA>
           <TRAPRIPC1/>
