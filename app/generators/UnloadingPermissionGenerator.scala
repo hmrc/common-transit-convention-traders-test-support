@@ -52,6 +52,14 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
           <TotNumOfPacHEA306>1</TotNumOfPacHEA306>
           <TotGroMasHEA307>1000</TotGroMasHEA307>
         </HEAHEA>
+        <TRAPRIPC1>
+          <NamPC17>Mancini Carriers</NamPC17>
+          <StrAndNumPC122>90 Desio Way</StrAndNumPC122>
+          <PosCodPC123>MOD 5JJ</PosCodPC123>
+          <CitPC124>Modena</CitPC124>
+          <CouPC125>IT</CouPC125>
+          <TINPC159>IT444100201000</TINPC159>
+        </TRAPRIPC1>
         <TRADESTRD>
           <NamTRD7>The Luggage Carriers</NamTRD7>
           <StrAndNumTRD22>225 Suedopolish Yard,</StrAndNumTRD22>
