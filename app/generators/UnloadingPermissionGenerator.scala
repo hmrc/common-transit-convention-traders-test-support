@@ -16,19 +16,18 @@
 
 package generators
 
-import java.time.format.DateTimeFormatter
-import java.time.LocalDate
-import java.time.LocalTime
-
 import com.google.inject.Inject
 import models.generation.UnloadingPermissionGenInstructions
 import utils.Strings
 
-import scala.xml.NodeSeq
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import scala.xml.Elem
 
 class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenerator, sealGenerator: SealGenerator) {
 
-  def generate(instructions: UnloadingPermissionGenInstructions): NodeSeq = {
+  def generate(instructions: UnloadingPermissionGenInstructions): Elem = {
     val xml =
       <CC043A><SynIdeMES1>UNOC</SynIdeMES1>
         <SynVerNumMES2>3</SynVerNumMES2>

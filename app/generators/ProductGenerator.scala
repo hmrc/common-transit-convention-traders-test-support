@@ -33,7 +33,7 @@ class ProductGenerator {
             count - 1,
             accumulator ++
               <PRODOCDC2>
-              <DocTypDC21>{Strings.alphanumeric(4)}</DocTypDC21>
+              <DocTypDC21>18</DocTypDC21>
               <DocRefDC23>{Strings.alphanumeric(35)}</DocRefDC23>
               <DocRefDCLNG>{Strings.alpha(2)}</DocRefDCLNG>
               <ComOfInfDC25>{Strings.alphanumeric(26)}</ComOfInfDC25>
