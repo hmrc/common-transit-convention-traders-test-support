@@ -37,6 +37,4 @@ trait SpecBase extends AnyFreeSpec with Matchers with MockitoSugar with ScalaFut
       .configure(
         "metrics.jvm" -> false
       )
-      .overrides(
-        )
 }
