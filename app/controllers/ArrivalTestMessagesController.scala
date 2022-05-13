@@ -39,19 +39,23 @@ import utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import logging.Logging
 
-class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
-                                              arrivalConnector: ArrivalConnector,
-                                              inboundRouterConnector: InboundRouterConnector,
-                                              arrivalMessageConnector: ArrivalMessageConnector,
-                                              authAction: AuthAction,
-                                              channelAction: ChannelAction,
-                                              messageRequestAction: MessageRequestAction,
-                                              validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction,
-                                              msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
+class ArrivalTestMessagesController @Inject()(
+  cc: ControllerComponents,
+  arrivalConnector: ArrivalConnector,
+  inboundRouterConnector: InboundRouterConnector,
+  arrivalMessageConnector: ArrivalMessageConnector,
+  authAction: AuthAction,
+  channelAction: ChannelAction,
+  messageRequestAction: MessageRequestAction,
+  validateArrivalMessageTypeAction: ValidateArrivalMessageTypeAction,
+  msgGenService: MessageGenerationService
+)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with HttpErrorFunctions
-    with ResponseHelper {
+    with ResponseHelper
+    with Logging {
 
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
     (authAction andThen channelAction andThen messageRequestAction andThen validateArrivalMessageTypeAction).async(parse.json) {
@@ -64,10 +68,14 @@ class ArrivalTestMessagesController @Inject()(cc: ControllerComponents,
             getResponse =>
               getResponse.status match {
                 case status if is2xx(status) =>
+                  logger.debug(s"arrival found, posting generated message to inbound router for arrival $arrivalId")
+
                   inboundRouterConnector
                     .post(request.messageType, message.toString(), arrivalId.index)
                     .flatMap {
                       postResponse =>
+                        logger.debug(s"response from inbound router ${postResponse.status} ${postResponse.body}")
+
                         postResponse.status match {
                           case status if is2xx(status) =>
                             postResponse.header(LOCATION) match {

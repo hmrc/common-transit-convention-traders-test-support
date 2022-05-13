@@ -36,12 +36,8 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
         <MesRecMES6>
           {Strings.alphanumeric(1, 35)}
         </MesRecMES6>
-        <DatOfPreMES9>
-          {LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}
-        </DatOfPreMES9>
-        <TimOfPreMES10>
-          {LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}
-        </TimOfPreMES10>
+        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
+        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
         <IntConRefMES11>66390912144854</IntConRefMES11>
         <AppRefMES14>NCTS</AppRefMES14>
         <TesIndMES18>0</TesIndMES18>
