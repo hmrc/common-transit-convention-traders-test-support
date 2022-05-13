@@ -33,7 +33,7 @@ class SpecialMentionsGenerator {
             count - 1,
             accumulator ++
               <SPEMENMT2>
-            <AddInfCodMT23>{Strings.alphanumeric(5)}</AddInfCodMT23>
+            <AddInfCodMT23>CAL</AddInfCodMT23>
             <ExpFroECMT24>{Strings.numeric(1)}</ExpFroECMT24>
             <ExpFroCouMT25>{Strings.alpha(2)}</ExpFroCouMT25>
           </SPEMENMT2>

@@ -16,26 +16,32 @@
 
 package generators
 
-import java.time.format.DateTimeFormatter
-import java.time.LocalDate
-import java.time.LocalTime
-
 import com.google.inject.Inject
 import models.generation.UnloadingPermissionGenInstructions
 import utils.Strings
 
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import scala.xml.NodeSeq
 
 class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenerator, sealGenerator: SealGenerator) {
 
   def generate(instructions: UnloadingPermissionGenInstructions): NodeSeq = {
     val xml =
-      <CC043A><SynIdeMES1>UNOC</SynIdeMES1>
+      <CC043A>
+        <SynIdeMES1>UNOC</SynIdeMES1>
         <SynVerNumMES2>3</SynVerNumMES2>
         <MesSenMES3>NTA.GB</MesSenMES3>
-        <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
-        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
-        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+        <MesRecMES6>
+          {Strings.alphanumeric(1, 35)}
+        </MesRecMES6>
+        <DatOfPreMES9>
+          {LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}
+        </DatOfPreMES9>
+        <TimOfPreMES10>
+          {LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}
+        </TimOfPreMES10>
         <IntConRefMES11>66390912144854</IntConRefMES11>
         <AppRefMES14>NCTS</AppRefMES14>
         <TesIndMES18>0</TesIndMES18>
@@ -52,6 +58,14 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
           <TotNumOfPacHEA306>1</TotNumOfPacHEA306>
           <TotGroMasHEA307>1000</TotGroMasHEA307>
         </HEAHEA>
+        <TRAPRIPC1>
+          <NamPC17>Mancini Carriers</NamPC17>
+          <StrAndNumPC122>90 Desio Way</StrAndNumPC122>
+          <PosCodPC123>MOD 5JJ</PosCodPC123>
+          <CitPC124>Modena</CitPC124>
+          <CouPC125>IT</CouPC125>
+          <TINPC159>IT444100201000</TINPC159>
+        </TRAPRIPC1>
         <TRADESTRD>
           <NamTRD7>The Luggage Carriers</NamTRD7>
           <StrAndNumTRD22>225 Suedopolish Yard,</StrAndNumTRD22>
@@ -67,10 +81,10 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
           <RefNumRES1>GB000060</RefNumRES1>
         </CUSOFFPREOFFRES>
         <SEAINFSLI>
-          <SeaNumSLI2>{Strings.numeric(4)}</SeaNumSLI2>
-          {sealGenerator.generate(instructions.sealsCount)}
-        </SEAINFSLI>
-        {GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
+          <SeaNumSLI2>
+            {Strings.numeric(4)}
+          </SeaNumSLI2>{sealGenerator.generate(instructions.sealsCount)}
+        </SEAINFSLI>{GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
       </CC043A>
 
     xml

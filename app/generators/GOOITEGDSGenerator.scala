@@ -36,17 +36,20 @@ class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMe
               <GOOITEGDS>
                 <IteNumGDS7>{Strings.numeric(5)}</IteNumGDS7>
                 <ComCodTarCodGDS10>{Strings.alphanumeric(22)}</ComCodTarCodGDS10>
-                <DecTypGDS15>{Strings.alphanumeric(9)}</DecTypGDS15>
-                <GooDesGDS23>{Strings.alphanumeric(280)}</GooDesGDS23>
+                <DecTypGDS15>18</DecTypGDS15>
+                <GooDesGDS23>GB</GooDesGDS23>
                 <GooDesGDS23LNG>{Strings.alpha(2)}</GooDesGDS23LNG>
                 <GroMasGDS46>{Strings.decimalMax12()}</GroMasGDS46>
                 <NetMasGDS48>{Strings.decimalMax12()}</NetMasGDS48>
-                <CouOfDisGDS58>{Strings.alpha(2)}</CouOfDisGDS58>
-                <CouOfDesGDS59>{Strings.alpha(2)}</CouOfDesGDS59>
+                <CouOfDisGDS58>GB</CouOfDisGDS58>
+                <CouOfDesGDS59>IT</CouOfDesGDS59>
                 {productGenerator.generate(productCount)}
                 {specialMentionsGenerator.generate(specialMentionsCount)}
                 <PACGS2>
-                  <KinOfPacGS23>Foo</KinOfPacGS23>
+                  <MarNumOfPacGS21>Bloomingales</MarNumOfPacGS21>
+                  <MarNumOfPacGS21LNG>EN</MarNumOfPacGS21LNG>
+                  <KinOfPacGS23>BX</KinOfPacGS23>
+                  <NumOfPacGS24>1</NumOfPacGS24>
                 </PACGS2>
               </GOOITEGDS>
           )
