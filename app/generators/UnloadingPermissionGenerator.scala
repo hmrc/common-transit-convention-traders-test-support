@@ -20,7 +20,8 @@ import com.google.inject.Inject
 import models.generation.UnloadingPermissionGenInstructions
 import utils.Strings
 
-import java.time.{LocalDate, LocalTime}
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import scala.xml.NodeSeq
 
@@ -28,12 +29,19 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
 
   def generate(instructions: UnloadingPermissionGenInstructions): NodeSeq = {
     val xml =
-      <CC043A><SynIdeMES1>UNOC</SynIdeMES1>
+      <CC043A>
+        <SynIdeMES1>UNOC</SynIdeMES1>
         <SynVerNumMES2>3</SynVerNumMES2>
         <MesSenMES3>NTA.GB</MesSenMES3>
-        <MesRecMES6>{Strings.alphanumeric(1, 35)}</MesRecMES6>
-        <DatOfPreMES9>{LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}</DatOfPreMES9>
-        <TimOfPreMES10>{LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}</TimOfPreMES10>
+        <MesRecMES6>
+          {Strings.alphanumeric(1, 35)}
+        </MesRecMES6>
+        <DatOfPreMES9>
+          {LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))}
+        </DatOfPreMES9>
+        <TimOfPreMES10>
+          {LocalTime.now().format(DateTimeFormatter.ofPattern("HHmm"))}
+        </TimOfPreMES10>
         <IntConRefMES11>66390912144854</IntConRefMES11>
         <AppRefMES14>NCTS</AppRefMES14>
         <TesIndMES18>0</TesIndMES18>
@@ -73,10 +81,10 @@ class UnloadingPermissionGenerator @Inject()(GOOITEGDSGenerator: GOOITEGDSGenera
           <RefNumRES1>GB000060</RefNumRES1>
         </CUSOFFPREOFFRES>
         <SEAINFSLI>
-          <SeaNumSLI2>{Strings.numeric(4)}</SeaNumSLI2>
-          {sealGenerator.generate(instructions.sealsCount)}
-        </SEAINFSLI>
-        {GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
+          <SeaNumSLI2>
+            {Strings.numeric(4)}
+          </SeaNumSLI2>{sealGenerator.generate(instructions.sealsCount)}
+        </SEAINFSLI>{GOOITEGDSGenerator.generate(instructions.goodsCount, instructions.productCount, instructions.specialMentionsCount)}
       </CC043A>
 
     xml
