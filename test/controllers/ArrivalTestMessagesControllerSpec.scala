@@ -115,10 +115,12 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(method = POST,
-                                  uri = routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url,
-                                  headers = FakeHeaders(Nil),
-                                  body = AnyContentAsEmpty)
+        val request = FakeRequest(
+          method = POST,
+          uri = routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url,
+          headers = FakeHeaders(Nil),
+          body = AnyContentAsEmpty
+        )
 
         val result = route(application, request).value
 
@@ -241,7 +243,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
-          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
@@ -336,7 +338,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
-          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
+          bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
         .build()
 
