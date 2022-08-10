@@ -16,29 +16,26 @@
 
 package generators
 
-import utils.Strings
+import utils.Format
 
-import scala.annotation.tailrec
-import scala.xml.NodeSeq
+import java.time.Clock
+import java.time.LocalDateTime
 
-class SealGenerator {
+class Generator(clock: Clock) {
 
-  def generate(sealCount: Int): NodeSeq = {
-    @tailrec
-    def gen_internal(count: Int, accumulator: NodeSeq): NodeSeq =
-      count match {
-        case 0 => accumulator
-        case _ =>
-          gen_internal(
-            count - 1,
-            accumulator ++
-              <SEAIDSID>
-             <SeaIdeSID1>{Strings.alphanumeric(20)}</SeaIdeSID1>
-             <SeaIdeSID1LNG>{Strings.alpha(2)}</SeaIdeSID1LNG>
-           </SEAIDSID>
-          )
-      }
+  private def now: LocalDateTime = LocalDateTime.now(clock)
 
-    gen_internal(sealCount, NodeSeq.Empty)
-  }
+  def localDateTime: String = now.format(Format.dateTimeFormatter)
+
+  def localDate: String = localDateAdjusted(0)
+
+  def localDateAdjusted(daysToAdd: Int): String =
+    now.toLocalDate
+      .plusDays(daysToAdd)
+      .format(Format.dateFormatter)
+
+  def localTime: String =
+    now.toLocalTime
+      .format(Format.timeFormatter)
+
 }

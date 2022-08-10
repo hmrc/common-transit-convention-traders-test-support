@@ -17,50 +17,31 @@
 package services
 
 import com.google.inject.Inject
+import generators.ArrivalMessageGenerator
+import generators.DepartureMessageGenerator
 import generators.UnloadingPermissionGenerator
-import models.MessageType.ArrivalNegativeAcknowledgement
-import models.MessageType.ArrivalRejection
-import models.MessageType.CancellationDecision
-import models.MessageType.ControlDecisionNotification
-import models.MessageType.DeclarationRejected
-import models.MessageType.GoodsReleased
-import models.MessageType.GuaranteeNotValid
-import models.MessageType.MrnAllocated
-import models.MessageType.NoReleaseForTransit
-import models.MessageType.PositiveAcknowledgement
-import models.MessageType.ReleaseForTransit
-import models.MessageType.UnloadingPermission
-import models.MessageType.UnloadingRemarksRejection
-import models.MessageType.WriteOffNotification
-import models.MessageType.XMLSubmissionNegativeAcknowledgement
-import models.generation.UnloadingPermissionGenInstructions
+import models.MessageType
 import models.request.MessageRequest
 import play.api.libs.json.JsValue
-import utils.Messages
 
 import scala.xml.NodeSeq
 
-class MessageGenerationService @Inject()(unloadingPermissionGenerator: UnloadingPermissionGenerator) {
+class MessageGenerationService @Inject()(
+  departureMessageGenerator: DepartureMessageGenerator,
+  arrivalMessageGenerator: ArrivalMessageGenerator,
+  unloadingPermissionGenerator: UnloadingPermissionGenerator
+) {
 
-  def generateMessage(request: MessageRequest[JsValue]): NodeSeq = request.messageType match {
+  def generateMessage(request: MessageRequest[JsValue]): NodeSeq = {
+    val pf = departureMessageGenerator.generate() orElse
+      arrivalMessageGenerator.generate() orElse
+      unloadingPermissionGenerator.generate(request.instructions) orElse
+      default()
 
-    case PositiveAcknowledgement              => Messages.Departure.generateIE928Message()
-    case NoReleaseForTransit                  => Messages.Departure.generateIE051Message()
-    case ReleaseForTransit                    => Messages.Departure.generateIE029Message()
-    case ControlDecisionNotification          => Messages.Departure.generateIE060Message()
-    case MrnAllocated                         => Messages.Departure.generateIE028Message()
-    case DeclarationRejected                  => Messages.Departure.generateIE016Message()
-    case CancellationDecision                 => Messages.Departure.generateIE009Message()
-    case WriteOffNotification                 => Messages.Departure.generateIE045Message()
-    case GuaranteeNotValid                    => Messages.Departure.generateIE055Message()
-    case XMLSubmissionNegativeAcknowledgement => Messages.Departure.generateIE917Message()
-    case ArrivalNegativeAcknowledgement       => Messages.Departure.generateIE917Message()
+    pf.apply(request.messageType)
+  }
 
-    case ArrivalRejection          => Messages.Arrival.generateIE008Message()
-    case UnloadingPermission       => unloadingPermissionGenerator.generate(request.instructions.asInstanceOf[UnloadingPermissionGenInstructions])
-    case UnloadingRemarksRejection => Messages.Arrival.generateIE058Message()
-    case GoodsReleased             => Messages.Arrival.generateIE025Message()
-
+  private def default(): PartialFunction[MessageType, NodeSeq] = {
     case _ => throw new Exception("Unsupported Message Type")
   }
 

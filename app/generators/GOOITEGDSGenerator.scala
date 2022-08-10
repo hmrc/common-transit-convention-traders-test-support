@@ -22,14 +22,14 @@ import utils.Strings
 import scala.annotation.tailrec
 import scala.xml.NodeSeq
 
-class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMentionsGenerator: SpecialMentionsGenerator, sealGenerator: SealGenerator) {
+class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMentionsGenerator: SpecialMentionsGenerator) {
 
   def generate(goodsCount: Int, productCount: Int, specialMentionsCount: Int): NodeSeq = {
     @tailrec
     def gen_internal(count: Int, accumulator: NodeSeq): NodeSeq =
       count match {
         case 0 => accumulator
-        case _ => {
+        case _ =>
           gen_internal(
             count - 1,
             accumulator ++
@@ -53,7 +53,6 @@ class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMe
                 </PACGS2>
               </GOOITEGDS>
           )
-        }
       }
 
     gen_internal(goodsCount, NodeSeq.Empty)
