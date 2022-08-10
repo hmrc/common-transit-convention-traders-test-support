@@ -35,9 +35,8 @@ class MessageGenerationService @Inject()(
   def generateMessage(request: MessageRequest[JsValue]): NodeSeq = {
     val pf = departureMessageGenerator.generate() orElse
       arrivalMessageGenerator.generate() orElse
-      unloadingPermissionGenerator.generate(request.instructions) orElse {
+      unloadingPermissionGenerator.generate(request.instructions) orElse
       default()
-    }
 
     pf.apply(request.messageType)
   }
