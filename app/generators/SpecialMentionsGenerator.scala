@@ -28,7 +28,7 @@ class SpecialMentionsGenerator {
     def gen_internal(count: Int, accumulator: NodeSeq): NodeSeq =
       count match {
         case 0 => accumulator
-        case _ => {
+        case _ =>
           gen_internal(
             count - 1,
             accumulator ++
@@ -38,7 +38,6 @@ class SpecialMentionsGenerator {
             <ExpFroCouMT25>{Strings.alpha(2)}</ExpFroCouMT25>
           </SPEMENMT2>
           )
-        }
       }
 
     gen_internal(count, NodeSeq.Empty)

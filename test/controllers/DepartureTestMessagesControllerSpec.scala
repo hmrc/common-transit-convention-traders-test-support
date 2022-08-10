@@ -74,15 +74,17 @@ class DepartureTestMessagesControllerSpec
 
   val departure = Departure(1, "loc", "messageLoc", Some("mrn"), "ref", "status", LocalDateTime.now(), LocalDateTime.now())
 
-  val departureWithMessages = DepartureWithMessages(1,
-                                                    "loc",
-                                                    "messageLoc",
-                                                    Some("mrn"),
-                                                    "ref",
-                                                    "status",
-                                                    LocalDateTime.now(),
-                                                    LocalDateTime.now(),
-                                                    Seq(MovementMessage("/1", LocalDateTime.now(), "type", CC015B)))
+  val departureWithMessages = DepartureWithMessages(
+    1,
+    "loc",
+    "messageLoc",
+    Some("mrn"),
+    "ref",
+    "status",
+    LocalDateTime.now(),
+    LocalDateTime.now(),
+    Seq(MovementMessage("/1", LocalDateTime.now(), "type", CC015B))
+  )
 
   val movement = MovementMessage("/transits-movements-trader-at-departure/movements/departures/1/messages/2", LocalDateTime.now, "abc", <test>default</test>)
 

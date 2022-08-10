@@ -30,7 +30,7 @@ class UnloadingPermissionGeneratorSpec extends SpecBase with ScalaCheckPropertyC
       val application = baseApplicationBuilder.build()
 
       val instructions = UnloadingPermissionGenInstructions(1, 1, 1, 1)
-      val xml          = application.injector.instanceOf[UnloadingPermissionGenerator].generate(instructions)
+      val xml          = application.injector.instanceOf[UnloadingPermissionGenerator].generate(instructions).apply(UnloadingPermission)
       xml.head.label mustEqual UnloadingPermission.rootNode
     }
   }
