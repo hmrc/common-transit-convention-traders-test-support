@@ -23,6 +23,7 @@ import controllers.actions.AuthAction
 import controllers.actions.ChannelAction
 import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateArrivalMessageTypeAction
+import controllers.actions.VersionOneEnabledCheckAction
 
 import javax.inject.Inject
 import models.ArrivalId
@@ -46,6 +47,7 @@ class ArrivalTestMessagesController @Inject()(
   arrivalConnector: ArrivalConnector,
   inboundRouterConnector: InboundRouterConnector,
   arrivalMessageConnector: ArrivalMessageConnector,
+  versionOneEnabledCheckAction: VersionOneEnabledCheckAction,
   authAction: AuthAction,
   channelAction: ChannelAction,
   messageRequestAction: MessageRequestAction,
@@ -58,60 +60,61 @@ class ArrivalTestMessagesController @Inject()(
     with Logging {
 
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
-    (authAction andThen channelAction andThen messageRequestAction andThen validateArrivalMessageTypeAction).async(parse.json) {
-      implicit request: MessageRequest[JsValue] =>
-        val message = msgGenService.generateMessage(request)
+    (versionOneEnabledCheckAction andThen authAction andThen channelAction andThen messageRequestAction andThen validateArrivalMessageTypeAction)
+      .async(parse.json) {
+        implicit request: MessageRequest[JsValue] =>
+          val message = msgGenService.generateMessage(request)
 
-        arrivalConnector
-          .get(arrivalId, request.channel)
-          .flatMap {
-            getResponse =>
-              getResponse.status match {
-                case status if is2xx(status) =>
-                  logger.debug(s"arrival found, posting generated message to inbound router for arrival $arrivalId")
+          arrivalConnector
+            .get(arrivalId, request.channel)
+            .flatMap {
+              getResponse =>
+                getResponse.status match {
+                  case status if is2xx(status) =>
+                    logger.debug(s"arrival found, posting generated message to inbound router for arrival $arrivalId")
 
-                  inboundRouterConnector
-                    .post(request.messageType, message.toString(), arrivalId.index)
-                    .flatMap {
-                      postResponse =>
-                        logger.debug(s"response from inbound router ${postResponse.status} ${postResponse.body}")
+                    inboundRouterConnector
+                      .post(request.messageType, message.toString(), arrivalId.index)
+                      .flatMap {
+                        postResponse =>
+                          logger.debug(s"response from inbound router ${postResponse.status} ${postResponse.body}")
 
-                        postResponse.status match {
-                          case status if is2xx(status) =>
-                            postResponse.header(LOCATION) match {
-                              case Some(locationValue) =>
-                                val messageId = Utils.lastFragment(locationValue)
-                                arrivalMessageConnector.get(arrivalId.index.toString, messageId, request.channel).map {
-                                  case Right(_) =>
-                                    Created(
-                                      HateaosArrivalResponse(
-                                        arrivalId,
-                                        request.messageType,
-                                        message,
-                                        locationValue
+                          postResponse.status match {
+                            case status if is2xx(status) =>
+                              postResponse.header(LOCATION) match {
+                                case Some(locationValue) =>
+                                  val messageId = Utils.lastFragment(locationValue)
+                                  arrivalMessageConnector.get(arrivalId.index.toString, messageId, request.channel).map {
+                                    case Right(_) =>
+                                      Created(
+                                        HateaosArrivalResponse(
+                                          arrivalId,
+                                          request.messageType,
+                                          message,
+                                          locationValue
+                                        )
                                       )
-                                    )
-                                  case Left(getMessageResponse) =>
-                                    handleNon2xx(getMessageResponse)
-                                }
-                              case None =>
-                                Future.successful(InternalServerError)
-                            }
-                          case _ =>
-                            Future.successful(handleNon2xx(postResponse))
-                        }
-                    }
-                    .recover {
-                      case e =>
-                        InternalServerError
-                    }
-                case _ =>
-                  Future.successful(handleNon2xx(getResponse))
-              }
-          }
-          .recover {
-            case e =>
-              InternalServerError
-          }
-    }
+                                    case Left(getMessageResponse) =>
+                                      handleNon2xx(getMessageResponse)
+                                  }
+                                case None =>
+                                  Future.successful(InternalServerError)
+                              }
+                            case _ =>
+                              Future.successful(handleNon2xx(postResponse))
+                          }
+                      }
+                      .recover {
+                        case e =>
+                          InternalServerError
+                      }
+                  case _ =>
+                    Future.successful(handleNon2xx(getResponse))
+                }
+            }
+            .recover {
+              case e =>
+                InternalServerError
+            }
+      }
 }

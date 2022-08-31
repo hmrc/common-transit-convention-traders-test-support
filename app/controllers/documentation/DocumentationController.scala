@@ -16,6 +16,7 @@
 
 package controllers.documentation
 
+import config.AppConfig
 import controllers.Assets
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
@@ -24,11 +25,13 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.Inject
 
-class DocumentationController @Inject()(assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+class DocumentationController @Inject()(appConfig: AppConfig, assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
 
   def definition(): Action[AnyContent] =
     assets.at("/public/api", "definition.json")
 
   def raml(version: String, file: String): Action[AnyContent] =
-    assets.at(s"/public/api/conf/$version", file)
+    if (appConfig.enableVersionOne || version != "1.0") assets.at(s"/public/api/conf/$version", file)
+    else Action(NotFound)
+
 }

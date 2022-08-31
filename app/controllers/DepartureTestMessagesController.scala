@@ -23,6 +23,7 @@ import controllers.actions.AuthAction
 import controllers.actions.ChannelAction
 import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateDepartureMessageTypeAction
+import controllers.actions.VersionOneEnabledCheckAction
 import logging.Logging
 
 import javax.inject.Inject
@@ -50,6 +51,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 departureConnector: DepartureConnector,
                                                 inboundRouterConnector: InboundRouterConnector,
                                                 departureMessageConnector: DepartureMessageConnector,
+                                                versionOneEnabledCheckAction: VersionOneEnabledCheckAction,
                                                 authAction: AuthAction,
                                                 channelAction: ChannelAction,
                                                 messageRequestAction: MessageRequestAction,
@@ -61,59 +63,60 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
     with Logging {
 
   def injectEISResponse(departureId: DepartureId): Action[JsValue] =
-    (authAction andThen channelAction andThen messageRequestAction andThen validateDepartureMessageTypeAction).async(parse.json) {
-      implicit request: MessageRequest[JsValue] =>
-        val message = msgGenService.generateMessage(request)
+    (versionOneEnabledCheckAction andThen authAction andThen channelAction andThen messageRequestAction andThen validateDepartureMessageTypeAction)
+      .async(parse.json) {
+        implicit request: MessageRequest[JsValue] =>
+          val message = msgGenService.generateMessage(request)
 
-        departureConnector
-          .getMessages(departureId, request.channel)
-          .flatMap {
-            case Right(departureWithMessages: DepartureWithMessages) =>
-              val generatedMessage =
-                XMLTransformer.populateRefNumEPT1(message, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
-              inboundRouterConnector
-                .post(request.messageType, generatedMessage.toString(), departureId.index)
-                .flatMap {
-                  postResponse =>
-                    postResponse.status match {
-                      case status if is2xx(status) =>
-                        postResponse.header(LOCATION) match {
-                          case Some(locationValue) =>
-                            val messageId = Utils.lastFragment(locationValue)
-                            departureMessageConnector.get(departureId.index.toString, messageId, request.channel).map {
-                              case Right(_) =>
-                                Created(
-                                  HateaosDepartureResponse(
-                                    departureId,
-                                    request.messageType,
-                                    generatedMessage,
-                                    locationValue
+          departureConnector
+            .getMessages(departureId, request.channel)
+            .flatMap {
+              case Right(departureWithMessages: DepartureWithMessages) =>
+                val generatedMessage =
+                  XMLTransformer.populateRefNumEPT1(message, MessageType.DepartureDeclaration.code, departureWithMessages.messages)
+                inboundRouterConnector
+                  .post(request.messageType, generatedMessage.toString(), departureId.index)
+                  .flatMap {
+                    postResponse =>
+                      postResponse.status match {
+                        case status if is2xx(status) =>
+                          postResponse.header(LOCATION) match {
+                            case Some(locationValue) =>
+                              val messageId = Utils.lastFragment(locationValue)
+                              departureMessageConnector.get(departureId.index.toString, messageId, request.channel).map {
+                                case Right(_) =>
+                                  Created(
+                                    HateaosDepartureResponse(
+                                      departureId,
+                                      request.messageType,
+                                      generatedMessage,
+                                      locationValue
+                                    )
                                   )
-                                )
-                              case Left(getMessageResponse) =>
-                                handleNon2xx(getMessageResponse)
-                            }
-                          case None =>
-                            Future.successful(InternalServerError)
-                        }
-                      case _ =>
-                        Future.successful(handleNon2xx(postResponse))
-                    }
-                }
-                .recover {
-                  case _ =>
-                    InternalServerError
-                }
-            case Left(getMessagesResponse) =>
-              Future.successful(handleNon2xx(getMessagesResponse))
-          }
-          .recover {
-            case _ =>
-              InternalServerError
-          }
-    }
+                                case Left(getMessageResponse) =>
+                                  handleNon2xx(getMessageResponse)
+                              }
+                            case None =>
+                              Future.successful(InternalServerError)
+                          }
+                        case _ =>
+                          Future.successful(handleNon2xx(postResponse))
+                      }
+                  }
+                  .recover {
+                    case _ =>
+                      InternalServerError
+                  }
+              case Left(getMessagesResponse) =>
+                Future.successful(handleNon2xx(getMessagesResponse))
+            }
+            .recover {
+              case _ =>
+                InternalServerError
+            }
+      }
 
-  def submitDepartureDeclaration: Action[NodeSeq] = (authAction andThen channelAction).async(parse.xml) {
+  def submitDepartureDeclaration: Action[NodeSeq] = (versionOneEnabledCheckAction andThen authAction andThen channelAction).async(parse.xml) {
     implicit request =>
       departureConnector
         .createDeclarationMessage(request.body, request.channel)
