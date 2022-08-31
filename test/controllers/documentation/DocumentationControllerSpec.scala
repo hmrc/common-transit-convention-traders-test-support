@@ -19,6 +19,7 @@ package controllers.documentation
 import config.AppConfig
 import controllers.Assets
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
@@ -44,7 +45,8 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
   val assets       = mock[Assets]
   val resultAction = mock[Action[AnyContent]]
 
-  val sut = new DocumentationController(appConfig, assets, stubControllerComponents())
+  val v1definitionAction = mock[Action[AnyContent]]
+  val v2definitionAction = mock[Action[AnyContent]]
 
   override def beforeEach(): Unit = {
     reset(appConfig)
@@ -52,6 +54,19 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
   }
 
   "when version one is enabled" - {
+
+    val sut = new DocumentationController(appConfig, assets, stubControllerComponents())
+
+    "when getting the definition file, get the one for both v1 and v2" in {
+      when(appConfig.enableVersionOne).thenReturn(true)
+      when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
+      when(assets.at(any(), eqTo("definition_with_v1.json"), any())).thenReturn(v1definitionAction)
+
+      sut.definition() mustBe v1definitionAction
+
+      verify(assets, times(0)).at(any(), eqTo("definition.json"), any())
+      verify(assets, times(1)).at(any(), eqTo("definition_with_v1.json"), any())
+    }
 
     "when getting a version one raml asset, accept it" in {
 
@@ -75,7 +90,20 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
 
   }
 
-  "when version two is disabled" - {
+  "when version one is disabled" - {
+
+    val sut = new DocumentationController(appConfig, assets, stubControllerComponents())
+
+    "when getting the definition file, get the one for only v2" in {
+      when(appConfig.enableVersionOne).thenReturn(false)
+      when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
+      when(assets.at(any(), eqTo("definition_with_v1.json"), any())).thenReturn(v1definitionAction)
+
+      sut.definition() mustBe v2definitionAction
+
+      verify(assets, times(1)).at(any(), eqTo("definition.json"), any())
+      verify(assets, times(0)).at(any(), eqTo("definition_with_v1.json"), any())
+    }
 
     "when getting a version one raml asset, reject it with Not Found" in {
 
