@@ -24,6 +24,8 @@ import controllers.actions.AuthAction
 import controllers.actions.ChannelAction
 import controllers.actions.FakeAuthAction
 import controllers.actions.FakeChannelAction
+import controllers.actions.FakeVersionOneEnabledCheckAction
+import controllers.actions.VersionOneEnabledCheckAction
 import data.TestXml
 import generators.ModelGenerators
 import models.MessageType.DepartureDeclaration
@@ -127,6 +129,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
             bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
@@ -154,6 +157,7 @@ class DepartureTestMessagesControllerSpec
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[ChannelAction].to[FakeChannelAction]
           )
           .build()
@@ -174,6 +178,7 @@ class DepartureTestMessagesControllerSpec
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[ChannelAction].to[FakeChannelAction]
           )
           .build()
@@ -204,6 +209,7 @@ class DepartureTestMessagesControllerSpec
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[ChannelAction].to[FakeChannelAction]
           )
           .build()
@@ -233,6 +239,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
           )
@@ -259,6 +266,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
           )
@@ -290,6 +298,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
             bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
@@ -321,6 +330,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector)
           )
           .build()
@@ -344,6 +354,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector)
           )
           .build()
@@ -373,6 +384,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
           )
@@ -399,6 +411,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
           )
@@ -430,6 +443,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
             bind[DepartureMessageConnector].toInstance(mockDepartureMessageConnector)
@@ -458,6 +472,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
             bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
           )
@@ -484,6 +499,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
           )
           .build()
@@ -513,6 +529,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
           )
           .build()
@@ -538,6 +555,7 @@ class DepartureTestMessagesControllerSpec
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
+            bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
             bind[DepartureConnector].toInstance(mockDepartureConnector),
           )
           .build()

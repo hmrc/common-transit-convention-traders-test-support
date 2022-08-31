@@ -24,6 +24,8 @@ import controllers.actions.AuthAction
 import controllers.actions.ChannelAction
 import controllers.actions.FakeAuthAction
 import controllers.actions.FakeChannelAction
+import controllers.actions.FakeVersionOneEnabledCheckAction
+import controllers.actions.VersionOneEnabledCheckAction
 import generators.ModelGenerators
 import models.ArrivalId
 import models.MessageType.ArrivalRejection
@@ -83,6 +85,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
@@ -110,7 +113,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ChannelAction].to[FakeChannelAction]
+          bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction]
         )
         .build()
 
@@ -132,7 +136,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ChannelAction].to[FakeChannelAction]
+          bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction]
         )
         .build()
 
@@ -162,7 +167,8 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       val application = baseApplicationBuilder
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
-          bind[ChannelAction].to[FakeChannelAction]
+          bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction]
         )
         .build()
 
@@ -186,6 +192,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -215,6 +222,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
@@ -242,6 +250,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -265,6 +274,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector)
         )
         .build()
@@ -287,6 +297,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector)
         )
         .build()
@@ -311,6 +322,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -337,6 +349,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
         )
@@ -366,6 +379,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
@@ -395,6 +409,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .overrides(
           bind[AuthAction].to[FakeAuthAction],
           bind[ChannelAction].to[FakeChannelAction],
+          bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
           bind[ArrivalConnector].toInstance(mockArrivalConnector),
           bind[InboundRouterConnector].toInstance(mockInboundRouterConnector),
           bind[ArrivalMessageConnector].toInstance(mockArrivalMessageConnector)
