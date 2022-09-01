@@ -72,7 +72,8 @@ class DepartureTestMessagesControllerSpec
     with IntegrationPatience
     with TestXml {
 
-  val departureId = new DepartureId(1)
+  val departureString = "1"
+  val departureId     = new DepartureId(departureString.toInt)
 
   val departure = Departure(1, "loc", "messageLoc", Some("mrn"), "ref", "status", LocalDateTime.now(), LocalDateTime.now())
 
@@ -137,7 +138,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -164,7 +165,7 @@ class DepartureTestMessagesControllerSpec
 
         running(application) {
           val request = FakeRequest(method = POST,
-                                    uri = routes.DepartureTestMessagesController.injectEISResponse(departureId).url,
+                                    uri = routing.routes.DeparturesRouter.injectEISResponse(departureString).url,
                                     headers = FakeHeaders(Nil),
                                     body = AnyContentAsEmpty)
 
@@ -186,7 +187,7 @@ class DepartureTestMessagesControllerSpec
         running(application) {
           val request = FakeRequest(
             method = POST,
-            uri = routes.DepartureTestMessagesController.injectEISResponse(departureId).url,
+            uri = routing.routes.DeparturesRouter.injectEISResponse(departureString).url,
             headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/xml")),
             body = AnyContentAsXml(<xml></xml>)
           )
@@ -215,7 +216,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(invalidRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(invalidRequest)
 
           val result = route(application, request).value
 
@@ -246,7 +247,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -273,7 +274,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -306,7 +307,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -336,7 +337,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -360,7 +361,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -391,7 +392,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -418,7 +419,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -451,7 +452,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
@@ -479,7 +480,7 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, routes.DepartureTestMessagesController.injectEISResponse(departureId).url).withJsonBody(exampleRequest)
+          val request = FakeRequest(POST, routing.routes.DeparturesRouter.injectEISResponse(departureString).url).withJsonBody(exampleRequest)
 
           val result = route(application, request).value
 
