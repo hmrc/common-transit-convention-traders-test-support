@@ -16,6 +16,9 @@
 
 package controllers
 
+import com.google.inject.ImplementedBy
+import com.google.inject.Inject
+import com.google.inject.Singleton
 import connectors.DepartureConnector
 import connectors.DepartureMessageConnector
 import connectors.InboundRouterConnector
@@ -25,8 +28,6 @@ import controllers.actions.MessageRequestAction
 import controllers.actions.ValidateDepartureMessageTypeAction
 import controllers.actions.VersionOneEnabledCheckAction
 import logging.Logging
-
-import javax.inject.Inject
 import models.DepartureId
 import models.DepartureWithMessages
 import models.HateaosDepartureResponse
@@ -47,6 +48,13 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
+@ImplementedBy(classOf[DepartureTestMessagesController])
+trait V1DepartureTestMessagesController {
+  def injectEISResponse(departureId: DepartureId): Action[JsValue]
+  def submitDepartureDeclaration: Action[NodeSeq]
+}
+
+@Singleton
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 departureConnector: DepartureConnector,
                                                 inboundRouterConnector: InboundRouterConnector,
@@ -58,11 +66,12 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
                                                 msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
     extends BackendController(cc)
+    with V1DepartureTestMessagesController
     with HttpErrorFunctions
     with ResponseHelper
     with Logging {
 
-  def injectEISResponse(departureId: DepartureId): Action[JsValue] =
+  override def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (versionOneEnabledCheckAction andThen authAction andThen channelAction andThen messageRequestAction andThen validateDepartureMessageTypeAction)
       .async(parse.json) {
         implicit request: MessageRequest[JsValue] =>
@@ -116,7 +125,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
             }
       }
 
-  def submitDepartureDeclaration: Action[NodeSeq] = (versionOneEnabledCheckAction andThen authAction andThen channelAction).async(parse.xml) {
+  override def submitDepartureDeclaration: Action[NodeSeq] = (versionOneEnabledCheckAction andThen authAction andThen channelAction).async(parse.xml) {
     implicit request =>
       departureConnector
         .createDeclarationMessage(request.body, request.channel)
