@@ -20,6 +20,7 @@ import cats.data.NonEmptyList
 import play.api.libs.functional.syntax.toInvariantFunctorOps
 import play.api.libs.json.Format
 import play.api.libs.json.Json
+import v2.models.DepartureWithoutMessages
 import v2.models.EORINumber
 import v2.models.Message
 import v2.models.MessageId
@@ -27,9 +28,10 @@ import v2.models.MessageId
 object CommonFormats extends CommonFormats
 
 trait CommonFormats {
-  implicit val messageIdFormat: Format[MessageId]   = Json.valueFormat[MessageId]
-  implicit val messageFormat: Format[Message]       = Json.format[Message]
-  implicit val eoriNumberFormat: Format[EORINumber] = Json.valueFormat[EORINumber]
+  implicit val messageIdFormat: Format[MessageId]                               = Json.valueFormat[MessageId]
+  implicit val messageFormat: Format[Message]                                   = Json.format[Message]
+  implicit val eoriNumberFormat: Format[EORINumber]                             = Json.valueFormat[EORINumber]
+  implicit val departureWithoutMessagesFormat: Format[DepartureWithoutMessages] = Json.format[DepartureWithoutMessages]
 
   implicit def nonEmptyListFormat[A: Format]: Format[NonEmptyList[A]] =
     Format

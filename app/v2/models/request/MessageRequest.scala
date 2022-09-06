@@ -22,7 +22,7 @@ import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 
 abstract class BaseMessageRequest[A](request: Request[A], eori: String, messageType: MessageType, instructions: GenInstructions)
-    extends WrappedRequest[A](request) //AuthRequest[A](request: Request[A], eori: String)
+    extends WrappedRequest[A](request)
 
 case class MessageRequest[A](val request: Request[A], val eori: String, messageType: MessageType, instructions: GenInstructions)
     extends BaseMessageRequest[A](request, eori, messageType, instructions)

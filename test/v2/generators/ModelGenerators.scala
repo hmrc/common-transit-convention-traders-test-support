@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package v2.models.formats
+package v2.generators
 
-import play.api.libs.json.Format
-import play.api.libs.json.Json
-import v2.models.DepartureWithoutMessages
+import v2.models.DepartureId
+import v2.models.MessageType
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 
-trait PresentationFormats extends CommonFormats {
+trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
 
-  implicit val departureWithoutMessagesFormat: Format[DepartureWithoutMessages] = Json.format[DepartureWithoutMessages]
+  implicit lazy val arbitraryDepartureId: Arbitrary[DepartureId] = {
+    Arbitrary {
+      for {
+        id <- stringsWithMaxLength(9)
+      } yield DepartureId(id)
+    }
+  }
 
+  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
+    Arbitrary(Gen.oneOf(MessageType.values))
 }
-
-object PresentationFormats extends PresentationFormats

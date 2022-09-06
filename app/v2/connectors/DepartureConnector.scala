@@ -26,8 +26,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
 import utils.Utils
-import v2.models.formats.PresentationFormats.departureWithoutMessagesFormat
-import v2.models.formats.PresentationFormats.messageFormat
+import v2.models.formats.CommonFormats.departureWithoutMessagesFormat
+import v2.models.formats.CommonFormats.messageFormat
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

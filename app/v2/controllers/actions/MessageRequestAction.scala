@@ -17,6 +17,7 @@
 package v2.controllers.actions
 
 import com.google.inject.Inject
+import controllers.actions.AuthRequest
 import v2.models.MessageType
 import v2.models.generation.TestMessage
 import models.generation.EmptyGenInstructions
@@ -53,13 +54,11 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
 
   private def validateGenInstructions(messageType: MessageType, instructions: GenInstructions): Either[String, GenInstructions] =
     messageType match {
-//      case UnloadingPermission => UnloadingPermissionGenInstructions.validate(instructions.asInstanceOf[UnloadingPermissionGenInstructions])
       case _ => Right(EmptyGenInstructions())
     }
 
   private def parseGenInstructions(messageType: MessageType, json: JsValue): Option[GenInstructions] =
     messageType match {
-//      case UnloadingPermission => extractInstructionsOrNone(json.validate[UnloadingPermissionGenInstructions])
       case _ => Some(EmptyGenInstructions())
     }
 }

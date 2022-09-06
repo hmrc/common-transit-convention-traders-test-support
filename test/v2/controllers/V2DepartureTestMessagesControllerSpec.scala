@@ -20,22 +20,43 @@ import base.SpecBase
 import controllers.actions.AuthAction
 import controllers.actions.FakeAuthAction
 import data.TestXml
-import generators.ModelGenerators
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
+import v2.generators.ModelGenerators
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.HeaderNames
-import play.api.http.Status.NOT_IMPLEMENTED
+import play.api.http.Status.CREATED
+import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.http.Status.NOT_FOUND
+import play.api.http.Status.OK
 import play.api.inject.bind
+import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
+import play.api.test.Helpers.LOCATION
 import play.api.test.Helpers.POST
 import play.api.test.Helpers.defaultAwaitTimeout
 import play.api.test.Helpers.route
 import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import routing.VersionedRouting
+import uk.gov.hmrc.http.HttpResponse
+import v2.connectors.DepartureConnector
+import v2.connectors.InboundRouterConnector
+import v2.models.DepartureId
+import v2.models.DepartureWithoutMessages
+import v2.models.EORINumber
+import v2.models.Message
+import v2.models.MessageId
+import v2.models.MessageType
+import v2.models.MovementReferenceNumber
+
+import java.net.URI
+import java.time.OffsetDateTime
+import scala.concurrent.Future
 
 class V2DepartureTestMessagesControllerSpec
     extends SpecBase
@@ -45,7 +66,26 @@ class V2DepartureTestMessagesControllerSpec
     with IntegrationPatience
     with TestXml {
 
-  val exampleRequest = Json.parse(
+  val departureWithoutMessages = DepartureWithoutMessages(
+    DepartureId("1"),
+    EORINumber("GB121212"),
+    EORINumber("GB343434"),
+    Some(MovementReferenceNumber("MRN")),
+    OffsetDateTime.now(),
+    OffsetDateTime.now()
+  )
+
+  val message = Message(
+    MessageId("2"),
+    OffsetDateTime.now(),
+    OffsetDateTime.now(),
+    MessageType.PositiveAcknowledgement,
+    Some(MessageId("20")),
+    Some(new URI("transit-movements")),
+    Some("")
+  )
+
+  val exampleRequest: JsValue = Json.parse(
     """{
         |     "message": {
         |         "messageType": "IE928"
@@ -57,10 +97,23 @@ class V2DepartureTestMessagesControllerSpec
     val v2Headers = FakeHeaders(Seq(HeaderNames.ACCEPT -> VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE))
     "POST" - {
       "must send a test message to the departures backend and return Created if successful" in {
+        val mockDepartureConnector     = mock[DepartureConnector]
+        val mockInboundRouterConnector = mock[InboundRouterConnector]
+
+        when(mockDepartureConnector.getDeparture(any(), any[String].asInstanceOf[DepartureId])(any(), any(), any()))
+          .thenReturn(Future.successful(Right(departureWithoutMessages)))
+
+        when(mockInboundRouterConnector.post(any(), any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements/movements/departures/1")))))
+
+        when(mockDepartureConnector.getMessage(any(), any(), any())(any(), any(), any()))
+          .thenReturn(Future.successful(Right(message)))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
+            bind[DepartureConnector].toInstance(mockDepartureConnector),
+            bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
           )
           .build()
 
@@ -73,7 +126,64 @@ class V2DepartureTestMessagesControllerSpec
               body = exampleRequest
             )
           val result = route(application, request).value
-          status(result) mustEqual (NOT_IMPLEMENTED)
+          status(result) mustEqual CREATED
+        }
+      }
+
+      "must send a test message to the departures backend and return Not found if no matching departure" in {
+        val mockDepartureConnector = mock[DepartureConnector]
+
+        when(mockDepartureConnector.getDeparture(any(), any[String].asInstanceOf[DepartureId])(any(), any(), any()))
+          .thenReturn(Future.successful(Left(HttpResponse(404, "Not found"))))
+
+        val application = baseApplicationBuilder
+          .overrides(
+            bind[AuthAction].to[FakeAuthAction],
+            bind[DepartureConnector].toInstance(mockDepartureConnector),
+          )
+          .build()
+
+        running(application) {
+          val request =
+            FakeRequest(
+              method = POST,
+              uri = routing.routes.DeparturesRouter.injectEISResponse("1").url,
+              headers = v2Headers,
+              body = exampleRequest
+            )
+          val result = route(application, request).value
+          status(result) mustEqual NOT_FOUND
+        }
+      }
+
+      "must send a test message to the departures backend and return inbound router error" in {
+        val mockDepartureConnector     = mock[DepartureConnector]
+        val mockInboundRouterConnector = mock[InboundRouterConnector]
+
+        when(mockDepartureConnector.getDeparture(any(), any[String].asInstanceOf[DepartureId])(any(), any(), any()))
+          .thenReturn(Future.successful(Right(departureWithoutMessages)))
+
+        when(mockInboundRouterConnector.post(any(), any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+
+        val application = baseApplicationBuilder
+          .overrides(
+            bind[AuthAction].to[FakeAuthAction],
+            bind[DepartureConnector].toInstance(mockDepartureConnector),
+            bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
+          )
+          .build()
+
+        running(application) {
+          val request =
+            FakeRequest(
+              method = POST,
+              uri = routing.routes.DeparturesRouter.injectEISResponse("1").url,
+              headers = v2Headers,
+              body = exampleRequest
+            )
+          val result = route(application, request).value
+          status(result) mustEqual INTERNAL_SERVER_ERROR
         }
       }
     }

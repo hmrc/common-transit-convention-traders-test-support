@@ -16,13 +16,20 @@
 
 package v2.models
 
-import java.time.OffsetDateTime
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
+import java.time.OffsetDateTime
+import v2.models.formats.CommonFormats._
+
+object DepartureWithoutMessages {
+  implicit val format: OFormat[DepartureWithoutMessages] = Json.format[DepartureWithoutMessages]
+}
 case class DepartureWithoutMessages(
   _id: DepartureId,
   enrollmentEORINumber: EORINumber,
   movementEORINumber: EORINumber,
-  movementReferenceNumber: Option[MovementReferenceNumber], // optional pending MRN allocation
+  movementReferenceNumber: Option[MovementReferenceNumber],
   created: OffsetDateTime,
   updated: OffsetDateTime
 )

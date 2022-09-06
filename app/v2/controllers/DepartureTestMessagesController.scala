@@ -19,7 +19,7 @@ package v2.controllers
 import com.google.inject.ImplementedBy
 import v2.connectors.DepartureConnector
 import v2.connectors.InboundRouterConnector
-import v2.controllers.actions.AuthAction
+import controllers.actions.AuthAction
 import v2.controllers.actions.MessageRequestAction
 import v2.controllers.actions.ValidateDepartureMessageTypeAction
 import models.HateaosDepartureResponse
@@ -64,7 +64,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
           departureConnector
             .getDeparture(request.eori, departureId)
             .flatMap {
-              case Right(departureWithMessages: DepartureWithoutMessages) =>
+              case Right(_: DepartureWithoutMessages) =>
                 // Send generated message to transit-movements-router
                 inboundRouterConnector
                   .post(request.eori, request.messageType, message.toString(), departureId.value)
