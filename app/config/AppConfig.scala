@@ -36,4 +36,6 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val enrolmentKey: String = config.get[String]("security.enrolmentKey")
 
   val enableVersionOne: Boolean = config.get[Boolean]("enableVersionOne")
+  val transitMovementsUrl       = servicesConfig.baseUrl("transit-movements")
+  val transitMovementsRouterUrl = servicesConfig.baseUrl("transit-movements-router")
 }

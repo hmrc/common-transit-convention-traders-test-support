@@ -17,12 +17,22 @@
 package v2.controllers
 
 import com.google.inject.ImplementedBy
-import controllers.actions.AuthAction
+import v2.connectors.DepartureConnector
+import v2.connectors.InboundRouterConnector
+import v2.controllers.actions.AuthAction
+import v2.controllers.actions.MessageRequestAction
+import v2.controllers.actions.ValidateDepartureMessageTypeAction
+import models.HateaosDepartureResponse
 import play.api.libs.json.JsValue
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
+import v2.services.MessageGenerationService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import utils.ResponseHelper
+import utils.Utils
+import v2.models.request.MessageRequest
 import v2.models.DepartureId
+import v2.models.DepartureWithoutMessages
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -33,12 +43,72 @@ trait V2DepartureTestMessagesController {
   def injectEISResponse(departureId: DepartureId): Action[JsValue]
 }
 
-class DepartureTestMessagesController @Inject()(cc: ControllerComponents, authAction: AuthAction)(implicit ec: ExecutionContext)
+class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
+                                                authAction: AuthAction,
+                                                departureConnector: DepartureConnector,
+                                                inboundRouterConnector: InboundRouterConnector,
+                                                messageRequestAction: MessageRequestAction,
+                                                validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
+                                                msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
     extends BackendController(cc)
+    with ResponseHelper
     with V2DepartureTestMessagesController {
 
-  override def injectEISResponse(departureId: DepartureId): Action[JsValue] = (authAction).async(parse.json) {
-    _ =>
-      Future(NotImplemented)
-  }
+  override def injectEISResponse(departureId: DepartureId): Action[JsValue] =
+    (authAction andThen messageRequestAction andThen validateDepartureMessageTypeAction)
+      .async(parse.json) {
+        implicit request: MessageRequest[JsValue] =>
+          val message = msgGenService.generateMessage(request)
+
+          // Get matching departure from transit-movements
+          departureConnector
+            .getDeparture(request.eori, departureId)
+            .flatMap {
+              case Right(departureWithMessages: DepartureWithoutMessages) =>
+                // Send generated message to transit-movements-router
+                inboundRouterConnector
+                  .post(request.eori, request.messageType, message.toString(), departureId.value)
+                  .flatMap {
+                    postResponse =>
+                      postResponse.status match {
+                        case status if is2xx(status) =>
+                          postResponse.header(LOCATION) match {
+                            case Some(locationValue) =>
+                              val messageId = Utils.lastFragment(locationValue)
+
+                              // Check for matching departure message from transit-movements
+                              departureConnector.getMessage(request.eori, departureId.value, messageId).map {
+                                case Right(_) =>
+                                  Created(
+                                    HateaosDepartureResponse(
+                                      departureId.value,
+                                      request.messageType.code,
+                                      message,
+                                      locationValue
+                                    )
+                                  )
+                                case Left(getMessageResponse) =>
+                                  handleNon2xx(getMessageResponse)
+                              }
+                            case None =>
+                              Future.successful(InternalServerError)
+                          }
+                        case _ =>
+                          Future.successful(handleNon2xx(postResponse))
+                      }
+                  }
+                  .recover {
+                    case _ =>
+                      InternalServerError
+                  }
+
+              case Left(getMessagesResponse) =>
+                Future.successful(handleNon2xx(getMessagesResponse))
+            }
+            .recover {
+              case _ =>
+                InternalServerError
+            }
+      }
+
 }
