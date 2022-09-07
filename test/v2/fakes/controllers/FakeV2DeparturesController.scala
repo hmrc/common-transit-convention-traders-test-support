@@ -33,7 +33,6 @@ class FakeV2DeparturesController @Inject()()(implicit val materializer: Material
     with StreamingParsers {
 
   override val controllerComponents = stubControllerComponents()
-
   override def injectEISResponse(departureId: DepartureId): Action[JsValue] = Action(parse.json) {
     _ =>
       Accepted(Json.obj("version" -> 2))

@@ -17,9 +17,9 @@
 package v2.controllers
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.actions.AuthAction
 import controllers.actions.FakeAuthAction
-import data.TestXml
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import v2.generators.ModelGenerators
@@ -30,22 +30,17 @@ import play.api.http.HeaderNames
 import play.api.http.Status.CREATED
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.http.Status.NOT_FOUND
-import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
-import play.api.test.Helpers.LOCATION
 import play.api.test.Helpers.POST
 import play.api.test.Helpers.defaultAwaitTimeout
 import play.api.test.Helpers.route
 import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import routing.VersionedRouting
-import uk.gov.hmrc.http.HttpResponse
-import v2.connectors.DepartureConnector
-import v2.connectors.InboundRouterConnector
 import v2.models.DepartureId
 import v2.models.DepartureWithoutMessages
 import v2.models.EORINumber
@@ -53,6 +48,9 @@ import v2.models.Message
 import v2.models.MessageId
 import v2.models.MessageType
 import v2.models.MovementReferenceNumber
+import v2.models.errors.PersistenceError
+import v2.services.DepartureService
+import v2.services.InboundRouterService
 
 import java.net.URI
 import java.time.OffsetDateTime
@@ -63,8 +61,7 @@ class V2DepartureTestMessagesControllerSpec
     with ScalaCheckPropertyChecks
     with ModelGenerators
     with BeforeAndAfterEach
-    with IntegrationPatience
-    with TestXml {
+    with IntegrationPatience {
 
   val departureWithoutMessages = DepartureWithoutMessages(
     DepartureId("1"),
@@ -85,6 +82,8 @@ class V2DepartureTestMessagesControllerSpec
     Some("")
   )
 
+  val messageId = MessageId("1")
+
   val exampleRequest: JsValue = Json.parse(
     """{
         |     "message": {
@@ -97,23 +96,25 @@ class V2DepartureTestMessagesControllerSpec
     val v2Headers = FakeHeaders(Seq(HeaderNames.ACCEPT -> VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE))
     "POST" - {
       "must send a test message to the departures backend and return Created if successful" in {
-        val mockDepartureConnector     = mock[DepartureConnector]
-        val mockInboundRouterConnector = mock[InboundRouterConnector]
+        val mockDepartureService     = mock[DepartureService]
+        val mockInboundRouterService = mock[InboundRouterService]
 
-        when(mockDepartureConnector.getDeparture(any(), any[String].asInstanceOf[DepartureId])(any(), any(), any()))
-          .thenReturn(Future.successful(Right(departureWithoutMessages)))
+        when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
+          .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterConnector.post(any(), any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements/movements/departures/1")))))
+        when(mockInboundRouterService.post(any[String].asInstanceOf[EORINumber], any(), any[String], any[String].asInstanceOf[DepartureId])(any(), any()))
+          .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Right(messageId))))
 
-        when(mockDepartureConnector.getMessage(any(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(message)))
+        when(
+          mockDepartureService
+            .getMessage(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId], any[String].asInstanceOf[MessageId])(any(), any(), any()))
+          .thenReturn(EitherT[Future, PersistenceError, Message](Future.successful(Right(message))))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
-            bind[DepartureConnector].toInstance(mockDepartureConnector),
-            bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
+            bind[DepartureService].toInstance(mockDepartureService),
+            bind[InboundRouterService].toInstance(mockInboundRouterService)
           )
           .build()
 
@@ -131,15 +132,16 @@ class V2DepartureTestMessagesControllerSpec
       }
 
       "must send a test message to the departures backend and return Not found if no matching departure" in {
-        val mockDepartureConnector = mock[DepartureConnector]
+        val mockDepartureService = mock[DepartureService]
 
-        when(mockDepartureConnector.getDeparture(any(), any[String].asInstanceOf[DepartureId])(any(), any(), any()))
-          .thenReturn(Future.successful(Left(HttpResponse(404, "Not found"))))
+        when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
+          .thenReturn(
+            EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Left(PersistenceError.DepartureNotFound(DepartureId("1"))))))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
-            bind[DepartureConnector].toInstance(mockDepartureConnector),
+            bind[DepartureService].toInstance(mockDepartureService),
           )
           .build()
 
@@ -157,20 +159,22 @@ class V2DepartureTestMessagesControllerSpec
       }
 
       "must send a test message to the departures backend and return inbound router error" in {
-        val mockDepartureConnector     = mock[DepartureConnector]
-        val mockInboundRouterConnector = mock[InboundRouterConnector]
+        val mockDepartureService     = mock[DepartureService]
+        val mockInboundRouterService = mock[InboundRouterService]
 
-        when(mockDepartureConnector.getDeparture(any(), any[String].asInstanceOf[DepartureId])(any(), any(), any()))
-          .thenReturn(Future.successful(Right(departureWithoutMessages)))
+        when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
+          .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterConnector.post(any(), any(), any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
+        when(
+          mockInboundRouterService.post(any[String].asInstanceOf[EORINumber], any[MessageType], any[String], any[String].asInstanceOf[DepartureId])(any(),
+                                                                                                                                                    any()))
+          .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Left(PersistenceError.UnexpectedError()))))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
-            bind[DepartureConnector].toInstance(mockDepartureConnector),
-            bind[InboundRouterConnector].toInstance(mockInboundRouterConnector)
+            bind[DepartureService].toInstance(mockDepartureService),
+            bind[InboundRouterService].toInstance(mockInboundRouterService)
           )
           .build()
 

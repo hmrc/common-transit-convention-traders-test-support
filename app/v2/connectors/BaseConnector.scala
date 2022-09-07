@@ -20,12 +20,16 @@ import connectors.util.CustomHttpReader
 import connectors.util.CustomHttpReader.INTERNAL_SERVER_ERROR
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
+import play.api.libs.json.JsResult
 import play.api.libs.json.Reads
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.UpstreamErrorResponse
+
+import scala.concurrent.Future
 
 class BaseConnector extends HttpErrorFunctions {
 
@@ -53,5 +57,22 @@ class BaseConnector extends HttpErrorFunctions {
       .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
       .withExtraHeaders(extraHeaders: _*)
     newHeaderCarrier
+  }
+
+  implicit class HttpResponseHelpers(response: HttpResponse) {
+
+    def as[A](implicit reads: Reads[A]): Future[A] =
+      response.json
+        .validate[A]
+        .map(
+          result => Future.successful(result)
+        )
+        .recoverTotal(
+          error => Future.failed(JsResult.Exception(error))
+        )
+
+    def error[A]: Future[A] =
+      Future.failed(UpstreamErrorResponse(response.body, response.status))
+
   }
 }

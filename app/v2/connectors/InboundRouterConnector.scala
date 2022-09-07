@@ -19,6 +19,8 @@ package v2.connectors
 import config.AppConfig
 import config.Constants
 import connectors.util.CustomHttpReader
+import v2.models.DepartureId
+import v2.models.EORINumber
 import v2.models.MessageType
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
@@ -31,15 +33,15 @@ import scala.concurrent.Future
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   // Create a new message with the transit-movements-router service
-  def post(eori: String, messageType: MessageType, message: String, departureId: String)(implicit hc: HeaderCarrier,
-                                                                                         ec: ExecutionContext): Future[HttpResponse] = {
-    val xMessageRecipient = mdtpString format (messageType.source, departureId, Constants.MessageCorrelationId)
+  def post(eori: EORINumber, messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                                                  ec: ExecutionContext): Future[HttpResponse] = {
+    val xMessageRecipient = mdtpString format (messageType.source, departureId.value, Constants.MessageCorrelationId)
 
     val newHeaders = hc
       .copy()
       .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType.code): _*)
 
-    val url = appConfig.transitMovementsRouterUrl + s"/traders/$eori/movements/$messageType/$departureId/messages/"
+    val url = appConfig.transitMovementsRouterUrl + s"/traders/${eori.value}/movements/$messageType/$departureId/messages/"
 
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }

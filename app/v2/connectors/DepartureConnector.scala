@@ -18,9 +18,12 @@ package v2.connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
+import play.api.http.Status.OK
 import v2.models.DepartureId
 import v2.models.DepartureWithoutMessages
+import v2.models.EORINumber
 import v2.models.Message
+import v2.models.MessageId
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
@@ -35,41 +38,44 @@ import scala.concurrent.Future
 
 class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def getDeparture(eori: String, departureId: DepartureId)(implicit requestHeader: RequestHeader,
-                                                           hc: HeaderCarrier,
-                                                           ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithoutMessages]] = {
-    val url = s"${appConfig.transitMovementsUrl}/traders/$eori/movements/departures/${departureId.value}"
+  def getDeparture(eori: EORINumber, departureId: DepartureId)(implicit
+                                                               requestHeader: RequestHeader,
+                                                               hc: HeaderCarrier,
+                                                               ec: ExecutionContext): Future[DepartureWithoutMessages] = {
+    val url = s"${appConfig.transitMovementsUrl}/traders/${eori.value}/movements/departures/${departureId.value}"
 
     http
       .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
-      .map {
+      .flatMap {
         response =>
-          extractIfSuccessful[DepartureWithoutMessages](response)
+          response.status match {
+            case OK => response.as[DepartureWithoutMessages]
+            case _  => response.error
+          }
       }
   }
 
-  // /traders/:EORI/movements/departures/:departureId/messages/:messageId
-  def getMessage(eori: String, departureId: String, messageId: String)(implicit request: RequestHeader,
-                                                                       hc: HeaderCarrier,
-                                                                       ec: ExecutionContext): Future[Either[HttpResponse, Message]] = {
-    val url = s"${appConfig.transitMovementsUrl}/traders/$eori/movements/departures/${Utils.urlEncode(departureId)}/messages/${Utils.urlEncode(messageId)}"
+  def getMessage(eori: EORINumber, departureId: DepartureId, messageId: MessageId)(implicit
+                                                                                   request: RequestHeader,
+                                                                                   hc: HeaderCarrier,
+                                                                                   ec: ExecutionContext): Future[Message] = {
+
+    val uri = constructMessageUri(eori, departureId, messageId)
 
     http
-      .GET[HttpResponse](url, queryParams = Seq(), responseHeaders())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
-      .map {
+      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
+      .flatMap {
         response =>
-          extractIfSuccessful[Message](response)
+          response.status match {
+            case OK => response.as[Message]
+            case _  => response.error
+          }
       }
   }
 
-//  def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit requestHeader: RequestHeader,
-//                                                                               hc: HeaderCarrier,
-//                                                                               ec: ExecutionContext): Future[HttpResponse] = {
-//    val url                             = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
-//    val channelHeader: (String, String) = ("Channel", channelType.toString)
-//    val headers: Seq[(String, String)]  = requestHeaders :+ channelHeader
-//
-//    http.POSTString[HttpResponse](url, requestData.toString, headers)(CustomHttpReader, enforceAuthHeaderCarrier(Seq.empty), ec)
-//  }
+  private def constructMessageUri(eori: EORINumber, departureId: DepartureId, messageId: MessageId) =
+    s"${appConfig.transitMovementsUrl}/traders/${eori.value}/movements/departures/" +
+      s"${Utils.urlEncode(departureId.value)}/messages/" +
+      s"${Utils.urlEncode(messageId.value)}"
 
 }

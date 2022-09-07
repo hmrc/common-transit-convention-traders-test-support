@@ -17,26 +17,28 @@
 package v2.controllers
 
 import com.google.inject.ImplementedBy
-import v2.connectors.DepartureConnector
-import v2.connectors.InboundRouterConnector
 import controllers.actions.AuthAction
 import v2.controllers.actions.MessageRequestAction
 import v2.controllers.actions.ValidateDepartureMessageTypeAction
 import models.HateaosDepartureResponse
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.ControllerComponents
+import uk.gov.hmrc.http.HeaderCarrier
+import v2.services.DepartureService
+import v2.services.InboundRouterService
 import v2.services.MessageGenerationService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.ResponseHelper
-import utils.Utils
 import v2.models.request.MessageRequest
 import v2.models.DepartureId
-import v2.models.DepartureWithoutMessages
+import v2.models.EORINumber
+import v2.models.errors.PresentationError
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits._
 
 @ImplementedBy(classOf[DepartureTestMessagesController])
 trait V2DepartureTestMessagesController {
@@ -45,70 +47,45 @@ trait V2DepartureTestMessagesController {
 
 class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                                                 authAction: AuthAction,
-                                                departureConnector: DepartureConnector,
-                                                inboundRouterConnector: InboundRouterConnector,
+                                                departureService: DepartureService,
+                                                inboundRouterService: InboundRouterService,
                                                 messageRequestAction: MessageRequestAction,
                                                 validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
-                                                msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
+                                                msgGenService: MessageGenerationService)
     extends BackendController(cc)
     with ResponseHelper
+    with ErrorTranslator
     with V2DepartureTestMessagesController {
 
   override def injectEISResponse(departureId: DepartureId): Action[JsValue] =
     (authAction andThen messageRequestAction andThen validateDepartureMessageTypeAction)
       .async(parse.json) {
         implicit request: MessageRequest[JsValue] =>
-          val message = msgGenService.generateMessage(request)
+          implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
-          // Get matching departure from transit-movements
-          departureConnector
-            .getDeparture(request.eori, departureId)
-            .flatMap {
-              case Right(_: DepartureWithoutMessages) =>
-                // Send generated message to transit-movements-router
-                inboundRouterConnector
-                  .post(request.eori, request.messageType, message.toString(), departureId.value)
-                  .flatMap {
-                    postResponse =>
-                      postResponse.status match {
-                        case status if is2xx(status) =>
-                          postResponse.header(LOCATION) match {
-                            case Some(locationValue) =>
-                              val messageId = Utils.lastFragment(locationValue)
+          (for {
 
-                              // Check for matching departure message from transit-movements
-                              departureConnector.getMessage(request.eori, departureId.value, messageId).map {
-                                case Right(_) =>
-                                  Created(
-                                    HateaosDepartureResponse(
-                                      departureId.value,
-                                      request.messageType.code,
-                                      message,
-                                      locationValue
-                                    )
-                                  )
-                                case Left(getMessageResponse) =>
-                                  handleNon2xx(getMessageResponse)
-                              }
-                            case None =>
-                              Future.successful(InternalServerError)
-                          }
-                        case _ =>
-                          Future.successful(handleNon2xx(postResponse))
-                      }
-                  }
-                  .recover {
-                    case _ =>
-                      InternalServerError
-                  }
+            // Get matching departure from transit-movements
+            _ <- (departureService.getDeparture(EORINumber(request.eori), departureId)).asPresentation
 
-              case Left(getMessagesResponse) =>
-                Future.successful(handleNon2xx(getMessagesResponse))
-            }
-            .recover {
-              case _ =>
-                InternalServerError
-            }
+            message = msgGenService.generateMessage(request)
+            // Send generated message to transit-movements-router
+            messageId <- inboundRouterService.post(EORINumber(request.eori), request.messageType, message.toString(), departureId).asPresentation
+
+            // Check for matching departure message from transit-movements
+            _ <- departureService.getMessage(EORINumber(request.eori), departureId, messageId).asPresentation
+          } yield (message, messageId)).fold(
+            presentationError => Status(presentationError.code.statusCode)(Json.toJson(presentationError)),
+            message =>
+              Created(
+                HateaosDepartureResponse(
+                  departureId.value,
+                  request.messageType.code,
+                  message._1,
+                  message._2.value
+                )
+            )
+          )
       }
 
 }
