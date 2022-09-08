@@ -16,8 +16,6 @@
 
 package v2.connectors
 
-import connectors.util.CustomHttpReader
-import connectors.util.CustomHttpReader.INTERNAL_SERVER_ERROR
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
 import play.api.libs.json.JsResult
@@ -42,14 +40,6 @@ class BaseConnector extends HttpErrorFunctions {
   protected val mdtpString = "MDTP-%s-%d-%d"
 
   protected val departureRoute = "/transit-movements/movements/departures/"
-
-  protected def extractIfSuccessful[T](response: HttpResponse)(implicit reads: Reads[T]): Either[HttpResponse, T] =
-    if (is2xx(response.status)) {
-      response.json.asOpt[T] match {
-        case Some(instance) => Right(instance)
-        case _              => Left(CustomHttpReader.recode(INTERNAL_SERVER_ERROR, response))
-      }
-    } else Left(response)
 
   protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
                                                                               headerCarrier: HeaderCarrier): HeaderCarrier = {

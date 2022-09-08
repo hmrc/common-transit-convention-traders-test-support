@@ -20,7 +20,7 @@ import com.google.inject.ImplementedBy
 import controllers.actions.AuthAction
 import v2.controllers.actions.MessageRequestAction
 import v2.controllers.actions.ValidateDepartureMessageTypeAction
-import models.HateaosDepartureResponse
+import v2.models.HateaosDepartureResponse
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.mvc.Action
@@ -35,7 +35,6 @@ import utils.ResponseHelper
 import v2.models.request.MessageRequest
 import v2.models.DepartureId
 import v2.models.EORINumber
-import v2.models.errors.PresentationError
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits._
@@ -79,8 +78,8 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
             message =>
               Created(
                 HateaosDepartureResponse(
-                  departureId.value,
-                  request.messageType.code,
+                  departureId,
+                  request.messageType,
                   message._1,
                   message._2.value
                 )

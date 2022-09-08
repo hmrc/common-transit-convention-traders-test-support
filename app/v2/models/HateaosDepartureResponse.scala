@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package v2.models
 
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
-import utils.CallOps._
+import utils.CallOps.CallOps
 import utils.Utils
 
 import scala.xml.NodeSeq
@@ -26,7 +26,7 @@ import scala.xml.NodeSeq
 object HateaosDepartureResponse {
 
   def apply(departureId: DepartureId, messageType: MessageType, body: NodeSeq, locationValue: String): JsObject = {
-    val strDeparture  = departureId.index.toString
+    val strDeparture  = departureId.value
     val messagesRoute = routing.routes.DeparturesRouter.injectEISResponse(strDeparture).urlWithContext
     val messageId     = Utils.lastFragment(locationValue)
 
