@@ -29,8 +29,6 @@ object TestMessage {
       (__ \ "message" \ "messageType").read[String] and
         (__ \ "message" \ "source").readNullable[String]
     ).tupled.flatMap {
-//      case ("IE917", Some("DEP")) => Reads.pure(TestMessage(XMLSubmissionNegativeAcknowledgement))
-//      case ("IE917", Some("ARR")) => Reads.pure(TestMessage(ArrivalNegativeAcknowledgement))
       case _ => (__ \ "message" \ "messageType").read[MessageType].map(TestMessage.apply)
     }
 

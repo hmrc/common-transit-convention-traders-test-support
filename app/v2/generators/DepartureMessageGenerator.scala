@@ -32,7 +32,13 @@ class DepartureMessageGenerator @Inject()(clock: Clock) extends Generator(clock)
   }
 
   private def generateIE928Message(): NodeSeq =
-    <CC928C>
+    <CC928C PhaseID="NCTS5.0">
+      <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+      <messageRecipient>{Strings.alphanumeric(1, 35)}</messageRecipient>
+      <preparationDateAndTime>{localDateTime}</preparationDateAndTime>
+      <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+      <messageType>CC928C</messageType>
+      <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
       <TransitOperation>
         <LRN>{Strings.alphanumeric(2,22)}</LRN>
       </TransitOperation>
