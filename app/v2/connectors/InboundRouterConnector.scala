@@ -17,7 +17,6 @@
 package v2.connectors
 
 import config.AppConfig
-import config.Constants
 import connectors.util.CustomHttpReader
 import v2.models.DepartureId
 import v2.models.EORINumber
@@ -35,11 +34,9 @@ class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) e
   // Create a new message with the transit-movements-router service
   def post(eori: EORINumber, messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier,
                                                                                                   ec: ExecutionContext): Future[HttpResponse] = {
-    val xMessageRecipient = mdtpString format (messageType.source, departureId.value, Constants.MessageCorrelationId)
-
     val newHeaders = hc
       .copy()
-      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType.code): _*)
+      .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
 
     val url = appConfig.transitMovementsRouterUrl + s"/traders/${eori.value}/movements/${messageType.code}/${departureId.value}/messages/"
 

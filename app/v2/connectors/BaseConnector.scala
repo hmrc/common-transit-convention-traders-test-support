@@ -37,8 +37,6 @@ class BaseConnector extends HttpErrorFunctions {
   def responseHeaders(): Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
 
-  protected val mdtpString = "MDTP-%s-%d-%d"
-
   protected val departureRoute = "/transit-movements/movements/departures/"
 
   protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
