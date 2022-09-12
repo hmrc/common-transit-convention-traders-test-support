@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package config
+package v2.models.errors
 
-object Constants {
-  val MessageCorrelationId = 1
+import v2.models.MessageId
+import v2.models.DepartureId
 
-  val Context = "/customs/transits"
+sealed trait PersistenceError
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
-
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+object PersistenceError {
+  case class MessageNotFound(movementId: DepartureId, messageId: MessageId) extends PersistenceError
+  case class DepartureNotFound(movementId: DepartureId)                     extends PersistenceError
+  case class UnexpectedError(thr: Option[Throwable] = None)                 extends PersistenceError
 }

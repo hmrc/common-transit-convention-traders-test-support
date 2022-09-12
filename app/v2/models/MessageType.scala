@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-package config
+package v2.models
 
-object Constants {
-  val MessageCorrelationId = 1
+import models.Enumerable
+import models.IeMetadata
 
-  val Context = "/customs/transits"
+sealed trait MessageType extends IeMetadata {
+  def code: String
+  def rootNode: String
+}
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
+object MessageType extends Enumerable.Implicits {
+  case object PositiveAcknowledgement extends IeMetadata("IE928", "CC928C", "DEP") with MessageType
 
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
+  val departureMessages = Seq(
+    PositiveAcknowledgement,
+  )
 
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+  val values: Seq[MessageType] = Seq(
+    PositiveAcknowledgement,
+  )
+
+  implicit val enumerable: Enumerable[MessageType] =
+    Enumerable(values.map(v => v.code -> v): _*)
 }

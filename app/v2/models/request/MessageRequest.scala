@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package v2.models.request
 
-object Constants {
-  val MessageCorrelationId = 1
+import v2.models.MessageType
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
-  val Context = "/customs/transits"
+abstract class BaseMessageRequest[A](request: Request[A], eori: String, messageType: MessageType) extends WrappedRequest[A](request)
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
-
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
-}
+case class MessageRequest[A](val request: Request[A], val eori: String, messageType: MessageType) extends BaseMessageRequest[A](request, eori, messageType)

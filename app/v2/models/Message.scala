@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package v2.models
 
-object Constants {
-  val MessageCorrelationId = 1
+import java.net.URI
+import java.time.OffsetDateTime
 
-  val Context = "/customs/transits"
-
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
-
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
-}
+// Message returned from DepartureConnector
+case class Message(
+  id: MessageId,
+  received: OffsetDateTime,
+  generated: OffsetDateTime,
+  messageType: MessageType,
+  triggerId: Option[MessageId],
+  url: Option[URI],
+  body: Option[String]
+)

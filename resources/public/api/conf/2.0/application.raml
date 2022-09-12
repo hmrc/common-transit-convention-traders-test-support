@@ -98,6 +98,10 @@ traits:
             Inject a message type into the test NCTS database for a given Movement Departure.
           is: [contentJsonHeader]
           (annotations.scope): "common-transit-convention-traders-test-support"
+          headers:
+            accept:
+                displayName: Accept header
+                description: Set to "application/vnd.hmrc.2.0+json" for phase 5/version 2 api
           securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
           responses:
             201:

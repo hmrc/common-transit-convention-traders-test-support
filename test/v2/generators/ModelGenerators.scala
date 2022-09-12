@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package config
+package v2.generators
 
-object Constants {
-  val MessageCorrelationId = 1
+import v2.models.DepartureId
+import v2.models.MessageType
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
 
-  val Context = "/customs/transits"
+trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
+  implicit lazy val arbitraryDepartureId: Arbitrary[DepartureId] = {
+    Arbitrary {
+      for {
+        id <- stringsWithMaxLength(9)
+      } yield DepartureId(id)
+    }
+  }
 
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
+    Arbitrary(Gen.oneOf(MessageType.values))
 }

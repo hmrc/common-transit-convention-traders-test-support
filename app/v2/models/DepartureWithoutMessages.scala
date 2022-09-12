@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package config
+package v2.models
 
-object Constants {
-  val MessageCorrelationId = 1
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
-  val Context = "/customs/transits"
+import java.time.OffsetDateTime
+import v2.models.formats.CommonFormats._
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
-
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+object DepartureWithoutMessages {
+  implicit val format: OFormat[DepartureWithoutMessages] = Json.format[DepartureWithoutMessages]
 }
+case class DepartureWithoutMessages(
+  _id: DepartureId,
+  enrollmentEORINumber: EORINumber,
+  movementEORINumber: EORINumber,
+  movementReferenceNumber: Option[MovementReferenceNumber],
+  created: OffsetDateTime,
+  updated: OffsetDateTime
+)

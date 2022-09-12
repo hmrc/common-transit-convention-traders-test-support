@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package config
+package v2.models
 
-object Constants {
-  val MessageCorrelationId = 1
+import play.api.libs.json.Format
+import play.api.libs.json.Json
 
-  val Context = "/customs/transits"
+case class MovementReferenceNumber(value: String) extends AnyVal
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
-
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+object MovementReferenceNumber {
+  implicit val movementReferenceNumberFormat: Format[MovementReferenceNumber] = Json.valueFormat[MovementReferenceNumber]
 }
