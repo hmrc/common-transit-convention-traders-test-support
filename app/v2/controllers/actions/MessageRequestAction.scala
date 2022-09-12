@@ -18,10 +18,7 @@ package v2.controllers.actions
 
 import com.google.inject.Inject
 import controllers.actions.AuthRequest
-import v2.models.MessageType
 import v2.models.generation.TestMessage
-import models.generation.EmptyGenInstructions
-import models.generation.GenInstructions
 import v2.models.request.MessageRequest
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
@@ -43,24 +40,7 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
           case JsError(errors) =>
             Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(errors.mkString)))))
           case JsSuccess(testMessage, _) =>
-            parseGenInstructions(testMessage.messageType, body) match {
-              case None => Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError("No instructions found")))))
-              case Some(instructions) =>
-                validateGenInstructions(testMessage.messageType, instructions) match {
-                  case Left(message) => Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(message)))))
-                  case Right(i)      => Future.successful(Right(MessageRequest(request, request.eori, testMessage.messageType, i)))
-                }
-            }
+            Future.successful(Right(MessageRequest(request, request.eori, testMessage.messageType)))
         }
-    }
-
-  private def validateGenInstructions(messageType: MessageType, instructions: GenInstructions): Either[String, GenInstructions] =
-    messageType match {
-      case _ => Right(EmptyGenInstructions())
-    }
-
-  private def parseGenInstructions(messageType: MessageType, json: JsValue): Option[GenInstructions] =
-    messageType match {
-      case _ => Some(EmptyGenInstructions())
     }
 }

@@ -16,13 +16,10 @@
 
 package v2.models.request
 
-import models.generation.GenInstructions
 import v2.models.MessageType
 import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 
-abstract class BaseMessageRequest[A](request: Request[A], eori: String, messageType: MessageType, instructions: GenInstructions)
-    extends WrappedRequest[A](request)
+abstract class BaseMessageRequest[A](request: Request[A], eori: String, messageType: MessageType) extends WrappedRequest[A](request)
 
-case class MessageRequest[A](val request: Request[A], val eori: String, messageType: MessageType, instructions: GenInstructions)
-    extends BaseMessageRequest[A](request, eori, messageType, instructions)
+case class MessageRequest[A](val request: Request[A], val eori: String, messageType: MessageType) extends BaseMessageRequest[A](request, eori, messageType)
