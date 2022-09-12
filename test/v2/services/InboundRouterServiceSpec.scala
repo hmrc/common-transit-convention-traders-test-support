@@ -54,12 +54,12 @@ class InboundRouterServiceSpec extends SpecBase {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(CREATED, "Created", Map("Location" -> Seq("3")))
 
-      when(inboundRouterConnector.post(any[String].asInstanceOf[EORINumber], any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(EORINumber("GB121212"), MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
 
       whenReady(either.value) {
         _.right.map(response => response.value mustBe ("3"))
@@ -70,12 +70,12 @@ class InboundRouterServiceSpec extends SpecBase {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(INTERNAL_SERVER_ERROR, "Error")
 
-      when(inboundRouterConnector.post(any[String].asInstanceOf[EORINumber], any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(EORINumber("GB121212"), MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
 
       whenReady(either.value) {
         _.left.map(response => response mustBe PersistenceError.UnexpectedError(None))
