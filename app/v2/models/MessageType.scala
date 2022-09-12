@@ -26,15 +26,22 @@ sealed trait MessageType extends IeMetadata {
 
 object MessageType extends Enumerable.Implicits {
   case object PositiveAcknowledgement extends IeMetadata("IE928", "CC928C", "DEP") with MessageType
+  case object MRNAllocated            extends IeMetadata("IE028", "CC028C", "DEP") with MessageType
 
   val departureMessages = Seq(
     PositiveAcknowledgement,
+    MRNAllocated
   )
 
   val values: Seq[MessageType] = Seq(
     PositiveAcknowledgement,
+    MRNAllocated
   )
 
   implicit val enumerable: Enumerable[MessageType] =
-    Enumerable(values.map(v => v.code -> v): _*)
+    Enumerable(
+      values.map(
+        v => v.code -> v
+      ): _*
+    )
 }

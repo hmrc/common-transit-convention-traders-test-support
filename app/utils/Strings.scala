@@ -55,10 +55,27 @@ object Strings {
       "0",
       between1And9.toString,
       "0",
-      between1And9.toString,
+      between1And9.toString
     ).mkString
   }
 
+  def mrn(): String =
+    //pattern value="([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
+    // for simplicity fix some values
+    Seq(
+      "2",
+      Gen.choose(4, 9).sample.getOrElse(4),
+      alpha(2),
+      alphanumeric(12),
+      "J",
+      numeric(1)
+    ).mkString.toUpperCase
+
+  def referenceNumber(): String =
+    // [A-Z]{2}[A-Z0-9]{6}
+    Seq(alpha(2), alphanumeric(6)).mkString.toUpperCase
+
   def alpha(length: Int): String =
     Random.alphanumeric.filter(_.isLetter).take(length).mkString
+
 }

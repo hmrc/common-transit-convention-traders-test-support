@@ -38,4 +38,9 @@ class Generator(clock: Clock) {
     now.toLocalTime
       .format(Format.timeFormatter)
 
+  val isoDateTimeLength = 19 // don't include the decimal part of seconds
+  def isoDateTime       = now.format(Format.isoDateTimeFormatter).substring(0, isoDateTimeLength)
+
+  def isoDate: String = now.format(Format.isoDateFormatter)
+
 }
