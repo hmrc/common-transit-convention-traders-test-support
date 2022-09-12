@@ -26,9 +26,11 @@ import v2.models.request.MessageRequest
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json
 import play.api.mvc.ActionRefiner
 import play.api.mvc.Result
 import play.api.mvc.Results.BadRequest
+import v2.models.errors.PresentationError
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -38,14 +40,14 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
     request.body match {
       case body: JsValue =>
         body.validate[TestMessage] match {
-          case JsError(_) =>
-            Future.successful(Left(BadRequest))
+          case JsError(errors) =>
+            Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(errors.mkString)))))
           case JsSuccess(testMessage, _) =>
             parseGenInstructions(testMessage.messageType, body) match {
-              case None => Future.successful(Left(BadRequest("No instructions found")))
+              case None => Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError("No instructions found")))))
               case Some(instructions) =>
                 validateGenInstructions(testMessage.messageType, instructions) match {
-                  case Left(message) => Future.successful(Left(BadRequest(message)))
+                  case Left(message) => Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(message)))))
                   case Right(i)      => Future.successful(Right(MessageRequest(request, request.eori, testMessage.messageType, i)))
                 }
             }

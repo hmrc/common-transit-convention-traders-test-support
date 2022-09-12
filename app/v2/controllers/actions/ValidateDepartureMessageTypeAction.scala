@@ -16,11 +16,13 @@
 
 package v2.controllers.actions
 
+import play.api.libs.json.Json
 import v2.models.MessageType
 import v2.models.request.MessageRequest
 import play.api.mvc.ActionRefiner
 import play.api.mvc.Result
 import play.api.mvc.Results.NotImplemented
+import v2.models.errors.PresentationError
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -31,6 +33,7 @@ class ValidateDepartureMessageTypeAction @Inject()()(implicit val executionConte
     if (MessageType.departureMessages.contains(request.messageType)) {
       Future.successful(Right(request))
     } else {
-      Future.successful(Left(NotImplemented))
+      Future.successful(Left(NotImplemented(Json.toJson(PresentationError.notImplementedError(s"Support for ${request.messageType.code} is not implemented")))))
+
     }
 }

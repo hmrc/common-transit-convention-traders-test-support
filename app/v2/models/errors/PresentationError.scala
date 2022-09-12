@@ -74,6 +74,11 @@ object PresentationError extends CommonFormats {
   ): PresentationError =
     InternalServiceError(message, code, cause)
 
+  def notImplementedError(
+    message: String = "Not Implemented"
+  ): PresentationError =
+    StandardError(message, ErrorCode.NotImplemented)
+
   def unapply(error: PresentationError): Option[(String, ErrorCode)] = Some((error.message, error.code))
 
   private val baseErrorWrites0: OWrites[PresentationError] =
