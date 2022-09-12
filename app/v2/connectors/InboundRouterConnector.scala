@@ -38,7 +38,7 @@ class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) e
       .copy()
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
 
-    val url = appConfig.transitMovementsRouterUrl + s"/traders/${eori.value}/movements/${messageType.code}/${departureId.value}/messages/"
+    val url = appConfig.transitMovementsRouterUrl + s"/traders/${eori.value}/movements/${departureId.value}-0000000000000000/messages/"
 
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }

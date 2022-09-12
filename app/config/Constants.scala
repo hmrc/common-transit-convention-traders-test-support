@@ -26,4 +26,6 @@ object Constants {
 
   val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
   val NewEnrolmentIdKey: String = "EORINumber"
+
+  val DefaultTriggerId: String = List.fill(16)("0").mkString
 }
