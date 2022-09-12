@@ -42,7 +42,7 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
                                                                requestHeader: RequestHeader,
                                                                hc: HeaderCarrier,
                                                                ec: ExecutionContext): Future[DepartureWithoutMessages] = {
-    val url = s"${appConfig.transitMovementsUrl}/traders/${eori.value}/movements/departures/${departureId.value}"
+    val url = constructDepartureUri(eori, departureId)
 
     http
       .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
@@ -63,7 +63,7 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
     val uri = constructMessageUri(eori, departureId, messageId)
 
     http
-      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
+      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
       .flatMap {
         response =>
           response.status match {
@@ -73,9 +73,13 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
       }
   }
 
+  private def constructBaseUri(eori: EORINumber) =
+    s"${appConfig.transitMovementsUrl}/transit-movements/traders/${eori.value}/movements/departures"
+
+  private def constructDepartureUri(eori: EORINumber, departureId: DepartureId) =
+    s"${constructBaseUri(eori)}/${Utils.urlEncode(departureId.value)}"
+
   private def constructMessageUri(eori: EORINumber, departureId: DepartureId, messageId: MessageId) =
-    s"${appConfig.transitMovementsUrl}/traders/${eori.value}/movements/departures/" +
-      s"${Utils.urlEncode(departureId.value)}/messages/" +
-      s"${Utils.urlEncode(messageId.value)}"
+    s"${constructDepartureUri(eori, departureId)}/messages/${Utils.urlEncode(messageId.value)}"
 
 }

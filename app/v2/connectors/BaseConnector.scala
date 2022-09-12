@@ -31,21 +31,19 @@ import scala.concurrent.Future
 
 class BaseConnector extends HttpErrorFunctions {
 
-  protected val requestHeaders: Seq[(String, String)] =
+  protected lazy val requestHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.XML))
 
-  def responseHeaders(): Seq[(String, String)] =
+  lazy val responseHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
 
   protected val departureRoute = "/transit-movements/movements/departures/"
 
   protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
-                                                                              headerCarrier: HeaderCarrier): HeaderCarrier = {
-    val newHeaderCarrier = headerCarrier
+                                                                              headerCarrier: HeaderCarrier): HeaderCarrier =
+    headerCarrier
       .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
       .withExtraHeaders(extraHeaders: _*)
-    newHeaderCarrier
-  }
 
   implicit class HttpResponseHelpers(response: HttpResponse) {
 
