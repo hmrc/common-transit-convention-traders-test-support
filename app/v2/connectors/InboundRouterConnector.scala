@@ -16,7 +16,7 @@
 
 package v2.connectors
 
-import config.AppConfig
+import config.{AppConfig, Constants}
 import connectors.util.CustomHttpReader
 import v2.models.DepartureId
 import v2.models.EORINumber
@@ -38,7 +38,7 @@ class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) e
       .copy()
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
 
-    val url = appConfig.transitMovementsRouterUrl + s"/traders/${eori.value}/movements/${departureId.value}-0000000000000000/messages/"
+    val url = appConfig.transitMovementsRouterUrl + s"/transit-movements-router/movements/${departureId.value}-${Constants.DefaultTriggerId}/messages/"
 
     http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }
