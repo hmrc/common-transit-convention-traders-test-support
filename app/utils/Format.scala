@@ -31,4 +31,6 @@ object Format {
   def timeFormatted(time: LocalTime): String         = time.format(timeFormatter)
 
   val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
+
+  val isoDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 }

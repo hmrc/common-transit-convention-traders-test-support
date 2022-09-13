@@ -20,6 +20,7 @@ import utils.Format
 
 import java.time.Clock
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Generator(clock: Clock) {
 
@@ -37,5 +38,9 @@ class Generator(clock: Clock) {
   def localTime: String =
     now.toLocalTime
       .format(Format.timeFormatter)
+
+  def isoDateTime = now.format(Format.isoDateTimeFormatter)
+
+  def isoDate: String = now.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
 }
