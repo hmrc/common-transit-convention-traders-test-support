@@ -32,6 +32,5 @@ object Format {
 
   val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
 
-  val isoDateFormatter: DateTimeFormatter     = DateTimeFormatter.ISO_LOCAL_DATE
-  val isoDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+  val isoDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 }

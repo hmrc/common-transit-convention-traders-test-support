@@ -20,6 +20,7 @@ import utils.Format
 
 import java.time.Clock
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Generator(clock: Clock) {
 
@@ -38,9 +39,8 @@ class Generator(clock: Clock) {
     now.toLocalTime
       .format(Format.timeFormatter)
 
-  val isoDateTimeLength = 19 // don't include the decimal part of seconds
-  def isoDateTime       = now.format(Format.isoDateTimeFormatter).substring(0, isoDateTimeLength)
+  def isoDateTime = now.format(Format.isoDateTimeFormatter)
 
-  def isoDate: String = now.format(Format.isoDateFormatter)
+  def isoDate: String = now.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
 }
