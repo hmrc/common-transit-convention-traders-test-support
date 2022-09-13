@@ -18,6 +18,7 @@ package v2.generators
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
+import utils.Strings.numeric
 import v2.models.DepartureId
 import v2.models.MessageType
 import v2.models.MessageType.MRNAllocated
@@ -30,7 +31,7 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers {
   import Setup._
   "A generator" - {
     "when supplied with message type MRNAllocated" - {
-      "should produce an IE028 Message" - {
+      "should produce an IE028 Message" in {
 
         val traderChannelResponse = messages(MRNAllocated)
 
@@ -72,11 +73,11 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers {
   object Setup {
     val clock                                           = Clock.systemUTC()
     val ut                                              = new DepartureMessageGenerator(clock)
-    val messages: PartialFunction[MessageType, NodeSeq] = ut.generate(DepartureId("departureId"))
+    val messages: PartialFunction[MessageType, NodeSeq] = ut.generate(DepartureId(numeric(1, 16)))
 
     // Regex patterns from .xsd
     val messageSenderPattern          = ".{1,35}"
-    val messageRecipientPattern       = "departureId-0000000000000000"
+    val messageRecipientPattern       = ".{1,18}-0{16}"
     val preparationDateAndTimePattern = """\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}"""
     val messageIdentificationPattern  = ".{1,35}"
     val messageTypePattern            = "CC028C"

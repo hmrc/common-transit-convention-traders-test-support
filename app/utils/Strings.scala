@@ -61,13 +61,12 @@ object Strings {
 
   def mrn(): String =
     //pattern value="([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
-    // for simplicity fix some values
     Seq(
       "2",
       Gen.choose(4, 9).sample.getOrElse(4),
       alpha(2),
       alphanumeric(12),
-      "J",
+      Gen.oneOf(Seq("J", "K", "L", "M")).sample.getOrElse("J"),
       numeric(1)
     ).mkString.toUpperCase
 
