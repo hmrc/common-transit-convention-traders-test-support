@@ -54,8 +54,8 @@ class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterCo
         .map(response => {
           if (is2xx(response.status)) {
             response.header(MessageIdHeaderKey) match {
-              case Some(loc) => Right(MessageId(Utils.lastFragment(loc)))
-              case _         => Left(PersistenceError.UnexpectedError(Some(new Exception("Location header missing from router response"))))
+              case Some(value) => Right(MessageId(Utils.lastFragment(value)))
+              case _           => Left(PersistenceError.UnexpectedError(Some(new Exception("Location header missing from router response"))))
             }
           } else {
             Left(PersistenceError.UnexpectedError(None))
