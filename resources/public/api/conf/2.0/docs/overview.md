@@ -111,7 +111,7 @@ You can use this API for any test scenario you choose. It is not connected to th
           
 ## Reference materials
 
-### CURL commands
+<!--### CURL commands
 
 Use these CURL commands to simulate your application’s actions and messages, plus the actions and messages that would come back from NCTS.
 
@@ -268,22 +268,12 @@ curl --location --request GET &apos;https://test-api.service.hmrc.gov.uk/customs
 ### [Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman) 
 
 These were created by us in November 2020. These will not be monitored or updated.
+-->
 
-
-### [Our XSD files](https://developer.service.hmrc.gov.uk/guides/common-transit-convention-traders-service-guide/documentation/xsd-reference.html) 
+### [Our XSD files](https://github.com/hmrc/transit-movements-validator/tree/main/conf/xsd) 
 
 You can check your XML files against our XSD files.
 
-### [Download the mapping document](https://github.com/hmrc/common-transit-convention-traders-test-support/raw/master/resources/public/api/conf/1.0/docs/xml-2-edifact-mapping-updated12112020.pdf)
+   ### [NCTS Phase 5 Technical Interface Specification](/guides/ctc-traders-phase5-tis) 
 
-This has plain English header descriptions, XML and EDIFACT code. 
-
-### [Trader Test Pack for GB](https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/937032/NCTS_4_GB.pdf) 
-
-This contains test scenarios that you can use. 
-      
-### [NCTS API channel specifications](https://www.gov.uk/government/publications/new-computerised-transit-system-technical-specifications) 
-
-See a list of messages, message content and sequence diagrams.  
-> Note, this is NOT the specifications document for the new CTC Traders API. For example, the CTC Traders API will not use an EDIFACT wrapper or SOAP. A new version will be issued early in 2021.
-
+See a list of messages, message details, and process flow diagrams.  
