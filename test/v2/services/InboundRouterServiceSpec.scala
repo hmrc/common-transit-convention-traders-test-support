@@ -17,11 +17,11 @@
 package v2.services
 
 import base.SpecBase
+import config.Constants.MessageIdHeaderKey
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status.CREATED
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HttpResponse
 import v2.connectors.InboundRouterConnector
 import v2.models.DepartureId
@@ -37,8 +37,6 @@ import scala.concurrent.ExecutionContext.Implicits._
 
 class InboundRouterServiceSpec extends SpecBase {
 
-  implicit val requestHeader = FakeRequest()
-
   val departureWithoutMessages = DepartureWithoutMessages(
     DepartureId("1"),
     EORINumber("GB121212"),
@@ -52,7 +50,7 @@ class InboundRouterServiceSpec extends SpecBase {
 
     "when posting a message, should succeed and respond with the message Id" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
-      val response               = HttpResponse(CREATED, "Created", Map("Location" -> Seq("3")))
+      val response               = HttpResponse(CREATED, "Created", Map(MessageIdHeaderKey -> Seq("3")))
 
       when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
@@ -63,6 +61,26 @@ class InboundRouterServiceSpec extends SpecBase {
 
       whenReady(either.value) {
         _.right.map(response => response.value mustBe ("3"))
+      }
+    }
+
+    "when posting a message, should fail if location header missing" in {
+      val inboundRouterConnector = mock[InboundRouterConnector]
+      val response               = HttpResponse(CREATED, "Created")
+
+      when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
+        .thenReturn(Future.successful[HttpResponse](response))
+
+      val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
+
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
+
+      whenReady(either.value) {
+        _.left.map(response =>
+          response.leftSideValue match {
+            case PersistenceError.UnexpectedError(Some(thr)) => thr.getMessage mustBe "Location header missing from router response"
+            case _                                           => fail("Expected a different error")
+        })
       }
     }
 

@@ -21,6 +21,8 @@ object Constants {
 
   val Context = "/customs/transits"
 
+  val MessageIdHeaderKey: String = "X-Message-Id"
+
   val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
   val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
 

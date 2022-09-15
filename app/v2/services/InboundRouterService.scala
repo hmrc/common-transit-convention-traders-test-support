@@ -20,8 +20,8 @@ import cats.data.EitherT
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import config.Constants.MessageIdHeaderKey
 import play.api.http.Status.NOT_FOUND
-import play.api.http.HeaderNames.LOCATION
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.UpstreamErrorResponse
@@ -53,9 +53,9 @@ class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterCo
         .post(messageType, message, departureId)
         .map(response => {
           if (is2xx(response.status)) {
-            response.header(LOCATION) match {
+            response.header(MessageIdHeaderKey) match {
               case Some(loc) => Right(MessageId(Utils.lastFragment(loc)))
-              case _         => Left(PersistenceError.UnexpectedError(None))
+              case _         => Left(PersistenceError.UnexpectedError(Some(new Exception("Location header missing from router response"))))
             }
           } else {
             Left(PersistenceError.UnexpectedError(None))
