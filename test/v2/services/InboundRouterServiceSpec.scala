@@ -78,7 +78,7 @@ class InboundRouterServiceSpec extends SpecBase {
       whenReady(either.value) {
         _.left.map(response =>
           response.leftSideValue match {
-            case PersistenceError.UnexpectedError(Some(thr)) => thr.getMessage mustBe "Location header missing from router response"
+            case PersistenceError.UnexpectedError(Some(thr)) => thr.getMessage mustBe "X-Message-Id header missing from router response"
             case _                                           => fail("Expected a different error")
         })
       }
