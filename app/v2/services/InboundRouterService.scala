@@ -35,22 +35,23 @@ import v2.models.errors.PersistenceError
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.control.NonFatal
+import scala.xml.NodeSeq
 
 @ImplementedBy(classOf[InboundRouterServiceImpl])
 trait InboundRouterService {
 
-  def post(messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
+  def post(messageType: MessageType, message: NodeSeq, departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                                 ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
 }
 
 @Singleton
 class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
-  def post(messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
+  def post(messageType: MessageType, message: NodeSeq, departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                                 ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
     EitherT(
       inboundRouterConnector
-        .post(messageType, message, departureId)
+        .post(messageType, wrap(message).mkString, departureId)
         .map(response => {
           if (is2xx(response.status)) {
             response.header(MessageIdHeaderKey) match {
@@ -66,4 +67,7 @@ class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterCo
           case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
         }
     )
+
+  def wrap(message: NodeSeq): NodeSeq =
+    <TraderChannelResponse>{message}</TraderChannelResponse>
 }

@@ -57,7 +57,7 @@ class InboundRouterServiceSpec extends SpecBase {
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, <msg></msg>, DepartureId("1"))
 
       whenReady(either.value) {
         _.right.map(response => response.value mustBe ("3"))
@@ -73,7 +73,7 @@ class InboundRouterServiceSpec extends SpecBase {
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, <msg></msg>, DepartureId("1"))
 
       whenReady(either.value) {
         _.left.map(response =>
@@ -93,11 +93,18 @@ class InboundRouterServiceSpec extends SpecBase {
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, "msg", DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, <msg></msg>, DepartureId("1"))
 
       whenReady(either.value) {
         _.left.map(response => response mustBe PersistenceError.UnexpectedError(None))
       }
+    }
+
+    "wrap should wrap an XML message in the TraderChannelResponse" in {
+      val inboundRouterConnector = mock[InboundRouterConnector]
+      val inboundRouterService   = new InboundRouterServiceImpl(inboundRouterConnector)
+
+      inboundRouterService.wrap(<message><test>1</test><test2>2</test2></message>) mustBe <TraderChannelResponse><message><test>1</test><test2>2</test2></message></TraderChannelResponse>
     }
 
   }

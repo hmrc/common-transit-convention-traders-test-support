@@ -55,6 +55,7 @@ import v2.services.InboundRouterService
 import java.net.URI
 import java.time.OffsetDateTime
 import scala.concurrent.Future
+import scala.xml.NodeSeq
 
 class V2DepartureTestMessagesControllerSpec
     extends SpecBase
@@ -102,7 +103,7 @@ class V2DepartureTestMessagesControllerSpec
         when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterService.post(any(), any[String], any[String].asInstanceOf[DepartureId])(any(), any()))
+        when(mockInboundRouterService.post(any(), any[NodeSeq], any[String].asInstanceOf[DepartureId])(any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Right(messageId))))
 
         when(
@@ -165,7 +166,7 @@ class V2DepartureTestMessagesControllerSpec
         when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterService.post(any[MessageType], any[String], any[String].asInstanceOf[DepartureId])(any(), any()))
+        when(mockInboundRouterService.post(any[MessageType], any[NodeSeq], any[String].asInstanceOf[DepartureId])(any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Left(PersistenceError.UnexpectedError()))))
 
         val application = baseApplicationBuilder

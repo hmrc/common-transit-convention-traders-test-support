@@ -16,75 +16,54 @@
 
 package v2.generators
 
+import org.scalacheck.Gen
+import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import utils.Strings.numeric
 import v2.models.DepartureId
-import v2.models.MessageType
 import v2.models.MessageType.MRNAllocated
+import v2.models.MessageType.PositiveAcknowledgement
 
+import java.io.StringReader
 import java.time.Clock
+import javax.xml.XMLConstants
+import javax.xml.transform.stream.StreamSource
+import javax.xml.validation.SchemaFactory
 import scala.xml.NodeSeq
 
-class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers {
-
-  import Setup._
+class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
   "A generator" - {
+    val generator   = new DepartureMessageGenerator(Clock.systemUTC())
+    val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(DepartureId(_)).sample.value
+
+    "when a positive acknowledgement is requested" - {
+      "should produce a valid IE928 message" in {
+        validate("cc928c", generator.generate(departureId)(PositiveAcknowledgement))
+      }
+    }
+
     "when supplied with message type MRNAllocated" - {
       "should produce an IE028 Message" in {
-
-        val traderChannelResponse = messages(MRNAllocated)
-
-        // header
-        val messageSender          = (traderChannelResponse \ "CC028C" \ "messageSender").text
-        val messageRecipient       = (traderChannelResponse \ "CC028C" \ "messageRecipient").text
-        val preparationDateAndTime = (traderChannelResponse \ "CC028C" \ "preparationDateAndTime").text
-        val messageIdentification  = (traderChannelResponse \ "CC028C" \ "messageIdentification").text
-        val messageType            = (traderChannelResponse \ "CC028C" \ "messageType").text
-        val correlationIdentifier  = (traderChannelResponse \ "CC028C" \ "correlationIdentifier").text
-
-        // TransitOperation
-        val mrn                       = (traderChannelResponse \ "CC028C" \ "TransitOperation" \ "MRN").text
-        val declarationAcceptanceDate = (traderChannelResponse \ "CC028C" \ "TransitOperation" \ "declarationAcceptanceDate").text
-
-        // CustomsOfficeOfDeparture
-        val referenceNumber = (traderChannelResponse \ "CC028C" \ "CustomsOfficeOfDeparture" \ "referenceNumber").text
-
-        // Header
-        messageSender should fullyMatch regex messageSenderPattern
-        messageRecipient should fullyMatch regex messageRecipientPattern
-        preparationDateAndTime should fullyMatch regex preparationDateAndTimePattern
-        messageIdentification should fullyMatch regex messageIdentificationPattern
-        messageType should fullyMatch regex messageTypePattern
-        correlationIdentifier should fullyMatch regex correlationIdentifierPattern
-
-        // TransitOperation
-        messages.isDefinedAt(MRNAllocated) should be(true)
-        mrn should fullyMatch regex mrnPattern
-        declarationAcceptanceDate should fullyMatch regex datePattern
-
-        // CustomsOfficeOfDeparture
-        referenceNumber should fullyMatch regex referenceNumberPattern
-
+        validate("cc028c", generator.generate(departureId)(MRNAllocated))
       }
     }
   }
 
-  object Setup {
-    val clock                                           = Clock.systemUTC()
-    val ut                                              = new DepartureMessageGenerator(clock)
-    val messages: PartialFunction[MessageType, NodeSeq] = ut.generate(DepartureId(numeric(1, 16)))
-
-    // Regex patterns from .xsd
-    val messageSenderPattern          = ".{1,35}"
-    val messageRecipientPattern       = ".{1,18}-0{16}"
-    val preparationDateAndTimePattern = """\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}"""
-    val messageIdentificationPattern  = ".{1,35}"
-    val messageTypePattern            = "CC028C"
-    val correlationIdentifierPattern  = messageRecipientPattern
-    val mrnPattern                    = "([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
-    val datePattern                   = "\\d{4}-\\d{2}-\\d{2}(\\.\\d+)?"
-    val referenceNumberPattern        = "[A-Z]{2}[A-Z0-9]{6}"
+  private def validate(xsdRoot: String, xml: NodeSeq): Unit = {
+    val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
+    val schemaUrl     = getClass.getResource(s"/xsd/phase5/${xsdRoot.toLowerCase}.xsd")
+    val schema        = schemaFactory.newSchema(schemaUrl)
+    val validator     = schema.newValidator()
+    validator.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
+    validator.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+    validator.setFeature("http://xml.org/sax/features/external-general-entities", false)
+    validator.setFeature("http://xml.org/sax/features/external-parameter-entities", false)
+    val reader = new StringReader(xml.mkString)
+    try {
+      validator.validate(new StreamSource(reader))
+    } finally {
+      reader.close()
+    }
   }
 
 }

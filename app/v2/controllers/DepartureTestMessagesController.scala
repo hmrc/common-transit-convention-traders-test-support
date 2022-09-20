@@ -69,7 +69,7 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
 
             message = msgGenService.generateMessage(request, departureId)
             // Send generated message to transit-movements-router
-            messageId <- inboundRouterService.post(request.messageType, message.toString(), departureId).asPresentation
+            messageId <- inboundRouterService.post(request.messageType, message, departureId).asPresentation
 
             // Check for matching departure message from transit-movements
             _ <- departureService.getMessage(EORINumber(request.eori), departureId, messageId).asPresentation
