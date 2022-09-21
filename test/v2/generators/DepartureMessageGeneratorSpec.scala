@@ -23,13 +23,13 @@ import org.scalatest.matchers.should.Matchers
 import v2.models.DepartureId
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.XMLMessage
 
 import java.io.StringReader
 import java.time.Clock
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
-import scala.xml.NodeSeq
 
 class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
   "A generator" - {
@@ -49,7 +49,7 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     }
   }
 
-  private def validate(xsdRoot: String, xml: NodeSeq): Unit = {
+  private def validate(xsdRoot: String, xml: XMLMessage): Unit = {
     val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
     val schemaUrl     = getClass.getResource(s"/xsd/phase5/${xsdRoot.toLowerCase}.xsd")
     val schema        = schemaFactory.newSchema(schemaUrl)
@@ -58,7 +58,7 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     validator.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
     validator.setFeature("http://xml.org/sax/features/external-general-entities", false)
     validator.setFeature("http://xml.org/sax/features/external-parameter-entities", false)
-    val reader = new StringReader(xml.mkString)
+    val reader = new StringReader(xml.value.mkString)
     try {
       validator.validate(new StreamSource(reader))
     } finally {

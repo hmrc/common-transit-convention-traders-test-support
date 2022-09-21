@@ -19,6 +19,7 @@ package v2.services
 import base.SpecBase
 import config.Constants.MessageIdHeaderKey
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{eq => eqTo}
 import org.mockito.Mockito.when
 import play.api.http.Status.CREATED
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -29,6 +30,8 @@ import v2.models.DepartureWithoutMessages
 import v2.models.EORINumber
 import v2.models.MessageType
 import v2.models.MovementReferenceNumber
+import v2.models.WrappedXMLMessage
+import v2.models.XMLMessage
 import v2.models.errors.PersistenceError
 
 import java.time.OffsetDateTime
@@ -51,13 +54,14 @@ class InboundRouterServiceSpec extends SpecBase {
     "when posting a message, should succeed and respond with the message Id" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(CREATED, "Created", Map(MessageIdHeaderKey -> Seq("3")))
+      val wrappedMessage         = <TraderChannelResponse><msg></msg></TraderChannelResponse>
 
-      when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedMessage)), any[String].asInstanceOf[DepartureId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, <msg></msg>, DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), DepartureId("1"))
 
       whenReady(either.value) {
         _.right.map(response => response.value mustBe ("3"))
@@ -67,13 +71,14 @@ class InboundRouterServiceSpec extends SpecBase {
     "when posting a message, should fail if location header missing" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(CREATED, "Created")
+      val wrappedXMLMessage      = <TraderChannelResponse><msg></msg></TraderChannelResponse>
 
-      when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[DepartureId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, <msg></msg>, DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), DepartureId("1"))
 
       whenReady(either.value) {
         _.left.map(response =>
@@ -87,24 +92,18 @@ class InboundRouterServiceSpec extends SpecBase {
     "when posting a message, should fail if connector cannot complete its write" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(INTERNAL_SERVER_ERROR, "Error")
+      val wrappedXMLMessage      = <TraderChannelResponse><msg></msg></TraderChannelResponse>
 
-      when(inboundRouterConnector.post(any[MessageType], any(), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[DepartureId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, <msg></msg>, DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), DepartureId("1"))
 
       whenReady(either.value) {
         _.left.map(response => response mustBe PersistenceError.UnexpectedError(None))
       }
-    }
-
-    "wrap should wrap an XML message in the TraderChannelResponse" in {
-      val inboundRouterConnector = mock[InboundRouterConnector]
-      val inboundRouterService   = new InboundRouterServiceImpl(inboundRouterConnector)
-
-      inboundRouterService.wrap(<message><test>1</test><test2>2</test2></message>) mustBe <TraderChannelResponse><message><test>1</test><test2>2</test2></message></TraderChannelResponse>
     }
 
   }
