@@ -18,31 +18,30 @@ package v2.generators
 
 import com.google.inject.Inject
 import config.Constants
-import generators.Generator
+import utils.Strings
 import v2.models.DepartureId
 import v2.models.MessageType
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
-import utils.Strings
+import v2.models.XMLMessage
 
 import java.time.Clock
-import scala.xml.NodeSeq
 
-class DepartureMessageGenerator @Inject()(clock: Clock) extends Generator(clock) {
+class DepartureMessageGenerator @Inject()(clock: Clock) extends Generators {
 
   def correlationId(departureId: DepartureId) = s"${departureId.value}-${Constants.DefaultTriggerId}"
 
-  def generate(departureId: DepartureId): PartialFunction[MessageType, NodeSeq] = {
+  def generate(departureId: DepartureId): PartialFunction[MessageType, XMLMessage] = {
     case PositiveAcknowledgement => generateIE928Message(correlationId(departureId))
     case MRNAllocated            => generateIE028Message(correlationId(departureId))
   }
 
-  private def generateIE928Message(correlationId: String): NodeSeq =
-    <TraderChannelResponse>
-      <CC928C PhaseID="NCTS5.0">
+  private def generateIE928Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC928C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
         <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
-        <preparationDateAndTime>{localDateTime}</preparationDateAndTime>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
         <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
         <messageType>CC928C</messageType>
         <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
@@ -50,7 +49,7 @@ class DepartureMessageGenerator @Inject()(clock: Clock) extends Generator(clock)
           <LRN>{Strings.alphanumeric(2, 22)}</LRN>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.alpha(2)}{Strings.alphanumeric(6)}</referenceNumber>
+          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure>
           <identificationNumber>{Strings.alphanumeric(8, 17)}</identificationNumber>
@@ -58,20 +57,20 @@ class DepartureMessageGenerator @Inject()(clock: Clock) extends Generator(clock)
           <name>{Strings.alphanumeric(8, 70)}</name>
           <Address>
             <streetAndNumber>{Strings.alphanumeric(8, 70)}</streetAndNumber>
+            <postcode>{Strings.alphanumeric(6, 17)}</postcode>
             <city>{Strings.alphanumeric(3, 35)}</city>
-            <postCode>{Strings.alphanumeric(6, 17)}</postCode>
-            <country>{Strings.alpha(2)}</country>
+            <country>{Strings.alpha(2).toUpperCase}</country>
           </Address>
         </HolderOfTheTransitProcedure>
-      </CC928C>
-    </TraderChannelResponse>
+      </ncts:CC928C>
+    )
 
-  private def generateIE028Message(correlationId: String): NodeSeq =
-    <TraderChannelResponse>
-      <CC028C>
+  private def generateIE028Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC028C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
         <messageSender>{Strings.alphanumeric(35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
-        <preparationDateAndTime>{isoDateTime}</preparationDateAndTime>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
         <messageIdentification>{Strings.alphanumeric(35)}</messageIdentification>
         <messageType>CC028C</messageType>
         <!--Optional:-->
@@ -79,12 +78,12 @@ class DepartureMessageGenerator @Inject()(clock: Clock) extends Generator(clock)
         <TransitOperation>
           <LRN>{Strings.alphanumeric(2, 22)}</LRN>
           <MRN>{Strings.mrn()}</MRN>
-          <declarationAcceptanceDate>{isoDate}</declarationAcceptanceDate>
+          <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
           <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure/>
-      </CC028C>
-  </TraderChannelResponse>
+      </ncts:CC028C>
+    )
 }

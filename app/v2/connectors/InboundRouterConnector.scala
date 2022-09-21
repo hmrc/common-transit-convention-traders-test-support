@@ -24,6 +24,7 @@ import v2.models.MessageType
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import v2.models.WrappedXMLMessage
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -32,13 +33,14 @@ import scala.concurrent.Future
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   // Create a new message with the transit-movements-router service
-  def post(messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def post(messageType: MessageType, message: WrappedXMLMessage, departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                                           ec: ExecutionContext): Future[HttpResponse] = {
     val newHeaders = hc
       .copy()
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
 
     val url = appConfig.transitMovementsRouterUrl + s"/transit-movements-router/movements/${departureId.value}-${Constants.DefaultTriggerId}/messages/"
 
-    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
+    http.POSTString(url, message.value.mkString, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }
 }

@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package v2.models
 
-object Constants {
-  val MessageCorrelationId = 1
+import scala.xml.NodeSeq
 
-  val Context = "/customs/transits"
-
-  val MessageIdHeaderKey: String = "X-Message-Id"
-
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
-
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+case class XMLMessage(value: NodeSeq) extends AnyVal {
+  def wrapped: WrappedXMLMessage = WrappedXMLMessage(<TraderChannelResponse>{value}</TraderChannelResponse>)
 }
+
+case class WrappedXMLMessage(value: NodeSeq) extends AnyVal

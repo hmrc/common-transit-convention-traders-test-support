@@ -22,6 +22,7 @@ import v2.models.DepartureId
 import v2.models.MessageType
 import v2.models.request.MessageRequest
 import play.api.libs.json.JsValue
+import v2.models.XMLMessage
 
 import scala.xml.NodeSeq
 
@@ -29,12 +30,12 @@ class MessageGenerationService @Inject()(
   departureMessageGenerator: DepartureMessageGenerator
 ) {
 
-  def generateMessage(request: MessageRequest[JsValue], departureId: DepartureId): NodeSeq = {
+  def generateMessage(request: MessageRequest[JsValue], departureId: DepartureId): XMLMessage = {
     val pf = departureMessageGenerator.generate(departureId) orElse default()
     pf.apply(request.messageType)
   }
 
-  private def default(): PartialFunction[MessageType, NodeSeq] = {
+  private def default(): PartialFunction[MessageType, XMLMessage] = {
     case _ => throw new Exception("Unsupported Message Type")
   }
 

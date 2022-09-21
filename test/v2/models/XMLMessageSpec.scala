@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package config
+package v2.models
 
-object Constants {
-  val MessageCorrelationId = 1
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-  val Context = "/customs/transits"
+import scala.xml.Utility.trim
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
+class XMLMessageSpec extends AnyFreeSpec with Matchers {
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
+  "XMLMessage#wrapped should get a wrapped message" in {
+    val node     = <message>
+      <test>1</test> <test2>2</test2>
+    </message>
+    val expected = <TraderChannelResponse>
+      <message>
+        <test>1</test> <test2>2</test2>
+      </message>
+    </TraderChannelResponse>
+    val sut      = XMLMessage(node)
+    val result   = sut.wrapped
 
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+    trim(result.value.head) mustBe trim(expected)
+  }
 }

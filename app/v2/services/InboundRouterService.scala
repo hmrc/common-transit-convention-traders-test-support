@@ -20,8 +20,8 @@ import cats.data.EitherT
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import config.Constants.MessageIdHeaderKey
 import play.api.http.Status.NOT_FOUND
-import play.api.http.HeaderNames.LOCATION
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.UpstreamErrorResponse
@@ -30,6 +30,7 @@ import v2.connectors.InboundRouterConnector
 import v2.models.DepartureId
 import v2.models.MessageId
 import v2.models.MessageType
+import v2.models.XMLMessage
 import v2.models.errors.PersistenceError
 
 import scala.concurrent.ExecutionContext
@@ -39,23 +40,23 @@ import scala.util.control.NonFatal
 @ImplementedBy(classOf[InboundRouterServiceImpl])
 trait InboundRouterService {
 
-  def post(messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
+  def post(messageType: MessageType, message: XMLMessage, departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                                    ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
 }
 
 @Singleton
 class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
-  def post(messageType: MessageType, message: String, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
+  def post(messageType: MessageType, message: XMLMessage, departureId: DepartureId)(implicit hc: HeaderCarrier,
+                                                                                    ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
     EitherT(
       inboundRouterConnector
-        .post(messageType, message, departureId)
+        .post(messageType, message.wrapped, departureId)
         .map(response => {
           if (is2xx(response.status)) {
-            response.header(LOCATION) match {
-              case Some(loc) => Right(MessageId(Utils.lastFragment(loc)))
-              case _         => Left(PersistenceError.UnexpectedError(None))
+            response.header(MessageIdHeaderKey) match {
+              case Some(value) => Right(MessageId(Utils.lastFragment(value)))
+              case _           => Left(PersistenceError.UnexpectedError(Some(new Exception("X-Message-Id header missing from router response"))))
             }
           } else {
             Left(PersistenceError.UnexpectedError(None))
@@ -66,4 +67,5 @@ class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterCo
           case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
         }
     )
+
 }

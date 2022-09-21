@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package config
+package v2.generators
 
-object Constants {
-  val MessageCorrelationId = 1
+import java.time.Clock
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
-  val Context = "/customs/transits"
+object Generators extends Generators
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
+trait Generators {
 
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
+  val clock = Clock.systemUTC()
 
-  val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String = "EORINumber"
+  def generateLocalDateTime() = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(clock.instant().truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC))
 
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+  def generateLocalDate() = DateTimeFormatter.ISO_LOCAL_DATE.format(clock.instant().atZone(ZoneOffset.UTC))
+
 }

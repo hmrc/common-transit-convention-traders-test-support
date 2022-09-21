@@ -21,6 +21,7 @@ import cats.data.EitherT
 import controllers.actions.AuthAction
 import controllers.actions.FakeAuthAction
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito._
 import v2.generators.ModelGenerators
 import org.scalatest.BeforeAndAfterEach
@@ -48,6 +49,7 @@ import v2.models.Message
 import v2.models.MessageId
 import v2.models.MessageType
 import v2.models.MovementReferenceNumber
+import v2.models.XMLMessage
 import v2.models.errors.PersistenceError
 import v2.services.DepartureService
 import v2.services.InboundRouterService
@@ -55,6 +57,7 @@ import v2.services.InboundRouterService
 import java.net.URI
 import java.time.OffsetDateTime
 import scala.concurrent.Future
+import scala.xml.NodeSeq
 
 class V2DepartureTestMessagesControllerSpec
     extends SpecBase
@@ -102,7 +105,7 @@ class V2DepartureTestMessagesControllerSpec
         when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterService.post(any(), any[String], any[String].asInstanceOf[DepartureId])(any(), any()))
+        when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), DepartureId(any[String]))(any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Right(messageId))))
 
         when(
@@ -165,7 +168,7 @@ class V2DepartureTestMessagesControllerSpec
         when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterService.post(any[MessageType], any[String], any[String].asInstanceOf[DepartureId])(any(), any()))
+        when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), DepartureId(anyString()))(any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Left(PersistenceError.UnexpectedError()))))
 
         val application = baseApplicationBuilder
