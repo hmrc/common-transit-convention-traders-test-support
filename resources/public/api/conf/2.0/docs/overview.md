@@ -22,7 +22,7 @@ Follow these steps to get set up for testing.
 
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-<br></br>
+For further details on how to get set up for testing, see [CTC Traders API testing guide](/guides/ctc-traders-phase5-testing-guide).
 
 ## How to use the CTC Trader Test Support API
 
