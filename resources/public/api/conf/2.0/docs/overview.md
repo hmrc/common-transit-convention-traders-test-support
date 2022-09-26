@@ -22,7 +22,7 @@ Follow these steps to get set up for testing.
 
 5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-For further details on how to get set up for testing, see [CTC Traders API testing guide](/guides/ctc-traders-phase5-testing-guide).
+<!--For further details on how to get set up for testing, see [CTC Traders API testing guide](/guides/ctc-traders-phase5-testing-guide).-->
 
 ## How to use the CTC Trader Test Support API
 
@@ -63,12 +63,12 @@ You can use this API for any test scenario you choose. It is not connected to th
    </tr>
 -->
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject declaration received message (IE928) (IE028)</a></td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928) (IE028)</a></td>
    <td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
    <td>Specify "IE928" for the <code>messageType</code> field
    </tr>
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject an MRN allocated message (IE028)</a></td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie028-mrn-allocated">Inject an MRN allocated message (IE028)</a></td>
    <td>Inject a message from the office at departure allocating a Movement Reference Number (MRN)</td>
    <td>Specify "IE028" for the <code>messageType</code> field
    </tr>
@@ -239,7 +239,7 @@ curl --location --request POST &apos;https://test-api.service.hmrc.gov.uk/custom
 
 <details>
   <summary><strong>See IE016 CURL command</strong></summary>
-   
+
 <pre>
 curl --location --request POST &apos;https://test-api.service.hmrc.gov.uk/test/customs/transits/movements/departures/{deptId}/messages&apos; \
 --header &apos;Content-Type: application/json&apos; \
@@ -265,15 +265,15 @@ curl --location --request GET &apos;https://test-api.service.hmrc.gov.uk/customs
 </pre>
 </details>
 
-### [Our Postman test scripts](https://github.com/hmrc/common-transit-convention-traders-postman) 
+### Postman test scripts
 
-These were created by us in November 2020. These will not be monitored or updated.
+These [scripts](https://github.com/hmrc/common-transit-convention-traders-postman) were created in November 2020. They will not be monitored or updated.
 -->
 
-### [Our XSD files](https://github.com/hmrc/transit-movements-validator/tree/main/conf/xsd) 
+### Our XSD files
 
-You can check your XML files against our XSD files.
+You can check your XML files against our [XSD](https://github.com/hmrc/transit-movements-validator/tree/main/conf/xsd) files.
 
-   ### [NCTS Phase 5 Technical Interface Specification](/guides/ctc-traders-phase5-tis) 
+   ### NCTS Phase 5 Technical Interface Specification
 
-See a list of messages, message details, and process flow diagrams.  
+The [specification](/guides/ctc-traders-phase5-tis) provides a list of messages, message details, and process flow diagrams.  
