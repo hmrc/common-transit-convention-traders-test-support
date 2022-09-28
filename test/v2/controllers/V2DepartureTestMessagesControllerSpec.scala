@@ -78,10 +78,7 @@ class V2DepartureTestMessagesControllerSpec
   val message = Message(
     MessageId("2"),
     OffsetDateTime.now(),
-    OffsetDateTime.now(),
     MessageType.PositiveAcknowledgement,
-    Some(MessageId("20")),
-    Some(new URI("transit-movements")),
     Some("")
   )
 

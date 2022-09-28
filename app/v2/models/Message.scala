@@ -23,9 +23,6 @@ import java.time.OffsetDateTime
 case class Message(
   id: MessageId,
   received: OffsetDateTime,
-  generated: OffsetDateTime,
   messageType: MessageType,
-  triggerId: Option[MessageId],
-  url: Option[URI],
   body: Option[String]
 )
