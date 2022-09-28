@@ -38,14 +38,14 @@ traits:
 #      /messages:
 #        uriParameters:
 #          arrivalId:
-#            description: The ID specifying the Arrival
+#            description: The ID specifying the arrival.
 #            type: string
 #            example: "1"
 #            required: true
 #        post:
-#          displayName: Inject a fake NCTS Arrival Message
+#          displayName: Inject a fake NCTS arrival message
 #          description: |
-#            Inject a message type into the test NCTS database for a given Arrival Movement.
+#            Inject a message type into the test NCTS database for a given arrival movement.
 #          is: [contentJsonHeader]
 #          (annotations.scope): "common-transit-convention-traders-test-support"
 #          securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
@@ -73,7 +73,7 @@ traits:
 #            404:
 #              description: When the Arrival Movement does not exist, has been archived or is not available to the EORI number.
 #            400:
-#              description: When the message type requested is not valid for the current state of the Movement.
+#              description: When the message type requested is not valid for the current state of the movement.
 #          body:
 #            application/json:
 #              description: JSON with message type
@@ -88,20 +88,26 @@ traits:
       /messages:
         uriParameters:
           departureId:
-            description: The ID specifying the Departure
+            description: The ID specifying the departure.
             type: string
             example: "1"
             required: true
         post:
-          displayName: Inject a fake NCTS Departure Message
+          displayName: Inject a fake NCTS departure message
           description: |
-            Inject a message type into the test NCTS database for a given Movement Departure.
+            Inject a message type into the test NCTS database for a given departure.
           is: [contentJsonHeader]
           (annotations.scope): "common-transit-convention-traders-test-support"
           headers:
             accept:
-                displayName: Accept header
-                description: Set to "application/vnd.hmrc.2.0+json" for phase 5/version 2 api
+                displayName: Accept
+                description: |
+                  Specifies the response format, which must be JSON, and the [version](/api-documentation/docs/reference-guide#versioning) of the API to be used.
+                  
+                  For NCTS phase 5 and version 2.0 of this API, use the example value.
+                type: string
+                required: true
+                example: application/vnd.hmrc.2.0+json
           securedBy: [ sec.oauth_2_0: { scopes: [ "common-transit-convention-traders-test-support" ] } ]
           responses:
             201:
@@ -125,9 +131,9 @@ traits:
                           "body": "<CCXXX>...</CCXXX>"
                         }
             404:
-              description: When the Movement Departure does not exist, has been archived or is not available to the EORI number.
+              description: When the departure does not exist, has been archived or is not available to the EORI number.
             400:
-              description: When the message type requested is not valid for the current state of the Movement.
+              description: When the message type requested is not valid for the current state of the movement.
           body:
             application/json:
               description: JSON with message type
