@@ -1,45 +1,48 @@
-This API allows testers to inject departure and arrival movement notifications as if they have come from the office of departure or the office of destination by the New Computerised Transit System (NCTS).
+Use the CTC Traders Test Support API to inject departure and arrival movement notifications as if they have come from a customs office of departure or destination through the New Computerised Transit System (NCTS).
 
-To review our progress and to see what you can test, take a look at our [Roadmap](/roadmaps/common-transit-convention-traders-roadmap).
+You should read:
 
-
-For more information about how to develop your own client applications, including example clients for this API, 
-see [Tutorials](/api-documentation/docs/tutorials).
-
-<br></br>
+- [Roadmap](/roadmaps/common-transit-convention-traders-roadmap/) to review our progress and to learn about what you can test
+- [Tutorials](/api-documentation/docs/tutorials) to learn how to develop your own client applications, including example clients, for this API
 
 ## How to get set up for testing
 
-Follow these steps to get set up for testing.
+Follow these steps:
 
-1. Register for a [developer account](https://developer.service.hmrc.gov.uk/developer/registration).
+1. Register for a [developer account](/developer/registration).
 
-2. Create an application.    
+2. Create an application. 
 
-3. Subscribe to any API you might be working on. We suggest [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) along with [Common Transit Convention Traders API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders/1.0) and Common Transit Convention Traders Test Support API (which is on this page).     
+3. Subscribe to any API you might be working on. We suggest the [Create Test User API](/api-documentation/docs/api/service/api-platform-test-user/1.0), the [CTC Traders API](/api-documentation/docs/api/service/common-transit-convention-traders/1.0) and this API.
 
-4. Create a [Client ID and Client Secret](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/credentials).
+4. Create a [Client ID and Client Secret](/api-documentation/docs/authorisation/credentials).
 
-5. Use the [Create Test User API](https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
+5. Use the [Create Test User API](/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
 
-<!--For further details on how to get set up for testing, see [CTC Traders API testing guide](/guides/ctc-traders-phase5-testing-guide).-->
+<!--For more information about how to get set up for testing, see [CTC Traders API Testing guide](/guides/ctc-traders-phase5-testing-guide).-->
 
-## How to use the CTC Trader Test Support API
+## How to use this API
 
-You can use this API for any test scenario you choose. It is not connected to the NCTS core. It’s up to you to trigger the response messages in the order you require.  Valid response message types are listed below.
+This API is not connected to the NCTS core, so you can use it for any test scenario you choose.
 
-1.  Send messages from a trader to NCTS using the [CTC Traders API](/api-documentation/docs/api/service/common-transit-convention-traders/2.0).  
+It’s up to you to trigger the response messages in the order you require. Valid response message types are listed below.
 
-2. Inject a response using the Test Support API. See the following table for a list of supported messages you can inject. 
+Follow these steps:
 
-3. GET a list of your messages for this movement from the CTC Traders API. This will include both your trader and your injected NCTS messages.
+1. Use the [CTC Traders API](/api-documentation/docs/api/service/common-transit-convention-traders/2.0) to send messages from a trader to the NCTS.
 
-<br></br>
+2. Use this API to inject a response. See the table below for a list of supported messages that you can inject. 
+
+3. Use the CTC Traders API to retrieve a list of your messages for this movement. This will include both your trader and your injected NCTS messages.
 
 ## Messages you can inject now
 
 <table>
-   <tbody>
+	<tr>
+		<th>Title</th>
+		<th>Description</th>
+		<th>Instruction</th>
+	</tr>
 <!--
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject an Arrival Notification rejection message (IE008)</a></td>
@@ -62,16 +65,16 @@ You can use this API for any test scenario you choose. It is not connected to th
    <td>Specify "IE058" for the <code>messageType</code> field
    </tr>
 -->
-   <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928) (IE028)</a></td>
-   <td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
-   <td>Specify "IE928" for the <code>messageType</code> field
-   </tr>
-   <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie028-mrn-allocated">Inject an MRN allocated message (IE028)</a></td>
-   <td>Inject a message from the office at departure allocating a Movement Reference Number (MRN)</td>
-   <td>Specify "IE028" for the <code>messageType</code> field
-   </tr>
+	<tr>
+		<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928) (IE028)</a></td>
+		<td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
+		<td>Specify "IE928" for the <code>messageType</code> field
+	</tr>
+	<tr>
+		<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie028-mrn-allocated">Inject an MRN allocated message (IE028)</a></td>
+		<td>Inject a message from the office at departure allocating a Movement Reference Number (MRN)</td>
+		<td>Specify "IE028" for the <code>messageType</code> field
+	</tr>
 <!--
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject a goods released for transit message (IE029)</a></td>
@@ -104,17 +107,13 @@ You can use this API for any test scenario you choose. It is not connected to th
    <td>Specify "IE025" for the <code>messageType</code>field</td>
    </tr>
 -->
-   </tbody>
-   </table>
+</table>
 
-<br></br>
-          
 ## Reference materials
 
 <!--### CURL commands
 
 Use these CURL commands to simulate your application’s actions and messages, plus the actions and messages that would come back from NCTS.
-
 
 <details>
    <summary><strong>See IE015 CURL command</strong></summary>
@@ -274,6 +273,6 @@ These [scripts](https://github.com/hmrc/common-transit-convention-traders-postma
 
 You can check your XML files against our [XSD](https://github.com/hmrc/transit-movements-validator/tree/main/conf/xsd) files.
 
-   ### NCTS Phase 5 Technical Interface Specification
+### NCTS Phase 5 Technical Interface Specification
 
 The [specification](/guides/ctc-traders-phase5-tis) provides a list of messages, message details, and process flow diagrams.  
