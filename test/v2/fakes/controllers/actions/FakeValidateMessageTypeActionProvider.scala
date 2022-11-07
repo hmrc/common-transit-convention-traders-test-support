@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models.errors
+package v2.fakes.controllers.actions
 
-import v2.models.MovementId
+import v2.controllers.actions.ValidateMessageTypeAction
+import v2.controllers.actions.ValidateMessageTypeActionProvider
+import v2.models.MovementType
 
-sealed trait PersistenceError
-
-object PersistenceError {
-  case class MovementNotFound(movementId: MovementId)       extends PersistenceError
-  case class UnexpectedError(thr: Option[Throwable] = None) extends PersistenceError
+case class FakeValidateMessageTypeActionProvider(action: ValidateMessageTypeAction) extends ValidateMessageTypeActionProvider {
+  override def apply(movementType: MovementType): ValidateMessageTypeAction = action
 }

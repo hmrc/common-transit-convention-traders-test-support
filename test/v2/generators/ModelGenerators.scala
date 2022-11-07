@@ -21,6 +21,8 @@ import v2.models.MessageType
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 import v2.models.EORINumber
+import v2.models.Message
+import v2.models.MessageId
 import v2.models.Movement
 import v2.models.MovementReferenceNumber
 import v2.models.MovementType
@@ -43,6 +45,14 @@ trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
       for {
         id <- Gen.listOfN(16, Gen.hexChar).map(_.mkString)
       } yield MovementId(id)
+    }
+  }
+
+  implicit lazy val arbitraryMessageId: Arbitrary[MessageId] = {
+    Arbitrary {
+      for {
+        id <- Gen.listOfN(16, Gen.hexChar).map(_.mkString)
+      } yield MessageId(id)
     }
   }
 
@@ -76,6 +86,15 @@ trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
       created              <- arbitraryOffsetDateTime.arbitrary
       updated              <- arbitraryOffsetDateTime.arbitrary
     } yield Movement(id, enrollmentEoriNumber, movementEoriNumber, Some(mrn), created, updated)
+  }
+
+  implicit val arbitraryMessage: Arbitrary[Message] = Arbitrary {
+    for {
+      id          <- arbitraryMessageId.arbitrary
+      time        <- arbitraryOffsetDateTime.arbitrary
+      messageType <- arbitraryMessageType.arbitrary
+      body        <- Gen.alphaNumStr
+    } yield Message(id, time, messageType, Some(s"<test>body</test>"))
   }
 
 }

@@ -54,12 +54,6 @@ object PresentationError extends CommonFormats {
   def unauthorized(message: String): PresentationError =
     StandardError(message, ErrorCode.Unauthorized)
 
-  def jsonSchemaValidationError(
-    message: String = "Request failed schema validation",
-    validationErrors: NonEmptyList[JsonValidationError]
-  ): JsonSchemaValidationError =
-    JsonSchemaValidationError(message, ErrorCode.SchemaValidation, validationErrors)
-
   def upstreamServiceError(
     message: String = "Internal server error",
     code: ErrorCode = ErrorCode.InternalServerError,

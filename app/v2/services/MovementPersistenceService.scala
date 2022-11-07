@@ -64,7 +64,7 @@ class MovementPersistenceServiceImpl @Inject()(movementConnector: MovementConnec
         .getMovement(movementType, eori, departureId)
         .map(Right(_))
         .recover {
-          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.DepartureNotFound(departureId))
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MovementNotFound(departureId))
           case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
         }
     }
@@ -79,7 +79,7 @@ class MovementPersistenceServiceImpl @Inject()(movementConnector: MovementConnec
         .getMessage(movementType, eori, departureId, messageId)
         .map(Right(_))
         .recover {
-          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.DepartureNotFound(departureId))
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MovementNotFound(departureId))
           case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
         }
     }

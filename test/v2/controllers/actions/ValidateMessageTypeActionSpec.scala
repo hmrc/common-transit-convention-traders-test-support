@@ -16,169 +16,47 @@
 
 package v2.controllers.actions
 
-import controllers.actions.AuthAction
-import controllers.actions.FakeAuthAction
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.HeaderNames
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsNull
-import play.api.libs.json.JsString
-import play.api.libs.json.JsValue
-import play.api.libs.json.Json
-import play.api.mvc.Action
-import play.api.mvc.ControllerComponents
-import play.api.test.FakeHeaders
+import play.api.mvc.AnyContent
+import play.api.mvc.Results.Created
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import v2.models.MovementType
+import v2.models.EORINumber
+import v2.models.MessageType
+import v2.models.request.MessageRequest
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ValidateMessageTypeActionSpec
-    extends AnyFreeSpec
-    with Matchers
-    with GuiceOneAppPerSuite
-    with OptionValues
-    with ScalaFutures
-    with MockitoSugar
-    with BeforeAndAfterEach {
-  override lazy val app = GuiceApplicationBuilder()
-    .build()
+class ValidateMessageTypeActionSpec extends AnyFreeSpec with Matchers with OptionValues with ScalaFutures with MockitoSugar with BeforeAndAfterEach {
 
-  override def beforeEach(): Unit =
-    super.beforeEach()
+  private def createRequest(messageType: MessageType): MessageRequest[AnyContent] =
+    MessageRequest(FakeRequest(), EORINumber("a"), messageType)
 
-  class Harness(authActionBuilder: AuthAction,
-                messageRequestAction: MessageRequestAction,
-                validateMessageTypeActionProvider: ValidateMessageTypeActionProvider,
-                cc: ControllerComponents)
-      extends BackendController(cc) {
+  "ValidateMessageTypeAction" - {
+    "must execute the block when passed in a valid test message" in {
+      val validateMessageType = new ValidateMessageTypeAction(Seq(MessageType.PositiveAcknowledgement))
 
-    def post: Action[JsValue] =
-      (authActionBuilder andThen messageRequestAction andThen validateMessageTypeActionProvider(MovementType.Departure))
-        .async(cc.parsers.json) {
-          _ =>
-            Future.successful(Ok(JsString("test")))
-        }
-  }
-
-  "ValidateDepartureMessageTypeAction" - {
-    "must execute the block when passed in a valid IE928 TestMessage" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
-      val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
-      val cc                   = app.injector.instanceOf[ControllerComponents]
-      val authAction           = app.injector.instanceOf[FakeAuthAction]
-
-      val controller = new Harness(authAction, messageRequestAction, validateMessageType, cc)
-
-      val exampleRequest: JsValue = Json.parse(
-        """{
-          |     "message": {
-          |         "messageType": "IE928"
-          |     }
-          | }""".stripMargin
-      )
-
-      val req: FakeRequest[JsValue] =
-        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
-
-      val result = controller.post()(req)
-
-      status(result) mustEqual OK
+      val result = validateMessageType.invokeBlock(createRequest(MessageType.PositiveAcknowledgement), {
+        _: MessageRequest[AnyContent] =>
+          Future.successful(Created)
+      })
+      status(result) mustEqual CREATED
     }
 
-    "must generate correct IE928 message in executed block" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
-      val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
-      val cc                   = app.injector.instanceOf[ControllerComponents]
-      val authAction           = app.injector.instanceOf[FakeAuthAction]
+    "must return NotImplemented when passed in an invalid test message" in {
+      val validateMessageType = new ValidateMessageTypeAction(Seq(MessageType.PositiveAcknowledgement))
 
-      val controller = new Harness(authAction, messageRequestAction, validateMessageType, cc)
-
-      val exampleRequest: JsValue = Json.parse(
-        """{
-          |     "message": {
-          |         "messageType": "IE928"
-          |     }
-          | }""".stripMargin
-      )
-
-      val req: FakeRequest[JsValue] =
-        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
-
-      val result = controller.post()(req)
-
-      status(result) mustEqual OK
-    }
-
-    "must return BadRequest when passed in an invalid TestMessage" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
-      val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
-      val cc                   = app.injector.instanceOf[ControllerComponents]
-      val authAction           = app.injector.instanceOf[FakeAuthAction]
-
-      val controller = new Harness(authAction, messageRequestAction, validateMessageType, cc)
-
-      val exampleRequest: JsValue = Json.parse(
-        """{
-          |     "message": {
-          |         "type": "IE928"
-          |     }
-          | }""".stripMargin
-      )
-
-      val req: FakeRequest[JsValue] =
-        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
-
-      val result = controller.post()(req)
-
-      status(result) mustEqual BAD_REQUEST
-    }
-
-    "must return BadRequest when passed in an empty request" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
-      val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
-      val cc                   = app.injector.instanceOf[ControllerComponents]
-      val authAction           = app.injector.instanceOf[FakeAuthAction]
-
-      val controller = new Harness(authAction, messageRequestAction, validateMessageType, cc)
-
-      val req: FakeRequest[JsValue] = FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), JsNull)
-
-      val result = controller.post()(req)
-
-      status(result) mustEqual BAD_REQUEST
-    }
-
-    "must return NotImplemented when passed in TestMessage has unsupported message type" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
-      val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
-      val cc                   = app.injector.instanceOf[ControllerComponents]
-      val authAction           = app.injector.instanceOf[FakeAuthAction]
-
-      val controller = new Harness(authAction, messageRequestAction, validateMessageType, cc)
-
-      val exampleRequest: JsValue = Json.parse(
-        """{
-          |     "message": {
-          |         "messageType": "IE005"
-          |     }
-          | }""".stripMargin
-      )
-
-      val req: FakeRequest[JsValue] =
-        FakeRequest(method = "", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), exampleRequest)
-
-      val result = controller.post()(req)
-
-      status(result) mustEqual BAD_REQUEST
+      val result = validateMessageType.invokeBlock(createRequest(MessageType.MRNAllocated), {
+        _: MessageRequest[AnyContent] =>
+          Future.successful(Created)
+      })
+      status(result) mustEqual NOT_IMPLEMENTED
     }
   }
 }

@@ -17,6 +17,7 @@
 package v2.controllers
 
 import cats.data.EitherT
+import v2.models.errors.MessageGenerationError
 import v2.models.errors.PersistenceError
 import v2.models.errors.PresentationError
 
@@ -37,10 +38,15 @@ trait ErrorTranslator {
   implicit val persistenceErrorConverter = new Converter[PersistenceError] {
 
     def convert(persistenceError: PersistenceError): PresentationError = persistenceError match {
-      case PersistenceError.MessageNotFound(movement, message) =>
-        PresentationError.notFoundError(s"Message with ID ${message.value} for movement ${movement.value} was not found")
-      case PersistenceError.DepartureNotFound(movementId) => PresentationError.notFoundError(s"Departure with ID ${movementId.value} was not found")
-      case err: PersistenceError.UnexpectedError          => PresentationError.internalServiceError(cause = err.thr)
+      case PersistenceError.MovementNotFound(movementId) => PresentationError.notFoundError(s"Movement with ID ${movementId.value} was not found")
+      case err: PersistenceError.UnexpectedError         => PresentationError.internalServiceError(cause = err.thr)
+    }
+  }
+
+  implicit val messageGenerationErrorConverter = new Converter[MessageGenerationError] {
+    override def convert(input: MessageGenerationError): PresentationError = input match {
+      case MessageGenerationError.MessageTypeNotSupported(messageType) =>
+        PresentationError.notImplementedError(s"Message type ${messageType.code} is not supported for this movement type")
     }
   }
 }

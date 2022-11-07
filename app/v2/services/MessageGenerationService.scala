@@ -16,27 +16,45 @@
 
 package v2.services
 
+import cats.data.EitherT
+import com.google.inject.ImplementedBy
 import com.google.inject.Inject
+import v2.generators.ArrivalMessageGenerator
 import v2.generators.DepartureMessageGenerator
-import v2.models.MovementId
+import v2.generators.MessageGenerator
 import v2.models.MessageType
-import v2.models.request.MessageRequest
-import play.api.libs.json.JsValue
+import v2.models.MovementId
+import v2.models.MovementType
 import v2.models.XMLMessage
+import v2.models.errors.MessageGenerationError
 
-import scala.xml.NodeSeq
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
-class MessageGenerationService @Inject()(
+@ImplementedBy(classOf[MessageGenerationServiceImpl])
+trait MessageGenerationService {
+
+  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(
+    implicit ec: ExecutionContext): EitherT[Future, MessageGenerationError, XMLMessage]
+}
+
+class MessageGenerationServiceImpl @Inject()(
+  arrivalMessageGenerator: ArrivalMessageGenerator,
   departureMessageGenerator: DepartureMessageGenerator
-) {
+) extends MessageGenerationService {
 
-  def generateMessage(request: MessageRequest[JsValue], departureId: MovementId): XMLMessage = {
-    val pf = departureMessageGenerator.generate(departureId) orElse default()
-    pf.apply(request.messageType)
+  val generators: PartialFunction[MovementType, MessageGenerator] = {
+    case MovementType.Arrival   => arrivalMessageGenerator
+    case MovementType.Departure => departureMessageGenerator
   }
 
-  private def default(): PartialFunction[MessageType, XMLMessage] = {
-    case _ => throw new Exception("Unsupported Message Type")
-  }
+  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(
+    implicit ec: ExecutionContext): EitherT[Future, MessageGenerationError, XMLMessage] =
+    EitherT.fromEither[Future](
+      generators(movementType)
+        .generate(movementId)
+        .lift(messageType)
+        .toRight(MessageGenerationError.MessageTypeNotSupported(messageType))
+    )
 
 }

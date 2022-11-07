@@ -20,9 +20,11 @@ import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import v2.models.MovementId
+import v2.models.MessageType.GoodsReleaseNotification
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.arrivalMessages
+import v2.models.MovementId
 import v2.models.XMLMessage
 
 import java.io.StringReader
@@ -31,22 +33,17 @@ import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 
-class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
+class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
   "A generator" - {
-    val generator   = new DepartureMessageGeneratorImpl(Clock.systemUTC())
-    val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
+    val generator = new ArrivalMessageGeneratorImpl(Clock.systemUTC())
+    val arrivalId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
-    "when a positive acknowledgement is requested" - {
-      "should produce a valid IE928 message" in {
-        validate("cc928c", generator.generate(departureId)(PositiveAcknowledgement))
+    "when a goods release notification is requested" - {
+      "should produce a valid IE025 message" ignore {
+        validate("cc025c", generator.generate(arrivalId)(GoodsReleaseNotification))
       }
     }
 
-    "when supplied with message type MRNAllocated" - {
-      "should produce an IE028 Message" in {
-        validate("cc028c", generator.generate(departureId)(MRNAllocated))
-      }
-    }
   }
 
   private def validate(xsdRoot: String, xml: XMLMessage): Unit = {

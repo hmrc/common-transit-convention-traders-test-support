@@ -17,7 +17,7 @@
 package v2.controllers
 
 import com.google.inject.ImplementedBy
-import controllers.actions.AuthAction
+import v2.controllers.actions.AuthAction
 import v2.controllers.actions.MessageRequestAction
 import v2.models.HateoasResponse
 import play.api.libs.json.JsValue
@@ -75,7 +75,8 @@ class TestMessagesController @Inject()(cc: ControllerComponents,
             // Get matching departure from transit-movements
             _ <- (movementPersistenceService.getMovement(movementType, request.eori, movementId)).asPresentation
 
-            message = msgGenService.generateMessage(request, movementId)
+            message <- msgGenService.generateMessage(request.messageType, movementType, movementId).asPresentation
+
             // Send generated message to transit-movements-router
             messageId <- inboundRouterService.post(request.messageType, message, movementId).asPresentation
 

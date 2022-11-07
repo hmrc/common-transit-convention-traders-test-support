@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package v2.models.errors
+package v2.generators
 
+import config.Constants
+import v2.models.MessageType
 import v2.models.MovementId
+import v2.models.XMLMessage
 
-sealed trait PersistenceError
+trait MessageGenerator {
 
-object PersistenceError {
-  case class MovementNotFound(movementId: MovementId)       extends PersistenceError
-  case class UnexpectedError(thr: Option[Throwable] = None) extends PersistenceError
+  def correlationId(movementId: MovementId) = s"${movementId.value}-${Constants.DefaultTriggerId}"
+
+  final def generate(movementId: MovementId): PartialFunction[MessageType, XMLMessage] =
+    generateWithCorrelationId(correlationId(movementId))
+
+  protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage]
+
 }

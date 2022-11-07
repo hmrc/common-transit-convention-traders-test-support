@@ -16,6 +16,7 @@
 
 package v2.controllers.actions
 
+import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import controllers.actions.AuthRequest
 import v2.models.generation.TestMessage
@@ -33,7 +34,10 @@ import v2.models.errors.PresentationError
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[AuthRequest, MessageRequest] {
+@ImplementedBy(classOf[MessageRequestActionImpl])
+trait MessageRequestAction extends ActionRefiner[AuthRequest, MessageRequest]
+
+class MessageRequestActionImpl @Inject()()(implicit val executionContext: ExecutionContext) extends MessageRequestAction {
   override protected def refine[A](request: AuthRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     request.body match {
       case body: JsValue =>

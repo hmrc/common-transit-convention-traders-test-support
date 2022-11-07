@@ -16,11 +16,12 @@
 
 package v2.models.errors
 
-import v2.models.MovementId
+import v2.models.MessageType
 
-sealed trait PersistenceError
+sealed trait MessageGenerationError
 
-object PersistenceError {
-  case class MovementNotFound(movementId: MovementId)       extends PersistenceError
-  case class UnexpectedError(thr: Option[Throwable] = None) extends PersistenceError
+object MessageGenerationError {
+
+  case class MessageTypeNotSupported(messageType: MessageType) extends MessageGenerationError
+
 }

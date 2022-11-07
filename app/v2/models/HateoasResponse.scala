@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 object HateoasResponse {
 
   def apply(movementType: MovementType, movementId: MovementId, messageType: MessageType, body: XMLMessage, messageId: MessageId): JsObject = {
-    val movementRoute = s"/customs/traders/movements/${movementType.urlFragment}/${movementId.value}"
+    val movementRoute = s"/customs/transits/movements/${movementType.urlFragment}/${movementId.value}"
 
     Json.obj(
       "_links" -> Json.obj(
