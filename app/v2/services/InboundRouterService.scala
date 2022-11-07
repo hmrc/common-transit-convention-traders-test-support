@@ -27,7 +27,7 @@ import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Utils
 import v2.connectors.InboundRouterConnector
-import v2.models.DepartureId
+import v2.models.MovementId
 import v2.models.MessageId
 import v2.models.MessageType
 import v2.models.XMLMessage
@@ -40,15 +40,15 @@ import scala.util.control.NonFatal
 @ImplementedBy(classOf[InboundRouterServiceImpl])
 trait InboundRouterService {
 
-  def post(messageType: MessageType, message: XMLMessage, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                    ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
+  def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
+                                                                                   ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
 }
 
 @Singleton
 class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
-  def post(messageType: MessageType, message: XMLMessage, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                    ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
+  def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
+                                                                                   ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
     EitherT(
       inboundRouterConnector
         .post(messageType, message.wrapped, departureId)

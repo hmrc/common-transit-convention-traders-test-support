@@ -25,15 +25,15 @@ import play.api.mvc.Results.NotImplemented
 import v2.models.errors.PresentationError
 
 import javax.inject.Inject
+import scala.collection.Seq
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ValidateDepartureMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[MessageRequest, MessageRequest] {
+class ValidateMessageTypeAction(messageTypes: Seq[MessageType])(implicit val executionContext: ExecutionContext)
+    extends ActionRefiner[MessageRequest, MessageRequest] {
   override protected def refine[A](request: MessageRequest[A]): Future[Either[Result, MessageRequest[A]]] =
-    if (MessageType.departureMessages.contains(request.messageType)) {
-      Future.successful(Right(request))
-    } else {
+    if (messageTypes.contains(request.messageType)) Future.successful(Right(request))
+    else
       Future.successful(Left(NotImplemented(Json.toJson(PresentationError.notImplementedError(s"Support for ${request.messageType.code} is not implemented")))))
 
-    }
 }

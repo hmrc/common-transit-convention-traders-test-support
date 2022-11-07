@@ -20,8 +20,8 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.google.inject.Inject
-import controllers.V1DepartureTestMessagesController
-import models.DepartureId
+import controllers.V1ArrivalTestMessagesController
+import models.ArrivalId
 import play.api.mvc.Action
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
@@ -30,30 +30,30 @@ import v2.controllers.V2TestMessagesController
 import v2.controllers.stream.StreamingParsers
 import v2.models.MovementId
 
-class DeparturesRouter @Inject()(
+class ArrivalsRouter @Inject()(
   val controllerComponents: ControllerComponents,
-  v1Departures: V1DepartureTestMessagesController,
-  v2Departures: V2TestMessagesController
+  v1Arrivals: V1ArrivalTestMessagesController,
+  v2Arrivals: V2TestMessagesController
 )(implicit
   val materializer: Materializer)
     extends BaseController
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(departureId: String): Action[Source[ByteString, _]] = route {
+  def injectEISResponse(arrivalId: String): Action[Source[ByteString, _]] = route {
     case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
       (for {
-        convertedDepartureId <- implicitly[PathBindable[MovementId]].bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
+        convertedArrivalId <- implicitly[PathBindable[MovementId]].bind("arrivalId", arrivalId)
+      } yield convertedArrivalId).fold(
         bindingFailureAction(_),
-        convertedDepartureId => v2Departures.sendDepartureResponse(convertedDepartureId)
+        convertedArrivalId => v2Arrivals.sendArrivalsResponse(convertedArrivalId)
       )
     case _ =>
       (for {
-        convertedDepartureId <- implicitly[PathBindable[DepartureId]].bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
+        convertedArrivalId <- implicitly[PathBindable[ArrivalId]].bind("arrivalId", arrivalId)
+      } yield convertedArrivalId).fold(
         bindingFailureAction(_),
-        convertedDepartureId => v1Departures.injectEISResponse(convertedDepartureId)
+        convertedArrivalId => v1Arrivals.injectEISResponse(convertedArrivalId)
       )
 
   }

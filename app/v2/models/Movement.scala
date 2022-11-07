@@ -22,11 +22,11 @@ import play.api.libs.json.OFormat
 import java.time.OffsetDateTime
 import v2.models.formats.CommonFormats._
 
-object DepartureWithoutMessages {
-  implicit val format: OFormat[DepartureWithoutMessages] = Json.format[DepartureWithoutMessages]
+object Movement {
+  implicit val format: OFormat[Movement] = Json.format[Movement]
 }
-case class DepartureWithoutMessages(
-  _id: DepartureId,
+case class Movement(
+  _id: MovementId,
   enrollmentEORINumber: EORINumber,
   movementEORINumber: EORINumber,
   movementReferenceNumber: Option[MovementReferenceNumber],

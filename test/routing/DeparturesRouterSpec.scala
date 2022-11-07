@@ -33,7 +33,7 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import v2.base.TestActorSystem
 import v2.fakes.controllers.FakeV1DeparturesController
-import v2.fakes.controllers.FakeV2DeparturesController
+import v2.fakes.controllers.FakeV2TestMessagesController
 
 import scala.concurrent.duration.DurationInt
 
@@ -44,7 +44,7 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
   val sut = new DeparturesRouter(
     stubControllerComponents(),
     new FakeV1DeparturesController,
-    new FakeV2DeparturesController
+    new FakeV2TestMessagesController
   )
 
   "when requesting an EIS response" - {

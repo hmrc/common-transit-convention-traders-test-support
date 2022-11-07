@@ -16,6 +16,7 @@
 
 package controllers
 
+import com.google.inject.ImplementedBy
 import connectors.InboundRouterConnector
 import connectors.ArrivalConnector
 import connectors.ArrivalMessageConnector
@@ -42,6 +43,11 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import logging.Logging
 
+@ImplementedBy(classOf[ArrivalTestMessagesController])
+trait V1ArrivalTestMessagesController {
+  def injectEISResponse(arrivalId: ArrivalId): Action[JsValue]
+}
+
 class ArrivalTestMessagesController @Inject()(
   cc: ControllerComponents,
   arrivalConnector: ArrivalConnector,
@@ -55,11 +61,12 @@ class ArrivalTestMessagesController @Inject()(
   msgGenService: MessageGenerationService
 )(implicit ec: ExecutionContext)
     extends BackendController(cc)
+    with V1ArrivalTestMessagesController
     with HttpErrorFunctions
     with ResponseHelper
     with Logging {
 
-  def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
+  override def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] =
     (versionOneEnabledCheckAction andThen authAction andThen channelAction andThen messageRequestAction andThen validateArrivalMessageTypeAction)
       .async(parse.json) {
         implicit request: MessageRequest[JsValue] =>

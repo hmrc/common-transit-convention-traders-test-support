@@ -18,7 +18,7 @@ package v2.services
 
 import com.google.inject.Inject
 import v2.generators.DepartureMessageGenerator
-import v2.models.DepartureId
+import v2.models.MovementId
 import v2.models.MessageType
 import v2.models.request.MessageRequest
 import play.api.libs.json.JsValue
@@ -30,7 +30,7 @@ class MessageGenerationService @Inject()(
   departureMessageGenerator: DepartureMessageGenerator
 ) {
 
-  def generateMessage(request: MessageRequest[JsValue], departureId: DepartureId): XMLMessage = {
+  def generateMessage(request: MessageRequest[JsValue], departureId: MovementId): XMLMessage = {
     val pf = departureMessageGenerator.generate(departureId) orElse default()
     pf.apply(request.messageType)
   }

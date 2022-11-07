@@ -93,7 +93,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -121,7 +121,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       running(application) {
         val request = FakeRequest(
           method = POST,
-          uri = routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url,
+          uri = routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url,
           headers = FakeHeaders(Nil),
           body = AnyContentAsEmpty
         )
@@ -144,7 +144,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
       running(application) {
         val request = FakeRequest(
           method = POST,
-          uri = routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url,
+          uri = routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url,
           headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/xml")),
           body = AnyContentAsXml(<xml></xml>)
         )
@@ -173,7 +173,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(invalidRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(invalidRequest)
 
         val result = route(application, request).value
 
@@ -199,7 +199,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -230,7 +230,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -257,7 +257,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -280,7 +280,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -303,7 +303,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -329,7 +329,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -356,7 +356,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -387,7 +387,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 
@@ -417,7 +417,7 @@ class ArrivalTestMessagesControllerSpec extends SpecBase with ScalaCheckProperty
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).url).withJsonBody(exampleRequest)
+        val request = FakeRequest(POST, routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).url).withJsonBody(exampleRequest)
 
         val result = route(application, request).value
 

@@ -42,32 +42,27 @@ import play.api.test.Helpers.route
 import play.api.test.Helpers.running
 import play.api.test.Helpers.status
 import routing.VersionedRouting
-import v2.models.DepartureId
-import v2.models.DepartureWithoutMessages
+import v2.models.MovementId
+import v2.models.Movement
 import v2.models.EORINumber
 import v2.models.Message
 import v2.models.MessageId
 import v2.models.MessageType
 import v2.models.MovementReferenceNumber
+import v2.models.MovementType
 import v2.models.XMLMessage
 import v2.models.errors.PersistenceError
-import v2.services.DepartureService
+import v2.services.MovementPersistenceService
 import v2.services.InboundRouterService
 
-import java.net.URI
 import java.time.OffsetDateTime
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class V2DepartureTestMessagesControllerSpec
-    extends SpecBase
-    with ScalaCheckPropertyChecks
-    with ModelGenerators
-    with BeforeAndAfterEach
-    with IntegrationPatience {
+class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with IntegrationPatience {
 
-  val departureWithoutMessages = DepartureWithoutMessages(
-    DepartureId("1"),
+  val departureWithoutMessages = Movement(
+    MovementId("1"),
     EORINumber("GB121212"),
     EORINumber("GB343434"),
     Some(MovementReferenceNumber("MRN")),
@@ -96,24 +91,30 @@ class V2DepartureTestMessagesControllerSpec
     val v2Headers = FakeHeaders(Seq(HeaderNames.ACCEPT -> VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE))
     "POST" - {
       "must send a test message to the departures backend and return Created if successful" in {
-        val mockDepartureService     = mock[DepartureService]
-        val mockInboundRouterService = mock[InboundRouterService]
+        val mockMovementPersistenceService = mock[MovementPersistenceService]
+        val mockInboundRouterService       = mock[InboundRouterService]
 
-        when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
-          .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
+        when(
+          mockMovementPersistenceService.getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(),
+                                                                                                                                                    any(),
+                                                                                                                                                    any()))
+          .thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), DepartureId(any[String]))(any(), any()))
+        when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), MovementId(any[String]))(any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Right(messageId))))
 
         when(
-          mockDepartureService
-            .getMessage(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId], any[String].asInstanceOf[MessageId])(any(), any(), any()))
+          mockMovementPersistenceService
+            .getMessage(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId], any[String].asInstanceOf[MessageId])(
+              any(),
+              any(),
+              any()))
           .thenReturn(EitherT[Future, PersistenceError, Message](Future.successful(Right(message))))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
-            bind[DepartureService].toInstance(mockDepartureService),
+            bind[MovementPersistenceService].toInstance(mockMovementPersistenceService),
             bind[InboundRouterService].toInstance(mockInboundRouterService)
           )
           .build()
@@ -132,16 +133,16 @@ class V2DepartureTestMessagesControllerSpec
       }
 
       "must send a test message to the departures backend and return Not found if no matching departure" in {
-        val mockDepartureService = mock[DepartureService]
+        val mockDepartureService = mock[MovementPersistenceService]
 
-        when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
-          .thenReturn(
-            EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Left(PersistenceError.DepartureNotFound(DepartureId("1"))))))
+        when(
+          mockDepartureService.getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any()))
+          .thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Left(PersistenceError.DepartureNotFound(MovementId("1"))))))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
-            bind[DepartureService].toInstance(mockDepartureService),
+            bind[MovementPersistenceService].toInstance(mockDepartureService),
           )
           .build()
 
@@ -159,19 +160,20 @@ class V2DepartureTestMessagesControllerSpec
       }
 
       "must send a test message to the departures backend and return inbound router error" in {
-        val mockDepartureService     = mock[DepartureService]
+        val mockDepartureService     = mock[MovementPersistenceService]
         val mockInboundRouterService = mock[InboundRouterService]
 
-        when(mockDepartureService.getDeparture(any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[DepartureId])(any(), any(), any()))
-          .thenReturn(EitherT[Future, PersistenceError, DepartureWithoutMessages](Future.successful(Right(departureWithoutMessages))))
+        when(
+          mockDepartureService.getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any()))
+          .thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(departureWithoutMessages))))
 
-        when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), DepartureId(anyString()))(any(), any()))
+        when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), MovementId(anyString()))(any(), any()))
           .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Left(PersistenceError.UnexpectedError()))))
 
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
-            bind[DepartureService].toInstance(mockDepartureService),
+            bind[MovementPersistenceService].toInstance(mockDepartureService),
             bind[InboundRouterService].toInstance(mockInboundRouterService)
           )
           .build()

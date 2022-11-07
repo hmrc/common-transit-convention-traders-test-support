@@ -19,7 +19,7 @@ package v2.connectors
 import config.AppConfig
 import config.Constants
 import connectors.util.CustomHttpReader
-import v2.models.DepartureId
+import v2.models.MovementId
 import v2.models.MessageType
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
@@ -33,8 +33,8 @@ import scala.concurrent.Future
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   // Create a new message with the transit-movements-router service
-  def post(messageType: MessageType, message: WrappedXMLMessage, departureId: DepartureId)(implicit hc: HeaderCarrier,
-                                                                                           ec: ExecutionContext): Future[HttpResponse] = {
+  def post(messageType: MessageType, message: WrappedXMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
+                                                                                          ec: ExecutionContext): Future[HttpResponse] = {
     val newHeaders = hc
       .copy()
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)

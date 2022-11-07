@@ -19,24 +19,20 @@ package v2.models
 import models.Enumerable
 import models.IeMetadata
 
-sealed trait MessageType extends IeMetadata {
-  def code: String
-  def rootNode: String
-}
+abstract class MessageType(val code: String, val rootNode: String)
 
 object MessageType extends Enumerable.Implicits {
-  case object PositiveAcknowledgement extends IeMetadata("IE928", "CC928C", "DEP") with MessageType
-  case object MRNAllocated            extends IeMetadata("IE028", "CC028C", "DEP") with MessageType
+  case object PositiveAcknowledgement extends MessageType("IE928", "CC928C")
+  case object MRNAllocated            extends MessageType("IE028", "CC028C")
 
-  val departureMessages = Seq(
+  val arrivalMessages: Seq[MessageType] = Seq()
+
+  val departureMessages: Seq[MessageType] = Seq(
     PositiveAcknowledgement,
     MRNAllocated
   )
 
-  val values: Seq[MessageType] = Seq(
-    PositiveAcknowledgement,
-    MRNAllocated
-  )
+  val values: Seq[MessageType] = arrivalMessages ++ departureMessages
 
   implicit val enumerable: Enumerable[MessageType] =
     Enumerable(

@@ -25,8 +25,8 @@ import play.api.http.Status.CREATED
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.http.HttpResponse
 import v2.connectors.InboundRouterConnector
-import v2.models.DepartureId
-import v2.models.DepartureWithoutMessages
+import v2.models.MovementId
+import v2.models.Movement
 import v2.models.EORINumber
 import v2.models.MessageType
 import v2.models.MovementReferenceNumber
@@ -40,8 +40,8 @@ import scala.concurrent.ExecutionContext.Implicits._
 
 class InboundRouterServiceSpec extends SpecBase {
 
-  val departureWithoutMessages = DepartureWithoutMessages(
-    DepartureId("1"),
+  val departureWithoutMessages = Movement(
+    MovementId("1"),
     EORINumber("GB121212"),
     EORINumber("GB343434"),
     Some(MovementReferenceNumber("MRN")),
@@ -56,12 +56,12 @@ class InboundRouterServiceSpec extends SpecBase {
       val response               = HttpResponse(CREATED, "Created", Map(MessageIdHeaderKey -> Seq("3")))
       val wrappedMessage         = <TraderChannelResponse><msg></msg></TraderChannelResponse>
 
-      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedMessage)), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedMessage)), any[String].asInstanceOf[MovementId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), MovementId("1"))
 
       whenReady(either.value) {
         _.right.map(response => response.value mustBe ("3"))
@@ -73,12 +73,12 @@ class InboundRouterServiceSpec extends SpecBase {
       val response               = HttpResponse(CREATED, "Created")
       val wrappedXMLMessage      = <TraderChannelResponse><msg></msg></TraderChannelResponse>
 
-      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[MovementId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), MovementId("1"))
 
       whenReady(either.value) {
         _.left.map(response =>
@@ -94,12 +94,12 @@ class InboundRouterServiceSpec extends SpecBase {
       val response               = HttpResponse(INTERNAL_SERVER_ERROR, "Error")
       val wrappedXMLMessage      = <TraderChannelResponse><msg></msg></TraderChannelResponse>
 
-      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[DepartureId])(any(), any()))
+      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[MovementId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
 
-      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), DepartureId("1"))
+      val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), MovementId("1"))
 
       whenReady(either.value) {
         _.left.map(response => response mustBe PersistenceError.UnexpectedError(None))

@@ -27,6 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.ActionRefiner
 import play.api.mvc.Result
 import play.api.mvc.Results.BadRequest
+import v2.models.EORINumber
 import v2.models.errors.PresentationError
 
 import scala.concurrent.ExecutionContext
@@ -40,7 +41,7 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
           case JsError(errors) =>
             Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(errors.mkString)))))
           case JsSuccess(testMessage, _) =>
-            Future.successful(Right(MessageRequest(request, request.eori, testMessage.messageType)))
+            Future.successful(Right(MessageRequest(request, EORINumber(request.eori), testMessage.messageType)))
         }
     }
 }

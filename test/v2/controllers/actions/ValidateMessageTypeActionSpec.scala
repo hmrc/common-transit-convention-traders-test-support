@@ -37,10 +37,11 @@ import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+import v2.models.MovementType
 
 import scala.concurrent.Future
 
-class ValidateDepartureMessageTypeActionSpec
+class ValidateMessageTypeActionSpec
     extends AnyFreeSpec
     with Matchers
     with GuiceOneAppPerSuite
@@ -56,12 +57,12 @@ class ValidateDepartureMessageTypeActionSpec
 
   class Harness(authActionBuilder: AuthAction,
                 messageRequestAction: MessageRequestAction,
-                validateMessageTypeAction: ValidateDepartureMessageTypeAction,
+                validateMessageTypeActionProvider: ValidateMessageTypeActionProvider,
                 cc: ControllerComponents)
       extends BackendController(cc) {
 
     def post: Action[JsValue] =
-      (/*DefaultActionBuilder.apply(cc.parsers.anyContent)*/ authActionBuilder andThen messageRequestAction andThen validateMessageTypeAction)
+      (authActionBuilder andThen messageRequestAction andThen validateMessageTypeActionProvider(MovementType.Departure))
         .async(cc.parsers.json) {
           _ =>
             Future.successful(Ok(JsString("test")))
@@ -70,7 +71,7 @@ class ValidateDepartureMessageTypeActionSpec
 
   "ValidateDepartureMessageTypeAction" - {
     "must execute the block when passed in a valid IE928 TestMessage" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
+      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
       val authAction           = app.injector.instanceOf[FakeAuthAction]
@@ -94,7 +95,7 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must generate correct IE928 message in executed block" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
+      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
       val authAction           = app.injector.instanceOf[FakeAuthAction]
@@ -118,7 +119,7 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must return BadRequest when passed in an invalid TestMessage" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
+      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
       val authAction           = app.injector.instanceOf[FakeAuthAction]
@@ -142,7 +143,7 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must return BadRequest when passed in an empty request" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
+      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
       val authAction           = app.injector.instanceOf[FakeAuthAction]
@@ -157,7 +158,7 @@ class ValidateDepartureMessageTypeActionSpec
     }
 
     "must return NotImplemented when passed in TestMessage has unsupported message type" in {
-      val validateMessageType  = app.injector.instanceOf[ValidateDepartureMessageTypeAction]
+      val validateMessageType  = app.injector.instanceOf[ValidateMessageTypeActionProvider]
       val messageRequestAction = app.injector.instanceOf[MessageRequestAction]
       val cc                   = app.injector.instanceOf[ControllerComponents]
       val authAction           = app.injector.instanceOf[FakeAuthAction]

@@ -17,12 +17,12 @@
 package v2.models.errors
 
 import v2.models.MessageId
-import v2.models.DepartureId
+import v2.models.MovementId
 
 sealed trait PersistenceError
 
 object PersistenceError {
-  case class MessageNotFound(movementId: DepartureId, messageId: MessageId) extends PersistenceError
-  case class DepartureNotFound(movementId: DepartureId)                     extends PersistenceError
-  case class UnexpectedError(thr: Option[Throwable] = None)                 extends PersistenceError
+  case class MessageNotFound(movementId: MovementId, messageId: MessageId) extends PersistenceError
+  case class DepartureNotFound(movementId: MovementId)                     extends PersistenceError
+  case class UnexpectedError(thr: Option[Throwable] = None)                extends PersistenceError
 }

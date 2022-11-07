@@ -19,7 +19,7 @@ package v2.generators
 import com.google.inject.Inject
 import config.Constants
 import utils.Strings
-import v2.models.DepartureId
+import v2.models.MovementId
 import v2.models.MessageType
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
@@ -29,9 +29,9 @@ import java.time.Clock
 
 class DepartureMessageGenerator @Inject()(clock: Clock) extends Generators {
 
-  def correlationId(departureId: DepartureId) = s"${departureId.value}-${Constants.DefaultTriggerId}"
+  def correlationId(departureId: MovementId) = s"${departureId.value}-${Constants.DefaultTriggerId}"
 
-  def generate(departureId: DepartureId): PartialFunction[MessageType, XMLMessage] = {
+  def generate(departureId: MovementId): PartialFunction[MessageType, XMLMessage] = {
     case PositiveAcknowledgement => generateIE928Message(correlationId(departureId))
     case MRNAllocated            => generateIE028Message(correlationId(departureId))
   }

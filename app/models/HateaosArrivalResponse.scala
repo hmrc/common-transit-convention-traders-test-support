@@ -16,7 +16,6 @@
 
 package models
 
-import controllers.routes
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
 import utils.CallOps._
@@ -27,7 +26,7 @@ import scala.xml.NodeSeq
 object HateaosArrivalResponse {
 
   def apply(arrivalId: ArrivalId, messageType: MessageType, body: NodeSeq, locationValue: String): JsObject = {
-    val messagesRoute = routes.ArrivalTestMessagesController.injectEISResponse(arrivalId).urlWithContext
+    val messagesRoute = routing.routes.ArrivalsRouter.injectEISResponse(arrivalId.index.toString).urlWithContext
     val messageId     = Utils.lastFragment(locationValue)
 
     Json.obj(

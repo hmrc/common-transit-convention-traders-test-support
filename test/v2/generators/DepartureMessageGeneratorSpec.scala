@@ -20,7 +20,7 @@ import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import v2.models.DepartureId
+import v2.models.MovementId
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.XMLMessage
@@ -34,7 +34,7 @@ import javax.xml.validation.SchemaFactory
 class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
   "A generator" - {
     val generator   = new DepartureMessageGenerator(Clock.systemUTC())
-    val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(DepartureId(_)).sample.value
+    val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
     "when a positive acknowledgement is requested" - {
       "should produce a valid IE928 message" in {
