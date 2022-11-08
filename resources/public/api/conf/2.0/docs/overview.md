@@ -101,12 +101,12 @@ Follow these steps:
    <td>Inject a message from the office at departure to tell the trader they wish to carry out a control of the goods</td>
    <td>Specify "IE060" for the <code>messageType</code>field</td>
    </tr>
+-->
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/1.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject a good release notification (IE025)</a></td>
    <td>Inject a message from the office at destination that the trader can release the goods</td>
    <td>Specify "IE025" for the <code>messageType</code>field</td>
    </tr>
--->
 </table>
 
 ## Reference materials

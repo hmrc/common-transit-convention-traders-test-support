@@ -39,7 +39,7 @@ class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionV
     val arrivalId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
     "when a goods release notification is requested" - {
-      "should produce a valid IE025 message" ignore {
+      "should produce a valid IE025 message" in {
         validate("cc025c", generator.generate(arrivalId)(GoodsReleaseNotification))
       }
     }

@@ -18,6 +18,7 @@ package v2.generators
 
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
+import utils.Strings
 import v2.models.MessageType
 import v2.models.MessageType.GoodsReleaseNotification
 import v2.models.XMLMessage
@@ -36,7 +37,81 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
   private def generateIE025Message(correlationId: String): XMLMessage =
     XMLMessage(
       <ncts:CC025C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
-        <messageSender>{correlationId}</messageSender>
+        <messageSender>
+          {Strings.alphanumeric(1, 35)}
+        </messageSender>
+        <messageRecipient>
+          {correlationId}
+        </messageRecipient>
+        <preparationDateAndTime>
+          {generateLocalDateTime()}
+        </preparationDateAndTime>
+        <messageIdentification>
+          {Strings.alphanumeric(1, 35)}
+        </messageIdentification>
+        <messageType>CC928C</messageType>
+        <correlationIdentifier>
+          {Strings.alphanumeric(1, 35)}
+        </correlationIdentifier>
+        <TransitOperation>
+          <MRN>
+            {Strings.mrn()}
+          </MRN>
+
+          <!-- TODO -->
+          <releaseDate>2014-06-09+01:00</releaseDate>
+          <releaseIndicator>token</releaseIndicator>
+        </TransitOperation>
+        <CustomsOfficeOfDestinationActual>
+          <referenceNumber>stringst</referenceNumber>
+        </CustomsOfficeOfDestinationActual>
+        <TraderAtDestination>
+          <identificationNumber>string</identificationNumber>
+        </TraderAtDestination>
+        <!--Optional:-->
+        <Consignment>
+          <!--1 to 99 repetitions:-->
+          <HouseConsignment>
+            <sequenceNumber>token</sequenceNumber>
+            <releaseType>token</releaseType>
+            <!--0 to 999 repetitions:-->
+            <ConsignmentItem>
+              <goodsItemNumber>token</goodsItemNumber>
+              <declarationGoodsItemNumber>100</declarationGoodsItemNumber>
+              <releaseType>token</releaseType>
+              <Commodity>
+                <descriptionOfGoods>string</descriptionOfGoods>
+                <!--Optional:-->
+                <cusCode>token</cusCode>
+                <!--Optional:-->
+                <CommodityCode>
+                  <harmonizedSystemSubHeadingCode>token</harmonizedSystemSubHeadingCode>
+                  <!--Optional:-->
+                  <combinedNomenclatureCode>st</combinedNomenclatureCode>
+                </CommodityCode>
+                <!--0 to 99 repetitions:-->
+                <DangerousGoods>
+                  <sequenceNumber>token</sequenceNumber>
+                  <UNNumber>token</UNNumber>
+                </DangerousGoods>
+                <GoodsMeasure>
+                  <grossMass>1000.000000000000</grossMass>
+                  <!--Optional:-->
+                  <netMass>1000.000000000000</netMass>
+                </GoodsMeasure>
+              </Commodity>
+              <!--1 to 99 repetitions:-->
+              <Packaging>
+                <sequenceNumber>token</sequenceNumber>
+                <typeOfPackages>token</typeOfPackages>
+                <!--Optional:-->
+                <numberOfPackages>100</numberOfPackages>
+                <!--Optional:-->
+                <shippingMarks>string</shippingMarks>
+              </Packaging>
+            </ConsignmentItem>
+          </HouseConsignment>
+        </Consignment>
       </ncts:CC025C>
     )
 
