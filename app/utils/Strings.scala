@@ -61,9 +61,9 @@ object Strings {
 
   def mrn(): String =
     //pattern value="([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
-    Seq(
+    Seq[String](
       "2",
-      Gen.choose(4, 9).sample.getOrElse(4),
+      Gen.choose(4, 9).sample.getOrElse(4).toString,
       alpha(2),
       alphanumeric(12),
       Gen.oneOf(Seq("J", "K", "L", "M")).sample.getOrElse("J"),

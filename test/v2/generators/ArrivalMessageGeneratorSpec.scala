@@ -21,9 +21,6 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import v2.models.MessageType.GoodsReleaseNotification
-import v2.models.MessageType.MRNAllocated
-import v2.models.MessageType.PositiveAcknowledgement
-import v2.models.MessageType.arrivalMessages
 import v2.models.MovementId
 import v2.models.XMLMessage
 

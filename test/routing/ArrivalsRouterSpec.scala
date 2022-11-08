@@ -34,7 +34,6 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import v2.base.TestActorSystem
 import v2.fakes.controllers.FakeV1ArrivalController
-import v2.fakes.controllers.FakeV1DeparturesController
 import v2.fakes.controllers.FakeV2TestMessagesController
 
 import scala.concurrent.duration.DurationInt

@@ -24,8 +24,6 @@ import play.api.mvc.Result
 import play.api.mvc.Results.NotImplemented
 import v2.models.errors.PresentationError
 
-import javax.inject.Inject
-import scala.collection.Seq
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
