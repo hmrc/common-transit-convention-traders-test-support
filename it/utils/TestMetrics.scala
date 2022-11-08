@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package v2.models
+package utils
 
-import java.time.OffsetDateTime
+import com.codahale.metrics.MetricRegistry
+import com.kenshoo.play.metrics.Metrics
 
-// Message returned from DepartureConnector
-case class Message(
-  id: MessageId,
-  received: OffsetDateTime,
-  messageType: MessageType,
-  body: Option[String]
-)
+class TestMetrics extends Metrics {
+  override def defaultRegistry: MetricRegistry = new MetricRegistry
+  override def toJson: String                  = ""
+}

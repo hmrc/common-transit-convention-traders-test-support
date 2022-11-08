@@ -39,11 +39,11 @@ import scala.concurrent.Future
 
 class MovementConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def getMovement(movementType: MovementType, eori: EORINumber, departureId: MovementId)(implicit
-                                                                                         requestHeader: RequestHeader,
-                                                                                         hc: HeaderCarrier,
-                                                                                         ec: ExecutionContext): Future[Movement] = {
-    val url = constructMovementUri(movementType, eori, departureId)
+  def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(implicit
+                                                                                        requestHeader: RequestHeader,
+                                                                                        hc: HeaderCarrier,
+                                                                                        ec: ExecutionContext): Future[Movement] = {
+    val url = constructMovementUri(movementType, eori, movementId)
 
     http
       .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)

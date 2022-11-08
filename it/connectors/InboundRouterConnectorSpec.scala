@@ -8,6 +8,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.WiremockSuite
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

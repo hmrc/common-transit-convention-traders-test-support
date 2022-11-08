@@ -15,6 +15,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.WiremockSuite
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
