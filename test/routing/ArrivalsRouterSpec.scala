@@ -74,7 +74,7 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
 
         val request =
           FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1234567890abcdef"), request)
+        val result = call(sut.injectEISResponse("1"), request)
 
         status(result) mustBe BAD_REQUEST
       }
