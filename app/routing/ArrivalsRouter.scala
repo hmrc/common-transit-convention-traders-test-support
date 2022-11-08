@@ -28,7 +28,7 @@ import play.api.mvc.ControllerComponents
 import play.api.mvc.PathBindable
 import v2.controllers.V2TestMessagesController
 import v2.controllers.stream.StreamingParsers
-import v2.models.MovementId
+import v2.models.Bindings
 
 class ArrivalsRouter @Inject()(
   val controllerComponents: ControllerComponents,
@@ -43,7 +43,7 @@ class ArrivalsRouter @Inject()(
   def injectEISResponse(arrivalId: String): Action[Source[ByteString, _]] = route {
     case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
       (for {
-        convertedArrivalId <- implicitly[PathBindable[MovementId]].bind("arrivalId", arrivalId)
+        convertedArrivalId <- Bindings.movementIdBinding.bind("arrivalId", arrivalId)
       } yield convertedArrivalId).fold(
         bindingFailureAction(_),
         convertedArrivalId => v2Arrivals.sendArrivalsResponse(convertedArrivalId)

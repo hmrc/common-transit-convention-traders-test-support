@@ -33,18 +33,19 @@ import play.api.test.Helpers.contentAsJson
 import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import v2.base.TestActorSystem
+import v2.fakes.controllers.FakeV1ArrivalController
 import v2.fakes.controllers.FakeV1DeparturesController
 import v2.fakes.controllers.FakeV2TestMessagesController
 
 import scala.concurrent.duration.DurationInt
 
-class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues with ScalaFutures with MockitoSugar with TestActorSystem {
+class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues with ScalaFutures with MockitoSugar with TestActorSystem {
 
   implicit private val timeout: Timeout = 5.seconds
 
-  val sut = new DeparturesRouter(
+  val sut = new ArrivalsRouter(
     stubControllerComponents(),
-    new FakeV1DeparturesController,
+    new FakeV1ArrivalController,
     new FakeV2TestMessagesController
   )
 
