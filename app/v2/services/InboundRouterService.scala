@@ -31,7 +31,7 @@ import v2.models.MovementId
 import v2.models.MessageId
 import v2.models.MessageType
 import v2.models.XMLMessage
-import v2.models.errors.PersistenceError
+import v2.models.errors.RouterError
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -41,30 +41,30 @@ import scala.util.control.NonFatal
 trait InboundRouterService {
 
   def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
-                                                                                   ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId]
+                                                                                   ec: ExecutionContext): EitherT[Future, RouterError, MessageId]
 }
 
 @Singleton
 class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
-  def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
-                                                                                   ec: ExecutionContext): EitherT[Future, PersistenceError, MessageId] =
+  def post(messageType: MessageType, message: XMLMessage, movementId: MovementId)(implicit hc: HeaderCarrier,
+                                                                                  ec: ExecutionContext): EitherT[Future, RouterError, MessageId] =
     EitherT(
       inboundRouterConnector
-        .post(messageType, message.wrapped, departureId)
+        .post(messageType, message.wrapped, movementId)
         .map(response => {
           if (is2xx(response.status)) {
             response.header(MessageIdHeaderKey) match {
               case Some(value) => Right(MessageId(Utils.lastFragment(value)))
-              case _           => Left(PersistenceError.UnexpectedError(Some(new Exception("X-Message-Id header missing from router response"))))
+              case _           => Left(RouterError.Unexpected(Some(new Exception("X-Message-Id header missing from router response"))))
             }
           } else {
-            Left(PersistenceError.UnexpectedError(None))
+            Left(RouterError.Unexpected(None))
           }
         })
         .recover {
-          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MovementNotFound(departureId))
-          case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(RouterError.MovementNotFound(movementId))
+          case NonFatal(thr)                             => Left(RouterError.Unexpected(Some(thr)))
         }
     )
 

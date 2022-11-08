@@ -32,7 +32,7 @@ import v2.models.MessageType
 import v2.models.MovementReferenceNumber
 import v2.models.WrappedXMLMessage
 import v2.models.XMLMessage
-import v2.models.errors.PersistenceError
+import v2.models.errors.RouterError
 
 import java.time.OffsetDateTime
 import scala.concurrent.Future
@@ -83,8 +83,8 @@ class InboundRouterServiceSpec extends SpecBase {
       whenReady(either.value) {
         _.left.map(response =>
           response.leftSideValue match {
-            case PersistenceError.UnexpectedError(Some(thr)) => thr.getMessage mustBe "X-Message-Id header missing from router response"
-            case _                                           => fail("Expected a different error")
+            case RouterError.Unexpected(Some(thr)) => thr.getMessage mustBe "X-Message-Id header missing from router response"
+            case _                                 => fail("Expected a different error")
         })
       }
     }
@@ -102,7 +102,7 @@ class InboundRouterServiceSpec extends SpecBase {
       val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), MovementId("1"))
 
       whenReady(either.value) {
-        _.left.map(response => response mustBe PersistenceError.UnexpectedError(None))
+        _.left.map(response => response mustBe RouterError.Unexpected(None))
       }
     }
 

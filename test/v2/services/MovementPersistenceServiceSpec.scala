@@ -72,7 +72,7 @@ class MovementPersistenceServiceSpec extends SpecBase with ModelGenerators {
 
         whenReady(either.value) {
           r =>
-            r mustBe Left(PersistenceError.UnexpectedError(Some(failedResponse)))
+            r mustBe Left(PersistenceError.Unexpected(Some(failedResponse)))
         }
     }
 

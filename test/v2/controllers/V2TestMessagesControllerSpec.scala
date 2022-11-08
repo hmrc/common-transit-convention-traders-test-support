@@ -54,6 +54,7 @@ import v2.models.MovementType
 import v2.models.XMLMessage
 import v2.models.errors.MessageGenerationError
 import v2.models.errors.PersistenceError
+import v2.models.errors.RouterError
 import v2.services.InboundRouterService
 import v2.services.MessageGenerationService
 import v2.services.MovementPersistenceService
@@ -92,7 +93,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
             .thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(movement))))
 
           when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), MovementId(any[String]))(any(), any()))
-            .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Right(message.id))))
+            .thenReturn(EitherT[Future, RouterError, MessageId](Future.successful(Right(message.id))))
 
           when(
             mockMovementPersistenceService
@@ -138,7 +139,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
             mockMovementPersistenceService.getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(),
                                                                                                                                                       any(),
                                                                                                                                                       any()))
-            .thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Left(PersistenceError.MovementNotFound(MovementId("1"))))))
+            .thenAnswer(_ => EitherT.leftT[Future, PersistenceError](PersistenceError.MovementNotFound(movementType, movement._id)))
 
           val sut = new TestMessagesController(
             stubControllerComponents(),
@@ -214,7 +215,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), MovementId(anyString()))(any(), any()))
-            .thenReturn(EitherT[Future, PersistenceError, MessageId](Future.successful(Left(PersistenceError.UnexpectedError()))))
+            .thenReturn(EitherT[Future, RouterError, MessageId](Future.successful(Left(RouterError.Unexpected()))))
 
           val sut = new TestMessagesController(
             stubControllerComponents(),

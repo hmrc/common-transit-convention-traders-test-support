@@ -54,33 +54,33 @@ trait MovementPersistenceService {
 @Singleton
 class MovementPersistenceServiceImpl @Inject()(movementConnector: MovementConnector) extends MovementPersistenceService {
 
-  override def getMovement(movementType: MovementType, eori: EORINumber, departureId: MovementId)(
+  override def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(
     implicit
     rh: RequestHeader,
     hc: HeaderCarrier,
     ec: ExecutionContext): EitherT[Future, PersistenceError, Movement] =
     EitherT {
       movementConnector
-        .getMovement(movementType, eori, departureId)
+        .getMovement(movementType, eori, movementId)
         .map(Right(_))
         .recover {
-          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MovementNotFound(departureId))
-          case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MovementNotFound(movementType, movementId))
+          case NonFatal(thr)                             => Left(PersistenceError.Unexpected(Some(thr)))
         }
     }
 
-  override def getMessage(movementType: MovementType, eori: EORINumber, departureId: MovementId, messageId: MessageId)(
+  override def getMessage(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId)(
     implicit
     request: RequestHeader,
     hc: HeaderCarrier,
     ec: ExecutionContext): EitherT[Future, PersistenceError, Message] =
     EitherT {
       movementConnector
-        .getMessage(movementType, eori, departureId, messageId)
+        .getMessage(movementType, eori, movementId, messageId)
         .map(Right(_))
         .recover {
-          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MovementNotFound(departureId))
-          case NonFatal(thr)                             => Left(PersistenceError.UnexpectedError(Some(thr)))
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(PersistenceError.MessageNotFound(movementType, movementId, messageId))
+          case NonFatal(thr)                             => Left(PersistenceError.Unexpected(Some(thr)))
         }
     }
 

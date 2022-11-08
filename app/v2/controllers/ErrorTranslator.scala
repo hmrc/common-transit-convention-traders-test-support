@@ -20,6 +20,7 @@ import cats.data.EitherT
 import v2.models.errors.MessageGenerationError
 import v2.models.errors.PersistenceError
 import v2.models.errors.PresentationError
+import v2.models.errors.RouterError
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -38,8 +39,10 @@ trait ErrorTranslator {
   implicit val persistenceErrorConverter = new Converter[PersistenceError] {
 
     def convert(persistenceError: PersistenceError): PresentationError = persistenceError match {
-      case PersistenceError.MovementNotFound(movementId) => PresentationError.notFoundError(s"Movement with ID ${movementId.value} was not found")
-      case err: PersistenceError.UnexpectedError         => PresentationError.internalServiceError(cause = err.thr)
+      case PersistenceError.MovementNotFound(movementType, movementId) =>
+        PresentationError.notFoundError(s"${movementType.toString} with ID ${movementId.value} was not found")
+      case PersistenceError.MessageNotFound(_, _, _) => PresentationError.internalServiceError(cause = None)
+      case err: PersistenceError.Unexpected          => PresentationError.internalServiceError(cause = err.thr)
     }
   }
 
@@ -47,6 +50,13 @@ trait ErrorTranslator {
     override def convert(input: MessageGenerationError): PresentationError = input match {
       case MessageGenerationError.MessageTypeNotSupported(messageType) =>
         PresentationError.notImplementedError(s"Message type ${messageType.code} is not supported for this movement type")
+    }
+  }
+
+  implicit val routerErrorConverter = new Converter[RouterError] {
+    override def convert(input: RouterError): PresentationError = input match {
+      case RouterError.MovementNotFound(_) => PresentationError.internalServiceError(cause = None)
+      case err: RouterError.Unexpected     => PresentationError.internalServiceError(cause = err.thr)
     }
   }
 }

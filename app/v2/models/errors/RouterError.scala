@@ -16,14 +16,11 @@
 
 package v2.models.errors
 
-import v2.models.MessageId
 import v2.models.MovementId
-import v2.models.MovementType
 
-sealed trait PersistenceError
+sealed trait RouterError
 
-object PersistenceError {
-  case class MovementNotFound(movementType: MovementType, movementId: MovementId)                      extends PersistenceError
-  case class MessageNotFound(movementType: MovementType, movementId: MovementId, messageId: MessageId) extends PersistenceError
-  case class Unexpected(thr: Option[Throwable] = None)                                                 extends PersistenceError
+object RouterError {
+  case class MovementNotFound(movementId: MovementId)  extends RouterError
+  case class Unexpected(thr: Option[Throwable] = None) extends RouterError
 }

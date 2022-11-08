@@ -20,11 +20,14 @@ import base.SpecBase
 import cats.syntax.all._
 import org.scalacheck.Arbitrary.arbitrary
 import v2.generators.ModelGenerators
+import v2.models.MessageId
 import v2.models.MessageType
 import v2.models.MovementId
+import v2.models.MovementType
 import v2.models.errors.MessageGenerationError
 import v2.models.errors.PersistenceError
 import v2.models.errors.PresentationError
+import v2.models.errors.RouterError
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -61,7 +64,7 @@ class ErrorTranslatorSpec extends SpecBase with ModelGenerators {
   "PersistenceError" - {
 
     "an Unexpected Error with no exception returns an internal service error with no exception" in {
-      val input  = PersistenceError.UnexpectedError(None)
+      val input  = PersistenceError.Unexpected(None)
       val output = PresentationError.internalServiceError()
 
       Harness.persistenceErrorConverter.convert(input) mustBe output
@@ -69,16 +72,27 @@ class ErrorTranslatorSpec extends SpecBase with ModelGenerators {
 
     "an Unexpected Error with an exception returns an internal service error with an exception" in {
       val exception = new IllegalStateException()
-      val input     = PersistenceError.UnexpectedError(Some(exception))
+      val input     = PersistenceError.Unexpected(Some(exception))
       val output    = PresentationError.internalServiceError(cause = Some(exception))
 
       Harness.persistenceErrorConverter.convert(input) mustBe output
     }
 
-    "a MovementNotFound error returns a not found error" in forAll(arbitrary[MovementId]) {
-      movementId =>
-        val input  = PersistenceError.MovementNotFound(movementId)
-        val output = PresentationError.notFoundError(s"Movement with ID ${movementId.value} was not found")
+    MovementType.values.foreach {
+      movementType =>
+        s"a MovementNotFound error for the movement type ${movementType.toString} returns a not found error" in forAll(arbitrary[MovementId]) {
+          movementId =>
+            val input  = PersistenceError.MovementNotFound(movementType, movementId)
+            val output = PresentationError.notFoundError(s"${movementType.toString} with ID ${movementId.value} was not found")
+
+            Harness.persistenceErrorConverter.convert(input) mustBe output
+        }
+    }
+
+    s"a MessageNotFound error returns an internal server error error" in forAll(arbitrary[MovementType], arbitrary[MovementId], arbitrary[MessageId]) {
+      (movementType, movementId, messageId) =>
+        val input  = PersistenceError.MessageNotFound(movementType, movementId, messageId)
+        val output = PresentationError.internalServiceError(cause = None)
 
         Harness.persistenceErrorConverter.convert(input) mustBe output
     }
@@ -93,6 +107,33 @@ class ErrorTranslatorSpec extends SpecBase with ModelGenerators {
         val output = PresentationError.notImplementedError(s"Message type ${messageType.code} is not supported for this movement type")
 
         Harness.messageGenerationErrorConverter.convert(input) mustBe output
+    }
+
+  }
+
+  "RouterError" - {
+
+    "an Unexpected Error with no exception returns an internal service error with no exception" in {
+      val input  = RouterError.Unexpected(None)
+      val output = PresentationError.internalServiceError()
+
+      Harness.routerErrorConverter.convert(input) mustBe output
+    }
+
+    "an Unexpected Error with an exception returns an internal service error with an exception" in {
+      val exception = new IllegalStateException()
+      val input     = RouterError.Unexpected(Some(exception))
+      val output    = PresentationError.internalServiceError(cause = Some(exception))
+
+      Harness.routerErrorConverter.convert(input) mustBe output
+    }
+
+    "an MessageNotFound Error returns an internal service error without an exception" in forAll(arbitrary[MovementId]) {
+      movementId =>
+        val input  = RouterError.MovementNotFound(movementId)
+        val output = PresentationError.internalServiceError(cause = None)
+
+        Harness.routerErrorConverter.convert(input) mustBe output
     }
 
   }
