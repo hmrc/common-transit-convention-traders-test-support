@@ -28,10 +28,10 @@ import v2.models.MessageId
 object CommonFormats extends CommonFormats
 
 trait CommonFormats {
-  implicit val messageIdFormat: Format[MessageId]               = Json.valueFormat[MessageId]
-  implicit val messageFormat: Format[Message]                   = Json.format[Message]
-  implicit val eoriNumberFormat: Format[EORINumber]             = Json.valueFormat[EORINumber]
-  implicit val departureWithoutMessagesFormat: Format[Movement] = Json.format[Movement]
+  implicit val messageIdFormat: Format[MessageId]   = Json.valueFormat[MessageId]
+  implicit val messageFormat: Format[Message]       = Json.format[Message]
+  implicit val eoriNumberFormat: Format[EORINumber] = Json.valueFormat[EORINumber]
+  implicit val movementFormat: Format[Movement]     = Json.format[Movement]
 
   implicit def nonEmptyListFormat[A: Format]: Format[NonEmptyList[A]] =
     Format

@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
 import utils.Utils
 import v2.models.MovementType
-import v2.models.formats.CommonFormats.departureWithoutMessagesFormat
+import v2.models.formats.CommonFormats.movementFormat
 import v2.models.formats.CommonFormats.messageFormat
 
 import javax.inject.Inject
