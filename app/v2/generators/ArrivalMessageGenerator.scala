@@ -63,7 +63,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <!--0 to 999 repetitions:-->
             <ConsignmentItem>
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
-              <declarationGoodsItemNumber>{Strings.numeric(1, 5)}</declarationGoodsItemNumber>
+              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               <releaseType>0</releaseType>
               <Commodity>
                 <descriptionOfGoods>{Strings.alphanumeric(64)}</descriptionOfGoods>

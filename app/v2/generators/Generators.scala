@@ -16,6 +16,8 @@
 
 package v2.generators
 
+import utils.Strings
+
 import java.time.Clock
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -30,5 +32,7 @@ trait Generators {
   def generateLocalDateTime() = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(clock.instant().truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC))
 
   def generateLocalDate() = DateTimeFormatter.ISO_LOCAL_DATE.format(clock.instant().atZone(ZoneOffset.UTC))
+
+  def generateDeclarationGoodsNumber(): String = Strings.between1And9.toString ++ Strings.numeric(2)
 
 }

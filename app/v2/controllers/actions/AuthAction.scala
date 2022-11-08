@@ -78,7 +78,7 @@ class AuthActionImpl @Inject()(
               block(AuthRequest(request, eoriNumber))
           }
           .getOrElse {
-            Future.failed(InsufficientEnrolments(s"Unable to retrieve enrolment for either $NewEnrolmentKey"))
+            Future.failed(InsufficientEnrolments(s"Unable to retrieve enrolment for $NewEnrolmentKey"))
           }
     }
   } recover {
