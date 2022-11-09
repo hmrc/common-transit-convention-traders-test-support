@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package v2.models
+package v2.fakes.controllers
 
+import controllers.V1ArrivalTestMessagesController
+import models.ArrivalId
+import play.api.libs.json.JsValue
 import play.api.libs.json.Json
-import play.api.libs.json.OFormat
+import play.api.mvc.Action
+import play.api.mvc.BaseController
+import play.api.mvc.Request
+import play.api.test.Helpers.stubControllerComponents
 
-import java.time.OffsetDateTime
-import v2.models.formats.CommonFormats._
+class FakeV1ArrivalController extends BaseController with V1ArrivalTestMessagesController {
 
-object DepartureWithoutMessages {
-  implicit val format: OFormat[DepartureWithoutMessages] = Json.format[DepartureWithoutMessages]
+  override val controllerComponents = stubControllerComponents()
+
+  override def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] = Action(parse.json) {
+    _: Request[JsValue] =>
+      Accepted(Json.obj("version" -> 1))
+  }
+
 }
-case class DepartureWithoutMessages(
-  _id: DepartureId,
-  enrollmentEORINumber: EORINumber,
-  movementEORINumber: EORINumber,
-  movementReferenceNumber: Option[MovementReferenceNumber],
-  created: OffsetDateTime,
-  updated: OffsetDateTime
-)

@@ -17,44 +17,69 @@
 package v2.controllers.actions
 
 import controllers.actions.AuthRequest
-import v2.models.request.MessageRequest
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import play.api.http.HeaderNames
+import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsString
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
+import v2.generators.ModelGenerators
+import v2.models.EORINumber
 import v2.models.MessageType
+import v2.models.request.MessageRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matchers with MockitoSugar {
+class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matchers with MockitoSugar with ScalaCheckDrivenPropertyChecks with ModelGenerators {
 
-  class Harness extends MessageRequestAction() {
+  object Harness extends MessageRequestActionImpl() {
 
     def execute[A](request: AuthRequest[A]): Future[Either[Result, MessageRequest[A]]] =
       refine(request)
   }
 
-  "must produce IE928 with default values if only IE928 specified" in {
-    val harness = new Harness
-    val EORI    = "GB121212"
+  MessageType.values.foreach {
+    messageType =>
+      s"must produce ${messageType.code} with default values if only ${messageType.code} specified" in forAll(arbitrary[EORINumber]) {
+        eoriNumber =>
+          val body = JsObject(Seq("message" -> JsObject(Seq("messageType" -> JsString(messageType.code)))))
 
-    val body = JsObject(Seq("message" -> JsObject(Seq("messageType" -> JsString("IE928")))))
+          val request: FakeRequest[JsValue] =
+            FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
-    val request: FakeRequest[JsValue] =
-      FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
+          val authAction = AuthRequest(request, eoriNumber.value)
 
-    val authAction = new AuthRequest(request, EORI)
-    val result     = harness.execute(authAction).futureValue.right.get
+          whenReady(Harness.execute(authAction)) {
+            case Right(result: MessageRequest[_]) =>
+              result.eori mustBe eoriNumber
+              result.messageType mustBe messageType
+            case _ => fail("A valid message type was not extracted")
+          }
+      }
+  }
 
-    result.eori mustBe EORI
-    result.messageType mustBe MessageType.PositiveAcknowledgement
+  "must produce an error if an invalid message type was found" in forAll(Gen.alphaNumStr, arbitrary[EORINumber]) {
+    (messageType, eoriNumber) =>
+      val body = JsObject(Seq("message" -> JsObject(Seq("messageType" -> JsString(messageType)))))
+
+      val request: FakeRequest[JsValue] =
+        FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
+
+      val authAction = AuthRequest(request, eoriNumber.value)
+
+      whenReady(Harness.execute(authAction)) {
+        case Left(result) => result.header.status mustBe BAD_REQUEST
+        case Right(x)     => fail(s"A valid type (${x.messageType.code}) was selected when it shouldn't have been")
+      }
   }
 }

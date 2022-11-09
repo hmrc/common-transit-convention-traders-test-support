@@ -16,32 +16,39 @@
 
 package v2.models
 
-import models.Enumerable
-import models.IeMetadata
+import play.api.libs.json.JsError
+import play.api.libs.json.JsString
+import play.api.libs.json.JsSuccess
+import play.api.libs.json.Reads
+import play.api.libs.json.Writes
 
-sealed trait MessageType extends IeMetadata {
-  def code: String
-  def rootNode: String
-}
+abstract class MessageType(val code: String, val rootNode: String) extends Product with Serializable
 
-object MessageType extends Enumerable.Implicits {
-  case object PositiveAcknowledgement extends IeMetadata("IE928", "CC928C", "DEP") with MessageType
-  case object MRNAllocated            extends IeMetadata("IE028", "CC028C", "DEP") with MessageType
+object MessageType {
+  case object PositiveAcknowledgement  extends MessageType("IE928", "CC928C")
+  case object MRNAllocated             extends MessageType("IE028", "CC028C")
+  case object GoodsReleaseNotification extends MessageType("IE025", "CC025C")
 
-  val departureMessages = Seq(
+  val arrivalMessages: Seq[MessageType] = Seq(
+    GoodsReleaseNotification
+  )
+
+  val departureMessages: Seq[MessageType] = Seq(
     PositiveAcknowledgement,
     MRNAllocated
   )
 
-  val values: Seq[MessageType] = Seq(
-    PositiveAcknowledgement,
-    MRNAllocated
-  )
+  val values: Seq[MessageType] = arrivalMessages ++ departureMessages
 
-  implicit val enumerable: Enumerable[MessageType] =
-    Enumerable(
-      values.map(
-        v => v.code -> v
-      ): _*
-    )
+  def findByCode(code: String) = values.find(_.code == code)
+
+  implicit val reads: Reads[MessageType] = Reads {
+    case JsString(value) => findByCode(value).map(JsSuccess(_)).getOrElse(JsError("Code not found"))
+    case _               => JsError()
+  }
+
+  implicit val writes: Writes[MessageType] = Writes {
+    messageType =>
+      JsString(messageType.code)
+  }
 }

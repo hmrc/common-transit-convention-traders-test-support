@@ -24,6 +24,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.HeaderNames
 import play.api.http.Status.ACCEPTED
+import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
@@ -33,7 +34,7 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import v2.base.TestActorSystem
 import v2.fakes.controllers.FakeV1DeparturesController
-import v2.fakes.controllers.FakeV2DeparturesController
+import v2.fakes.controllers.FakeV2TestMessagesController
 
 import scala.concurrent.duration.DurationInt
 
@@ -44,7 +45,7 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
   val sut = new DeparturesRouter(
     stubControllerComponents(),
     new FakeV1DeparturesController,
-    new FakeV2DeparturesController
+    new FakeV2TestMessagesController
   )
 
   "when requesting an EIS response" - {
@@ -58,11 +59,23 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
       "must route to the v2 controller and return Accepted when successful" in {
 
         val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("1").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
+          FakeRequest(method = "POST",
+                      uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
+                      body = Json.obj("a" -> "1"),
+                      headers = departureHeaders)
+        val result = call(sut.injectEISResponse("1234567890abcdef"), request)
 
         status(result) mustBe ACCEPTED
         contentAsJson(result) mustBe Json.obj("version" -> 2) // ensure we get the unique value to verify we called the fake action
+      }
+
+      "must return bad request if an incorrect departure ID is provided" in {
+
+        val request =
+          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
+        val result = call(sut.injectEISResponse("1"), request)
+
+        status(result) mustBe BAD_REQUEST
       }
 
     }

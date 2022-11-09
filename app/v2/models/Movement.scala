@@ -16,11 +16,20 @@
 
 package v2.models
 
-import play.api.libs.json.Format
 import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
-object DepartureId {
-  implicit lazy val departureIdFormat: Format[DepartureId] = Json.valueFormat[DepartureId]
+import java.time.OffsetDateTime
+import v2.models.formats.CommonFormats._
+
+object Movement {
+  implicit val format: OFormat[Movement] = Json.format[Movement]
 }
-
-case class DepartureId(value: String) extends AnyVal
+case class Movement(
+  _id: MovementId,
+  enrollmentEORINumber: EORINumber,
+  movementEORINumber: EORINumber,
+  movementReferenceNumber: Option[MovementReferenceNumber],
+  created: OffsetDateTime,
+  updated: OffsetDateTime
+)

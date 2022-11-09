@@ -16,7 +16,6 @@
 
 package v2.models
 
-import java.net.URI
 import java.time.OffsetDateTime
 
 // Message returned from DepartureConnector

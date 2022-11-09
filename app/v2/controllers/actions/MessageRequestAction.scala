@@ -16,6 +16,7 @@
 
 package v2.controllers.actions
 
+import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import controllers.actions.AuthRequest
 import v2.models.generation.TestMessage
@@ -27,12 +28,16 @@ import play.api.libs.json.Json
 import play.api.mvc.ActionRefiner
 import play.api.mvc.Result
 import play.api.mvc.Results.BadRequest
+import v2.models.EORINumber
 import v2.models.errors.PresentationError
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[AuthRequest, MessageRequest] {
+@ImplementedBy(classOf[MessageRequestActionImpl])
+trait MessageRequestAction extends ActionRefiner[AuthRequest, MessageRequest]
+
+class MessageRequestActionImpl @Inject()()(implicit val executionContext: ExecutionContext) extends MessageRequestAction {
   override protected def refine[A](request: AuthRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     request.body match {
       case body: JsValue =>
@@ -40,7 +45,7 @@ class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionC
           case JsError(errors) =>
             Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(errors.mkString)))))
           case JsSuccess(testMessage, _) =>
-            Future.successful(Right(MessageRequest(request, request.eori, testMessage.messageType)))
+            Future.successful(Right(MessageRequest(request, EORINumber(request.eori), testMessage.messageType)))
         }
     }
 }
