@@ -25,9 +25,12 @@ import play.api.libs.json.Writes
 abstract class MessageType(val code: String, val rootNode: String) extends Product with Serializable
 
 object MessageType {
-  case object PositiveAcknowledgement  extends MessageType("IE928", "CC928C")
-  case object MRNAllocated             extends MessageType("IE028", "CC028C")
-  case object GoodsReleaseNotification extends MessageType("IE025", "CC025C")
+  case object PositiveAcknowledgement          extends MessageType("IE928", "CC928C")
+  case object MRNAllocated                     extends MessageType("IE028", "CC028C")
+  case object GoodsReleaseNotification         extends MessageType("IE025", "CC025C")
+  case object UnloadingPermission              extends MessageType("IE043", "CC043C")
+  case object RejectionFromOfficeOfDestination extends MessageType("IE057", "CC057C")
+  case object RequestOnNonArrivedMovementDate  extends MessageType("IE140", "CC140C")
 
   val arrivalMessages: Seq[MessageType] = Seq(
     GoodsReleaseNotification

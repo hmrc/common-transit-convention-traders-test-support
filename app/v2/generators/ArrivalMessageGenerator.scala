@@ -19,9 +19,11 @@ package v2.generators
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import utils.Strings
-import utils.Strings.alpha
 import v2.models.MessageType
 import v2.models.MessageType.GoodsReleaseNotification
+import v2.models.MessageType.RejectionFromOfficeOfDestination
+import v2.models.MessageType.RequestOnNonArrivedMovementDate
+import v2.models.MessageType.UnloadingPermission
 import v2.models.XMLMessage
 
 import java.time.Clock
@@ -32,7 +34,11 @@ trait ArrivalMessageGenerator extends MessageGenerator
 class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators with ArrivalMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
-    case GoodsReleaseNotification => generateIE025Message(correlationId)
+    case GoodsReleaseNotification         => generateIE025Message(correlationId)
+    case UnloadingPermission              => generateIE043Message(correlationId)
+    case RejectionFromOfficeOfDestination => generateIE057Message(correlationId)
+    case RequestOnNonArrivedMovementDate  => generateIE140Message(correlationId)
+
   }
 
   private def generateIE025Message(correlationId: String): XMLMessage =
@@ -475,6 +481,79 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         </Consignment>
         
       </ncts:CC043C>
+    )
+
+  private def generateIE057Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC057C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
+        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC057C</messageType>
+        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
+        <TransitOperation>
+          <MRN>{Strings.mrn()}</MRN>
+          <businessRejectionType>{Strings.alphanumeric(3)}</businessRejectionType>
+          <rejectionDateAndTime>{generateLocalDateTime()}</rejectionDateAndTime>
+          <rejectionCode>{Strings.numeric(2)}</rejectionCode>
+          <!--Optional:-->
+          <rejectionReason>{Strings.alphanumeric(1, 512)}</rejectionReason>
+        </TransitOperation>
+        <CustomsOfficeOfDestinationActual>
+          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDestinationActual>
+        <TraderAtDestination>
+          <identificationNumber>{Strings.alphanumeric(2, 17)}</identificationNumber>
+        </TraderAtDestination>
+        <!--0 to 9999 repetitions:-->
+        <FunctionalError>
+          <errorPointer>{Strings.alphanumeric(2, 512)}</errorPointer>
+          <errorCode>{Strings.numeric(2)}</errorCode>
+          <errorReason>{Strings.alphanumeric(2, 7)}</errorReason>
+          <!--Optional:-->
+          <originalAttributeValue>{Strings.alphanumeric(2, 512)}</originalAttributeValue>
+        </FunctionalError>
+      </ncts:CC057C>
+    )
+
+  private def generateIE140Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC140C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
+        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC140C</messageType>
+        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
+        <TransitOperation>
+          <MRN>{Strings.mrn()}</MRN>
+          <requestOnNonArrivedMovementDate>{generateLocalDateTime()}</requestOnNonArrivedMovementDate>
+          <limitForResponseDate>{generateLocalDate()}</limitForResponseDate>
+        </TransitOperation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{Strings.alphanumeric(8)}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <CustomsOfficeOfEnquiryAtDeparture>
+          <referenceNumber>{Strings.alphanumeric(8)}</referenceNumber>
+        </CustomsOfficeOfEnquiryAtDeparture>
+        <HolderOfTheTransitProcedure>
+          <!--Optional:-->
+          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <TIRHolderIdentificationNumber>{Strings.alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <!--Optional:-->
+          <name>{Strings.alphanumeric(1, 70)}</name>
+          <!--Optional:-->
+          <Address>
+            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
+            <!--Optional:-->
+            <postcode>{Strings.alphanumeric(2, 17)}</postcode>
+            <city>{Strings.alphanumeric(2, 35)}</city>
+            <country>{Strings.alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+      </ncts:CC140C>
     )
 
 }
