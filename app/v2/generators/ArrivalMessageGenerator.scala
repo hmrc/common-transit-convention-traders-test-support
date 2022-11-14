@@ -38,7 +38,6 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
     case UnloadingPermission              => generateIE043Message(correlationId)
     case RejectionFromOfficeOfDestination => generateIE057Message(correlationId)
     case RequestOnNonArrivedMovementDate  => generateIE140Message(correlationId)
-
   }
 
   private def generateIE025Message(correlationId: String): XMLMessage =
@@ -122,7 +121,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
           <!--Optional:-->
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <security>{Strings.numeric(1)}</security>
-          <reducedDatasetIndicator>{Strings.numeric(1)}</reducedDatasetIndicator>
+          <reducedDatasetIndicator>{Strings.zeroOrOne}</reducedDatasetIndicator>
         </TransitOperation>
         <CustomsOfficeOfDestinationActual>
           <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
@@ -153,7 +152,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         <Consignment>
           <!--Optional:-->
           <countryOfDestination>{Strings.alpha(2)}</countryOfDestination>
-          <containerIndicator>{Strings.numeric(1)}</containerIndicator>
+          <containerIndicator>{Strings.zeroOrOne}</containerIndicator>
           <!--Optional:-->
           <inlandModeOfTransport>{Strings.numeric(1)}</inlandModeOfTransport>
           <!--Optional:-->
@@ -193,7 +192,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
             <!--Optional:-->
             <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
-            <numberOfSeals>{Strings.numeric(0, 4)}</numberOfSeals>
+            <numberOfSeals>{Strings.numeric(1, 4)}</numberOfSeals>
             <!--0 to 99 repetitions:-->
             <Seal>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
@@ -202,7 +201,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <!--0 to 9999 repetitions:-->
             <GoodsReference>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-              <declarationGoodsItemNumber>{Strings.numeric(1, 5)}</declarationGoodsItemNumber>
+              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber}</declarationGoodsItemNumber>
             </GoodsReference>
           </TransportEquipment>
           <!--0 to 999 repetitions:-->
@@ -244,7 +243,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
           <!--0 to 99 repetitions:-->
           <AdditionalInformation>
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-            <code>{Strings.alphanumeric(1, 5)}</code>
+            <code>{Strings.alphanumeric(5)}</code>
             <!--Optional:-->
             <text>{Strings.alphanumeric(20, 512)}</text>
           </AdditionalInformation>
@@ -267,8 +266,8 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <country>{Strings.alpha(2).toUpperCase}</country>
               <!--Optional:-->
               <GNSS>
-                <latitude>{Strings.alphanumeric(5, 17)}</latitude>
-                <longitude>{Strings.alphanumeric(5, 17)}</longitude>
+                <latitude>90.000000</latitude>
+                <longitude>180.000000</longitude>
               </GNSS>
               <!--Optional:-->
               <Address>
@@ -293,12 +292,12 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <!--0 to 9999 repetitions:-->
               <GoodsReference>
                 <sequenceNumber>{Strings.numeric(1, 4)}</sequenceNumber>
-                <declarationGoodsItemNumber>{Strings.numeric(1, 5)}</declarationGoodsItemNumber>
+                <declarationGoodsItemNumber>{generateDeclarationGoodsNumber}</declarationGoodsItemNumber>
               </GoodsReference>
             </TransportEquipment>
             <!--Optional:-->
             <Transhipment>
-              <containerIndicator>{Strings.numeric(1)}</containerIndicator>
+              <containerIndicator>{Strings.zeroOrOne}</containerIndicator>
               <TransportMeans>
                 <typeOfIdentification>{Strings.numeric(2)}</typeOfIdentification>
                 <identificationNumber>{Strings.alphanumeric(8, 35)}</identificationNumber>
@@ -381,14 +380,14 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <!--0 to 99 repetitions:-->
             <AdditionalInformation>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-              <code>{Strings.alphanumeric(4)}</code>
+              <code>{Strings.alphanumeric(5)}</code>
               <!--Optional:-->
               <text>{Strings.alphanumeric(1, 70)}</text>
             </AdditionalInformation>
             <!--1 to 999 repetitions:-->
             <ConsignmentItem>
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
-              <declarationGoodsItemNumber>{Strings.numeric(1, 5)}</declarationGoodsItemNumber>
+              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber}</declarationGoodsItemNumber>
               <!--Optional:-->
               <declarationType>{Strings.alphanumeric(1, 5)}</declarationType>
               <!--Optional:-->
@@ -411,17 +410,17 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <Commodity>
                 <descriptionOfGoods>{Strings.alphanumeric(3, 512)}</descriptionOfGoods>
                 <!--Optional:-->
-                <cusCode>{Strings.alphanumeric(1, 9)}</cusCode>
+                <cusCode>{Strings.alphanumeric(9)}</cusCode>
                 <!--Optional:-->
                 <CommodityCode>
-                  <harmonizedSystemSubHeadingCode>{Strings.alphanumeric(1, 6)}</harmonizedSystemSubHeadingCode>
+                  <harmonizedSystemSubHeadingCode>{Strings.alphanumeric(6)}</harmonizedSystemSubHeadingCode>
                   <!--Optional:-->
-                  <combinedNomenclatureCode>{Strings.alphanumeric(1, 2)}</combinedNomenclatureCode>
+                  <combinedNomenclatureCode>{Strings.alphanumeric(2)}</combinedNomenclatureCode>
                 </CommodityCode>
                 <!--0 to 99 repetitions:-->
                 <DangerousGoods>
                   <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-                  <UNNumber>{Strings.numeric(1, 4)}</UNNumber>
+                  <UNNumber>{Strings.numeric(4)}</UNNumber>
                 </DangerousGoods>
                 <GoodsMeasure>
                   <grossMass>2468.1234</grossMass>
@@ -509,7 +508,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         <!--0 to 9999 repetitions:-->
         <FunctionalError>
           <errorPointer>{Strings.alphanumeric(2, 512)}</errorPointer>
-          <errorCode>{Strings.numeric(2)}</errorCode>
+          <errorCode>12</errorCode>
           <errorReason>{Strings.alphanumeric(2, 7)}</errorReason>
           <!--Optional:-->
           <originalAttributeValue>{Strings.alphanumeric(2, 512)}</originalAttributeValue>
@@ -528,14 +527,14 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
         <TransitOperation>
           <MRN>{Strings.mrn()}</MRN>
-          <requestOnNonArrivedMovementDate>{generateLocalDateTime()}</requestOnNonArrivedMovementDate>
-          <limitForResponseDate>{generateLocalDate()}</limitForResponseDate>
+          <requestOnNonArrivedMovementDate>{generateLocalDate()}</requestOnNonArrivedMovementDate>
+          <limitForResponseDate>2008-11-15</limitForResponseDate>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.alphanumeric(8)}</referenceNumber>
+          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <CustomsOfficeOfEnquiryAtDeparture>
-          <referenceNumber>{Strings.alphanumeric(8)}</referenceNumber>
+          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
         </CustomsOfficeOfEnquiryAtDeparture>
         <HolderOfTheTransitProcedure>
           <!--Optional:-->

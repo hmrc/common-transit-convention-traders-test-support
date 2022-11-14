@@ -33,7 +33,10 @@ object MessageType {
   case object RequestOnNonArrivedMovementDate  extends MessageType("IE140", "CC140C")
 
   val arrivalMessages: Seq[MessageType] = Seq(
-    GoodsReleaseNotification
+    GoodsReleaseNotification,
+    UnloadingPermission,
+    RejectionFromOfficeOfDestination,
+    RequestOnNonArrivedMovementDate
   )
 
   val departureMessages: Seq[MessageType] = Seq(
