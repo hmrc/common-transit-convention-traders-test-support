@@ -23,8 +23,6 @@ import scala.util.Random
 object Strings {
 
   def between1And9: Int = Gen.choose(1, 9).sample.getOrElse(1)
-  def between0And9: Int = Gen.choose(0, 9).sample.getOrElse(0)
-  def between0And8: Int = Gen.choose(0, 8).sample.getOrElse(0)
 
   def alphanumeric(length: Int): String =
     Random.alphanumeric take length mkString
