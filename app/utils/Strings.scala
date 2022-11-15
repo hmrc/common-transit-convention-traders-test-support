@@ -32,6 +32,8 @@ object Strings {
     Random.alphanumeric take length mkString
   }
 
+  def zeroOrOne = Gen.oneOf(0, 1).sample.getOrElse(0).toString
+
   def numeric(length: Int): String =
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
 

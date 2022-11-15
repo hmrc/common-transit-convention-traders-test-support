@@ -21,6 +21,9 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import v2.models.MessageType.GoodsReleaseNotification
+import v2.models.MessageType.RejectionFromOfficeOfDestination
+import v2.models.MessageType.RequestOnNonArrivedMovementDate
+import v2.models.MessageType.UnloadingPermission
 import v2.models.MovementId
 import v2.models.XMLMessage
 
@@ -41,6 +44,24 @@ class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionV
       }
     }
 
+    "when an unloading permission is requested" - {
+      "should produce a valid IE043 message" in {
+        validate("cc043c", generator.generate(arrivalId)(UnloadingPermission))
+      }
+    }
+
+    "when an rejection of office of destination is requested" - {
+      "should produce a valid IE057 message" in {
+        validate("cc057c", generator.generate(arrivalId)(RejectionFromOfficeOfDestination))
+      }
+    }
+
+    "when a non-arrived movement date is requested " - {
+      "should produce a valid IE140 message" in {
+        validate("cc140c", generator.generate(arrivalId)(RequestOnNonArrivedMovementDate))
+      }
+    }
+
   }
 
   private def validate(xsdRoot: String, xml: XMLMessage): Unit = {
@@ -53,11 +74,8 @@ class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionV
     validator.setFeature("http://xml.org/sax/features/external-general-entities", false)
     validator.setFeature("http://xml.org/sax/features/external-parameter-entities", false)
     val reader = new StringReader(xml.value.mkString)
-    try {
-      validator.validate(new StreamSource(reader))
-    } finally {
-      reader.close()
-    }
+    try validator.validate(new StreamSource(reader))
+    finally reader.close()
   }
 
 }
