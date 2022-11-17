@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import v2.models.MovementId
 import v2.models.MessageType.AmendmentAcceptance
+import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.ReleaseForTransit
@@ -43,6 +44,13 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
         validate("cc004c", generator.generate(departureId)(AmendmentAcceptance))
       }
     }
+
+    "when an invalidation decision is requested" - {
+      "should produce a valid IE009 message" in {
+        validate("cc009c", generator.generate(departureId)(InvalidationDecision))
+      }
+    }
+
     "when a positive acknowledgement is requested" - {
       "should produce a valid IE928 message" in {
         validate("cc928c", generator.generate(departureId)(PositiveAcknowledgement))

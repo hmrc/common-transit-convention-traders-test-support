@@ -26,6 +26,7 @@ abstract class MessageType(val code: String, val rootNode: String) extends Produ
 
 object MessageType {
   case object AmendmentAcceptance              extends MessageType("IE004", "CC004C")
+  case object InvalidationDecision             extends MessageType("IE009", "CC009C")
   case object PositiveAcknowledgement          extends MessageType("IE928", "CC928C")
   case object MRNAllocated                     extends MessageType("IE028", "CC028C")
   case object GoodsReleaseNotification         extends MessageType("IE025", "CC025C")
