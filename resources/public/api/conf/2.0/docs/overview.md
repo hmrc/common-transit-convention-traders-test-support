@@ -65,15 +65,25 @@ Follow these steps:
    <td>Specify "IE058" for the <code>messageType</code> field
    </tr>
 -->
-	<tr>
-		<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928) (IE028)</a></td>
-		<td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
-		<td>Specify "IE928" for the <code>messageType</code> field
+    <tr>
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie004-amendment-acceptance">Inject an amendment acceptance message (IE004)</a></td>
+	<td>Inject an amendment acceptance message from the office of departure (IE004)</td>
+	<td>Specify "IE004" for the <code>messageType</code> field
+	</tr>
+    <tr>
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie009-invalidation-decision">Inject an invalidation decision message (IE009)</a></td>
+	<td>Inject an invalidation decision message to be sent to the holder of the transit procedure (IE009)</td>
+	<td>Specify "IE009" for the <code>messageType</code> field
 	</tr>
 	<tr>
-		<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie028-mrn-allocated">Inject an MRN allocated message (IE028)</a></td>
-		<td>Inject a message from the office at departure allocating a Movement Reference Number (MRN)</td>
-		<td>Specify "IE028" for the <code>messageType</code> field
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928) (IE028)</a></td>
+	<td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
+	<td>Specify "IE928" for the <code>messageType</code> field
+	</tr>
+	<tr>
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie028-mrn-allocated">Inject an MRN allocated message (IE028)</a></td>
+	<td>Inject a message from the office at departure allocating a Movement Reference Number (MRN)</td>
+	<td>Specify "IE028" for the <code>messageType</code> field
 	</tr>
 <!--
    <tr>
