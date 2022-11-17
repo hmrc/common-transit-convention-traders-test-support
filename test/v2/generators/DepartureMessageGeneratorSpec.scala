@@ -21,6 +21,7 @@ import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import v2.models.MovementId
+import v2.models.MessageType.AmendmentAcceptance
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.ReleaseForTransit
@@ -37,6 +38,11 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     val generator   = new DepartureMessageGeneratorImpl(Clock.systemUTC())
     val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
+    "when an amendment acceptance is requested" - {
+      "should produce a valid IE004 message" in {
+        validate("cc004c", generator.generate(departureId)(AmendmentAcceptance))
+      }
+    }
     "when a positive acknowledgement is requested" - {
       "should produce a valid IE928 message" in {
         validate("cc928c", generator.generate(departureId)(PositiveAcknowledgement))
@@ -48,12 +54,12 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
         validate("cc028c", generator.generate(departureId)(MRNAllocated))
       }
     }
-    ///
+
     "when supplied with message type ReleaseForTransit" - {
       "should produce an IE029 Message" in {
         validate("cc029c", generator.generate(departureId)(ReleaseForTransit))
       }
-    } ///
+    }
   }
 
   private def validate(xsdRoot: String, xml: XMLMessage): Unit = {
