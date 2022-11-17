@@ -16,6 +16,7 @@
 
 package v2.controllers.actions
 
+import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -38,25 +39,62 @@ class ValidateMessageTypeActionSpec extends AnyFreeSpec with Matchers with Optio
   private def createRequest(messageType: MessageType): MessageRequest[AnyContent] =
     MessageRequest(FakeRequest(), EORINumber("a"), messageType)
 
-  "ValidateMessageTypeAction" - {
-    "must execute the block when passed in a valid test message" in {
-      val validateMessageType = new ValidateMessageTypeAction(Seq(MessageType.PositiveAcknowledgement))
+  "ValidateMessageTypeAction - departures" - {
+    val validateMessageType = new ValidateMessageTypeAction(MessageType.departureMessages)
 
-      val result = validateMessageType.invokeBlock(createRequest(MessageType.PositiveAcknowledgement), {
-        _: MessageRequest[AnyContent] =>
-          Future.successful(Created)
-      })
-      status(result) mustEqual CREATED
-    }
+    for (messageType <- MessageType.departureMessages)
+      s"${messageType.code}" - {
+        "must execute the block when passed in a valid departure message type" in {
+          val result = validateMessageType.invokeBlock(
+            createRequest(messageType), {
+              _: MessageRequest[AnyContent] =>
+                Future.successful(Created)
+            }
+          )
+          status(result) mustEqual CREATED
+        }
 
-    "must return NotImplemented when passed in an invalid test message" in {
-      val validateMessageType = new ValidateMessageTypeAction(Seq(MessageType.PositiveAcknowledgement))
+        "must return NotImplemented when passed in an invalid test message" in {
+          val invalidMessageType = Gen.oneOf(MessageType.arrivalMessages).sample.value
 
-      val result = validateMessageType.invokeBlock(createRequest(MessageType.MRNAllocated), {
-        _: MessageRequest[AnyContent] =>
-          Future.successful(Created)
-      })
-      status(result) mustEqual NOT_IMPLEMENTED
-    }
+          val result = validateMessageType.invokeBlock(
+            createRequest(invalidMessageType), {
+              _: MessageRequest[AnyContent] =>
+                Future.successful(Created)
+            }
+          )
+          status(result) mustEqual NOT_IMPLEMENTED
+        }
+      }
+  }
+
+  "ValidateMessageTypeAction - arrivals" - {
+    val validateMessageType = new ValidateMessageTypeAction(MessageType.arrivalMessages)
+
+    for (messageType <- MessageType.arrivalMessages)
+      s"${messageType.code}" - {
+        "must execute the block when passed in a valid arrival message type" in {
+          val result = validateMessageType.invokeBlock(
+            createRequest(messageType), {
+              _: MessageRequest[AnyContent] =>
+                Future.successful(Created)
+            }
+          )
+          status(result) mustEqual CREATED
+        }
+
+        "must return NotImplemented when passed in an invalid test message" in {
+          val invalidMessageType = Gen.oneOf(MessageType.departureMessages).sample.value
+
+          val result = validateMessageType.invokeBlock(
+            createRequest(invalidMessageType), {
+              _: MessageRequest[AnyContent] =>
+                Future.successful(Created)
+            }
+          )
+          status(result) mustEqual NOT_IMPLEMENTED
+        }
+      }
+
   }
 }

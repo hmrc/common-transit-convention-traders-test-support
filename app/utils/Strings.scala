@@ -16,9 +16,11 @@
 
 package utils
 
+import cats.implicits.catsSyntaxTuple2Semigroupal
 import org.scalacheck.Gen
 
 import scala.util.Random
+import org.scalacheck.cats.implicits.genInstances
 
 object Strings {
 
@@ -41,6 +43,30 @@ object Strings {
     val length = Gen.choose(lengthStart, lengthEnd).sample.getOrElse(lengthStart)
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
   }
+
+  def alpha(maxLen: Int, minLen: Int = 1) =
+    (for {
+      len <- Gen.choose(minLen, maxLen)
+      str <- Gen.stringOfN(len, Gen.alphaChar)
+    } yield str).sample.get
+
+  def num(len: Int) =
+    Gen.stringOfN(len, Gen.numChar).sample.get
+
+  def alphanumericCapital(maxLen: Int, minLen: Int = 1) =
+    (for {
+      len <- Gen.choose(minLen, maxLen)
+      str <- Gen.stringOfN(len, Gen.alphaChar)
+    } yield str.toUpperCase).sample.get
+
+  def num1(len: Int) =
+    (for {
+      initChar  <- Gen.choose(1, 9).map(_.toString)
+      restChars <- Gen.stringOfN(len - 1, Gen.numChar)
+    } yield initChar + restChars).sample.get
+
+  def decimalNumber(totalDigits: Int, fractionDigits: Int) =
+    s"${num1(totalDigits - fractionDigits)}.${num(fractionDigits)}"
 
   def decimalMax12(): String =
     Seq.fill(11)(between1And9).mkString

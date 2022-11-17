@@ -40,28 +40,31 @@ import scala.util.control.NonFatal
 @ImplementedBy(classOf[InboundRouterServiceImpl])
 trait InboundRouterService {
 
-  def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
+  def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit
+                                                                                   hc: HeaderCarrier,
                                                                                    ec: ExecutionContext): EitherT[Future, RouterError, MessageId]
 }
 
 @Singleton
 class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
-  def post(messageType: MessageType, message: XMLMessage, movementId: MovementId)(implicit hc: HeaderCarrier,
+  def post(messageType: MessageType, message: XMLMessage, movementId: MovementId)(implicit
+                                                                                  hc: HeaderCarrier,
                                                                                   ec: ExecutionContext): EitherT[Future, RouterError, MessageId] =
     EitherT(
       inboundRouterConnector
         .post(messageType, message.wrapped, movementId)
-        .map(response => {
-          if (is2xx(response.status)) {
-            response.header(MessageIdHeaderKey) match {
-              case Some(value) => Right(MessageId(Utils.lastFragment(value)))
-              case _           => Left(RouterError.Unexpected(Some(new Exception("X-Message-Id header missing from router response"))))
+        .map {
+          response =>
+            if (is2xx(response.status)) {
+              response.header(MessageIdHeaderKey) match {
+                case Some(value) => Right(MessageId(Utils.lastFragment(value)))
+                case _           => Left(RouterError.Unexpected(Some(new Exception("X-Message-Id header missing from router response"))))
+              }
+            } else {
+              Left(RouterError.Unexpected(None))
             }
-          } else {
-            Left(RouterError.Unexpected(None))
-          }
-        })
+        }
         .recover {
           case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(RouterError.MovementNotFound(movementId))
           case NonFatal(thr)                             => Left(RouterError.Unexpected(Some(thr)))

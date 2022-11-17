@@ -22,9 +22,20 @@ import utils.Strings
 import v2.models.MessageType
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.ReleaseForTransit
 import v2.models.XMLMessage
 
 import java.time.Clock
+import utils.Strings.alpha
+import utils.Strings.alphanumeric
+import utils.Strings.alphanumericCapital
+import utils.Strings.decimalNumber
+import utils.Strings.mrn
+import utils.Strings.num
+import utils.Strings.num1
+import utils.Strings.numeric
+import utils.Strings.referenceNumber
+import utils.Strings.zeroOrOne
 
 @ImplementedBy(classOf[DepartureMessageGeneratorImpl])
 trait DepartureMessageGenerator extends MessageGenerator
@@ -34,6 +45,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
     case PositiveAcknowledgement => generateIE928Message(correlationId)
     case MRNAllocated            => generateIE028Message(correlationId)
+    case ReleaseForTransit       => generateIE029Message(correlationId)
   }
 
   private def generateIE928Message(correlationId: String): XMLMessage =
@@ -85,5 +97,75 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure/>
       </ncts:CC028C>
+    )
+
+  private def generateIE029Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC029C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
+        <messageSender>{alphanumeric(35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{alphanumeric(35)}</messageIdentification>
+        <messageType>CC029C</messageType>
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <LRN>{alphanumeric(1, 22)}</LRN>
+          <MRN>{mrn()}</MRN>
+          <declarationType>{alphanumeric(1, 5)}</declarationType>
+          <additionalDeclarationType>{alpha(1)}</additionalDeclarationType>
+          <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
+          <releaseDate>{generateLocalDate()}</releaseDate>
+          <security>{num(1)}</security>
+          <reducedDatasetIndicator>{zeroOrOne}</reducedDatasetIndicator>
+          <specificCircumstanceIndicator>{alphanumeric(3)}</specificCircumstanceIndicator>
+          <bindingItinerary>{zeroOrOne}</bindingItinerary>
+        </TransitOperation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <CustomsOfficeOfDestinationDeclared>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDestinationDeclared>
+        <HolderOfTheTransitProcedure>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
+          <name>{alphanumeric(8, 70)}</name>
+          <Address>
+            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+        <Guarantee>
+          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
+        </Guarantee>
+        <Consignment>
+          <containerIndicator>{zeroOrOne}</containerIndicator>
+          <grossMass>{decimalNumber(16, 6)}</grossMass>
+          <PlaceOfLoading>
+            <country>{alpha(2).toUpperCase}</country>
+          </PlaceOfLoading>
+          <HouseConsignment>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+            <grossMass>{decimalNumber(16, 6)}</grossMass>
+            <ConsignmentItem>
+              <goodsItemNumber>{numeric(5)}</goodsItemNumber>
+              <declarationGoodsItemNumber>{num1(2)}</declarationGoodsItemNumber>
+              <Commodity>
+                <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
+                <GoodsMeasure>
+                  <grossMass>{decimalNumber(16, 6)}</grossMass>
+                </GoodsMeasure>
+              </Commodity>
+              <Packaging>
+                <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+                <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
+              </Packaging>
+            </ConsignmentItem>
+          </HouseConsignment>
+        </Consignment>
+      </ncts:CC029C>
     )
 }
