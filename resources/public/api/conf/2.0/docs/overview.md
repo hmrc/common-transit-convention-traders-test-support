@@ -81,7 +81,7 @@ Follow these steps:
 	<td>Specify "IE928" for the <code>messageType</code> field
 	</tr>
     <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject a good release notification (IE025)</a></td>
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie025-goods-release-notification">Inject a goods release notification (IE025)</a></td>
    <td>Inject a message from the office at destination that the trader can release the goods</td>
    <td>Specify "IE025" for the <code>messageType</code>field</td>
    </tr>
@@ -91,7 +91,7 @@ Follow these steps:
 	<td>Specify "IE028" for the <code>messageType</code> field
 	</tr>
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject a goods released for transit message (IE029)</a></td>
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie029-release-for-transit">Inject a goods released for transit message (IE029)</a></td>
    <td>Inject a message from the office at departure to say the goods are released for transit</td>
    <td>Specify "IE029" for the <code>messageType</code> field
    </tr>
@@ -118,17 +118,17 @@ Follow these steps:
    </tr>
 -->
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject an unloading permission (IE043)</a></td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie043-unloading-permission">Inject an unloading permission (IE043)</a></td>
    <td>Inject an unloading permission message to inform the trader that they are authorised to unload the goods at the authorised place</td>
    <td>Specify "IE043" for the <code>messageType</code>field</td>
    </tr>
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject a rejection from office of destination (IE057)</a></td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie057-rejection-from-office-of-destination">Inject a rejection from office of destination (IE057)</a></td>
    <td>Inject a rejection from office of destination message to inform the trader that the office of destination has rejected the message</td>
    <td>Specify "IE057" for the <code>messageType</code>field</td>
    </tr>
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject a request on non-arrived movement (IE140)</a></td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie140-request-on-non-arrived-movement">Inject a request on non-arrived movement (IE140)</a></td>
    <td>Inject a non-arrived movement message to the trader indicating that there is insufficient information to discharge the transit</td>
    <td>Specify "IE140" for the <code>messageType</code>field</td>
    </tr>
