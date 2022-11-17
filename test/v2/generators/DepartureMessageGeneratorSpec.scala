@@ -47,6 +47,12 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
         validate("cc028c", generator.generate(departureId)(MRNAllocated))
       }
     }
+    ///
+    "when supplied with message type ReleaseForTransit" - {
+      "should produce an IE029 Message" in {
+        validate("cc029c", generator.generate(departureId)(ReleaseForTransit))
+      }
+    } ///
   }
 
   private def validate(xsdRoot: String, xml: XMLMessage): Unit = {
@@ -59,11 +65,8 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     validator.setFeature("http://xml.org/sax/features/external-general-entities", false)
     validator.setFeature("http://xml.org/sax/features/external-parameter-entities", false)
     val reader = new StringReader(xml.value.mkString)
-    try {
-      validator.validate(new StreamSource(reader))
-    } finally {
-      reader.close()
-    }
+    try validator.validate(new StreamSource(reader))
+    finally reader.close()
   }
 
 }

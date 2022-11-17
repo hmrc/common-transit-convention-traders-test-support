@@ -45,7 +45,7 @@ trait InboundRouterService {
 }
 
 @Singleton
-class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
+class InboundRouterServiceImpl @Inject() (inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
   def post(messageType: MessageType, message: XMLMessage, movementId: MovementId)(implicit hc: HeaderCarrier,
                                                                                   ec: ExecutionContext): EitherT[Future, RouterError, MessageId] =
