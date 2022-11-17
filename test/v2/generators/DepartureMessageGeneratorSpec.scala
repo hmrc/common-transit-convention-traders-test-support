@@ -23,6 +23,7 @@ import org.scalatest.matchers.should.Matchers
 import v2.models.MovementId
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.ReleaseForTransit
 import v2.models.XMLMessage
 
 import java.io.StringReader

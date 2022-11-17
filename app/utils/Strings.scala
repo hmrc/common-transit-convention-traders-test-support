@@ -45,33 +45,28 @@ object Strings {
   }
 
   def alpha(maxLen: Int, minLen: Int = 1) =
-    for {
+    (for {
       len <- Gen.choose(minLen, maxLen)
       str <- Gen.stringOfN(len, Gen.alphaChar)
-    } yield str
+    } yield str).sample.get
 
   def num(len: Int) =
-    Gen.stringOfN(len, Gen.numChar)
+    Gen.stringOfN(len, Gen.numChar).sample.get
 
   def alphanumericCapital(maxLen: Int, minLen: Int = 1) =
-    for {
+    (for {
       len <- Gen.choose(minLen, maxLen)
       str <- Gen.stringOfN(len, Gen.alphaChar)
-    } yield str.toUpperCase
+    } yield str.toUpperCase).sample.get
 
   def num1(len: Int) =
-    if (len <= 0)
-      Gen.const("")
-    else if (len <= 1)
-      Gen.choose(1, 9).map(_.toString)
-    else
-      for {
-        initChar  <- Gen.choose(1, 9).map(_.toString)
-        restChars <- Gen.stringOfN(len - 1, Gen.numChar)
-      } yield initChar + restChars
+    (for {
+      initChar  <- Gen.choose(1, 9).map(_.toString)
+      restChars <- Gen.stringOfN(len - 1, Gen.numChar)
+    } yield initChar + restChars).sample.get
 
   def decimalNumber(totalDigits: Int, fractionDigits: Int) =
-    (num1(totalDigits - fractionDigits), num(fractionDigits)).mapN(_ + "." + _)
+    s"${num1(totalDigits - fractionDigits)}.${num(fractionDigits)}"
 
   def decimalMax12(): String =
     Seq.fill(11)(between1And9).mkString

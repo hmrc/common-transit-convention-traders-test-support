@@ -27,15 +27,19 @@ import v2.models.XMLMessage
 
 import java.time.Clock
 import utils.Strings.alpha
+import utils.Strings.alphanumeric
 import utils.Strings.alphanumericCapital
 import utils.Strings.decimalNumber
+import utils.Strings.mrn
 import utils.Strings.num
 import utils.Strings.numeric
+import utils.Strings.referenceNumber
+import utils.Strings.zeroOrOne
 
 @ImplementedBy(classOf[DepartureMessageGeneratorImpl])
 trait DepartureMessageGenerator extends MessageGenerator
 
-class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators with DepartureMessageGenerator {
+class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators with DepartureMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
     case PositiveAcknowledgement => generateIE928Message(correlationId)
@@ -97,70 +101,70 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
   private def generateIE029Message(correlationId: String): XMLMessage =
     XMLMessage(
       <ncts:CC029C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
-        <messageSender>{Strings.alphanumeric(35)}</messageSender>
+        <messageSender>{alphanumeric(35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
-        <messageIdentification>{Strings.alphanumeric(35)}</messageIdentification>
+        <messageIdentification>{alphanumeric(35)}</messageIdentification>
         <messageType>CC029C</messageType>
         <correlationIdentifier>{correlationId}</correlationIdentifier>
         <TransitOperation>
-          <LRN>{Strings.alphanumeric(1, 22)}</LRN>
-          <MRN>{Strings.mrn()}</MRN>
-          <declarationType>{Strings.alphanumeric(1, 5)}</declarationType>
+          <LRN>{alphanumeric(1, 22)}</LRN>
+          <MRN>{mrn()}</MRN>
+          <declarationType>{alphanumeric(1, 5)}</declarationType>
           <additionalDeclarationType>{alpha(1)}</additionalDeclarationType>
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <releaseDate>{generateLocalDate()}</releaseDate>
           <security>{num(1)}</security>
-          <reducedDatasetIndicator>{num(1)}</reducedDatasetIndicator>
-          <specificCircumstanceIndicator>{Strings.alphanumeric(3)}</specificCircumstanceIndicator>
-          <bindingItinerary>{num(1)}</bindingItinerary>
+          <reducedDatasetIndicator>{zeroOrOne}</reducedDatasetIndicator>
+          <specificCircumstanceIndicator>{alphanumeric(3)}</specificCircumstanceIndicator>
+          <bindingItinerary>{zeroOrOne}</bindingItinerary>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <CustomsOfficeOfDestinationDeclared>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDestinationDeclared>
         <HolderOfTheTransitProcedure>
-          <identificationNumber>{Strings.alphanumeric(8, 17)}</identificationNumber>
-          <TIRHolderIdentificationNumber>{Strings.alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
-          <name>{Strings.alphanumeric(8, 70)}</name>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
+          <name>{alphanumeric(8, 70)}</name>
           <Address>
-            <streetAndNumber>{Strings.alphanumeric(8, 70)}</streetAndNumber>
-            <postcode>{Strings.alphanumeric(6, 17)}</postcode>
-            <city>{Strings.alphanumeric(3, 35)}</city>
-            <country>{Strings.alpha(2).toUpperCase}</country>
+            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{alpha(2).toUpperCase}</country>
           </Address>
-          <ContactPerson>
-          </ContactPerson>
         </HolderOfTheTransitProcedure>
         <Guarantee>
-          <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
+          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
           <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
         </Guarantee>
         <Consignment>
-          <containerIndicator>{num(1)}</containerIndicator>
+          <containerIndicator>{zeroOrOne}</containerIndicator>
           <grossMass>{decimalNumber(16, 6)}</grossMass>
+          <PlaceOfLoading>
+            <country>{alpha(2).toUpperCase}</country>
+          </PlaceOfLoading>
           <HouseConsignment>
-            <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
             <grossMass>{decimalNumber(16, 6)}</grossMass>
             <ConsignmentItem>
               <goodsItemNumber>{numeric(5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{numeric(2)}</declarationGoodsItemNumber>
               <Commodity>
-                <descriptionOfGoods>{Strings.alphanumeric(1, 512)}</descriptionOfGoods>
+                <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
                 <GoodsMeasure>
                   <grossMass>{decimalNumber(16, 6)}</grossMass>
                 </GoodsMeasure>
               </Commodity>
               <Packaging>
-                <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber> 
-                <typeOfPackages>{Strings.alphanumeric(2, 2)}</typeOfPackages>
+                <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+                <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
               </Packaging>
             </ConsignmentItem>
           </HouseConsignment>
         </Consignment>
-        <PhaseID>NCTS5.1</PhaseID>
       </ncts:CC029C>
     )
 }
