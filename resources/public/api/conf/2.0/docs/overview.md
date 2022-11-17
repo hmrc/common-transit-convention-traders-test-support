@@ -80,17 +80,22 @@ Follow these steps:
 	<td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
 	<td>Specify "IE928" for the <code>messageType</code> field
 	</tr>
+    <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject a good release notification (IE025)</a></td>
+   <td>Inject a message from the office at destination that the trader can release the goods</td>
+   <td>Specify "IE025" for the <code>messageType</code>field</td>
+   </tr>
 	<tr>
 	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie028-mrn-allocated">Inject an MRN allocated message (IE028)</a></td>
 	<td>Inject a message from the office at departure allocating a Movement Reference Number (MRN)</td>
 	<td>Specify "IE028" for the <code>messageType</code> field
 	</tr>
-<!--
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject a goods released for transit message (IE029)</a></td>
    <td>Inject a message from the office at departure to say the goods are released for transit</td>
    <td>Specify "IE029" for the <code>messageType</code> field
    </tr>
+<!--
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject a declaration rejection message (IE016)</a></td>
    <td>Inject a message from the office at departure rejecting a declaration data message (IE015)</td>
@@ -112,11 +117,6 @@ Follow these steps:
    <td>Specify "IE060" for the <code>messageType</code>field</td>
    </tr>
 -->
-   <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject a good release notification (IE025)</a></td>
-   <td>Inject a message from the office at destination that the trader can release the goods</td>
-   <td>Specify "IE025" for the <code>messageType</code>field</td>
-   </tr>
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-arrival-message_post_accordion">Inject an unloading permission (IE043)</a></td>
    <td>Inject an unloading permission message to inform the trader that they are authorised to unload the goods at the authorised place</td>
