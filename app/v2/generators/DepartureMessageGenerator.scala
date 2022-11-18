@@ -20,6 +20,8 @@ import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import utils.Strings
 import v2.models.MessageType
+import v2.models.MessageType.AmendmentAcceptance
+import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.ReleaseForTransit
@@ -43,10 +45,106 @@ trait DepartureMessageGenerator extends MessageGenerator
 class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators with DepartureMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
+    case AmendmentAcceptance     => generateIE004Message(correlationId)
+    case InvalidationDecision    => generateIE009Message(correlationId)
     case PositiveAcknowledgement => generateIE928Message(correlationId)
     case MRNAllocated            => generateIE028Message(correlationId)
     case ReleaseForTransit       => generateIE029Message(correlationId)
   }
+
+  private def generateIE004Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC004C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC004C</messageType>
+        <!--Optional:-->
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <!--Optional:-->
+          <LRN>{Strings.alphanumeric(1, 22)}</LRN>
+          <!--Optional:-->
+          <MRN>{Strings.mrn()}</MRN>
+          <amendmentSubmissionDateAndTime>{generateLocalDateTime()}</amendmentSubmissionDateAndTime>
+          <amendmentAcceptanceDateAndTime>{generateLocalDateTime()}</amendmentAcceptanceDateAndTime>
+        </TransitOperation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <HolderOfTheTransitProcedure>
+          <!--Optional:-->
+          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <TIRHolderIdentificationNumber>{Strings.alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <!--Optional:-->
+          <name>{Strings.alphanumeric(1, 70)}</name>
+          <!--Optional:-->
+          <Address>
+            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
+            <!--Optional:-->
+            <postcode>{Strings.alphanumeric(2, 17)}</postcode>
+            <city>{Strings.alphanumeric(2, 35)}</city>
+            <country>{Strings.alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+      </ncts:CC004C>
+    )
+
+  private def generateIE009Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC009C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC009C</messageType>
+        <!--Optional:-->
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <!--Optional:-->
+          <LRN>{Strings.alphanumeric(2, 22)}</LRN>
+          <!--Optional:-->
+          <MRN>{Strings.mrn()}</MRN>
+        </TransitOperation>
+        <Invalidation>
+          <!--Optional:-->
+          <requestDateAndTime>{generateLocalDateTime()}</requestDateAndTime>
+          <!--Optional:-->
+          <decisionDateAndTime>{generateLocalDateTime()}</decisionDateAndTime>
+          <!--Optional:-->
+          <decision>{Strings.zeroOrOne}</decision>
+          <initiatedByCustoms>{Strings.zeroOrOne}</initiatedByCustoms>
+          <!--Optional:-->
+          <justification>{Strings.alphanumeric(1, 512)}</justification>
+        </Invalidation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <HolderOfTheTransitProcedure>
+          <!--Optional:-->
+          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <TIRHolderIdentificationNumber>{Strings.alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <!--Optional:-->
+          <name>{Strings.alphanumeric(1, 70)}</name>
+          <!--Optional:-->
+          <Address>
+            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
+            <!--Optional:-->
+            <postcode>{Strings.alphanumeric(2, 17)}</postcode>
+            <city>{Strings.alphanumeric(2, 35)}</city>
+            <country>{Strings.alpha(2).toUpperCase}</country>
+          </Address>
+          <!--Optional:-->
+          <ContactPerson>
+            <name>{Strings.alphanumeric(1, 70)}</name>
+            <phoneNumber>{Strings.alphanumeric(1, 35)}</phoneNumber>
+          </ContactPerson>
+        </HolderOfTheTransitProcedure>
+      </ncts:CC009C>
+    )
 
   private def generateIE928Message(correlationId: String): XMLMessage =
     XMLMessage(
