@@ -43,6 +43,8 @@ object MessageType {
   )
 
   val departureMessages: Seq[MessageType] = Seq(
+    AmendmentAcceptance,
+    InvalidationDecision,
     PositiveAcknowledgement,
     MRNAllocated,
     ReleaseForTransit
