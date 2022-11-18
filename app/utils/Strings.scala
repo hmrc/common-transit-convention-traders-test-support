@@ -16,11 +16,9 @@
 
 package utils
 
-import cats.implicits.catsSyntaxTuple2Semigroupal
 import org.scalacheck.Gen
 
 import scala.util.Random
-import org.scalacheck.cats.implicits.genInstances
 
 object Strings {
 

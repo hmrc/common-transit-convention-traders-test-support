@@ -24,6 +24,7 @@ import v2.models.MessageType.AmendmentAcceptance
 import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
 import v2.models.XMLMessage
 
@@ -45,11 +46,12 @@ trait DepartureMessageGenerator extends MessageGenerator
 class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators with DepartureMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
-    case AmendmentAcceptance     => generateIE004Message(correlationId)
-    case InvalidationDecision    => generateIE009Message(correlationId)
-    case PositiveAcknowledgement => generateIE928Message(correlationId)
-    case MRNAllocated            => generateIE028Message(correlationId)
-    case ReleaseForTransit       => generateIE029Message(correlationId)
+    case AmendmentAcceptance            => generateIE004Message(correlationId)
+    case InvalidationDecision           => generateIE009Message(correlationId)
+    case PositiveAcknowledgement        => generateIE928Message(correlationId)
+    case MRNAllocated                   => generateIE028Message(correlationId)
+    case ReleaseForTransit              => generateIE029Message(correlationId)
+    case RejectionFromOfficeOfDeparture => generateIE056Message(correlationId)
   }
 
   private def generateIE004Message(correlationId: String): XMLMessage =
@@ -265,5 +267,38 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           </HouseConsignment>
         </Consignment>
       </ncts:CC029C>
+    )
+
+  private def generateIE056Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC056C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+        <messageSender>{alphanumeric(35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{alphanumeric(35)}</messageIdentification>
+        <messageType>CC056C</messageType>
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <LRN>{Strings.alphanumeric(2, 22)}</LRN>
+          <MRN>{Strings.mrn()}</MRN>
+          <businessRejectionType>{alphanumeric(3)}</businessRejectionType>
+          <rejectionDateAndTime>{generateLocalDateTime()}</rejectionDateAndTime>
+          <rejectionCode>{numeric(2)}</rejectionCode>
+        </TransitOperation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <HolderOfTheTransitProcedure>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
+          <name>{alphanumeric(8, 70)}</name>
+          <Address>
+            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+      </ncts:CC056C>
     )
 }

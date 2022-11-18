@@ -25,6 +25,7 @@ import v2.models.MessageType.AmendmentAcceptance
 import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
 import v2.models.XMLMessage
 
@@ -66,6 +67,12 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     "when supplied with message type ReleaseForTransit" - {
       "should produce an IE029 Message" in {
         validate("cc029c", generator.generate(departureId)(ReleaseForTransit))
+      }
+    }
+
+    "when supplied with message type " - {
+      "should produce an IE056 Message" in {
+        validate("cc056c", generator.generate(departureId)(RejectionFromOfficeOfDeparture))
       }
     }
   }
