@@ -5,6 +5,10 @@ You should read:
 - [Roadmap](/roadmaps/common-transit-convention-traders-roadmap/) to review our progress and to learn about what you can test
 - [Tutorials](/api-documentation/docs/tutorials) to learn how to develop your own client applications, including example clients, for this API
 
+## Changelog
+
+You can find the changelog in the [common-transit-convention-traders-test-support](https://github.com/hmrc/common-transit-convention-traders-test-support/wiki/CTC-Traders-Test-Support-API-v2.0-changelog) GitHub wiki.
+
 ## How to get set up for testing
 
 Follow these steps:
