@@ -71,7 +71,7 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
       }
     }
 
-    "when supplied with message type " - {
+    "when supplied with message type RejectionFromOfficeOfDeparture" - {
       "should produce an IE056 Message" in {
         validate("cc056c", generator.generate(departureId)(RejectionFromOfficeOfDeparture))
       }

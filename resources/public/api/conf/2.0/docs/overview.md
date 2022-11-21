@@ -1,3 +1,4 @@
+
 Use the CTC Traders Test Support API to inject departure and arrival movement notifications as if they have come from a customs office of departure or destination through the New Computerised Transit System (NCTS).
 
 You should read:
@@ -76,7 +77,7 @@ Follow these steps:
 	<td>Specify "IE009" for the <code>messageType</code> field
 	</tr>
 	<tr>
-	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928) (IE028)</a></td>
+	<td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie928-positive-acknowledge">Inject declaration received message (IE928)</a></td>
 	<td>Inject a positive acknowledgement of a departure declaration message (IE015)</td>
 	<td>Specify "IE928" for the <code>messageType</code> field
 	</tr>
@@ -111,12 +112,12 @@ Follow these steps:
    <td>Inject a message from the office of departure to the trader at departure that their guarantee is not valid</td>
    <td>Specify "IE055" for the <code>messageType</code>field</td>
    </tr>
+-->
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie060-control-decision-notification">Inject a control decision notification (IE060)</a></td>
    <td>Inject a message from the office at departure to tell the trader they wish to carry out a control of the goods</td>
    <td>Specify "IE060" for the <code>messageType</code>field</td>
    </tr>
--->
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie043-unloading-permission">Inject an unloading permission (IE043)</a></td>
    <td>Inject an unloading permission message to inform the trader that they are authorised to unload the goods at the authorised place</td>
