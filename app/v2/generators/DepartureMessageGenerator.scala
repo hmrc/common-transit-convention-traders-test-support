@@ -84,9 +84,9 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <name>{alphanumeric(1, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{alphanumeric(2, 17)}</postcode>
+            <postcode>{alphanumeric(1, 17)}</postcode>
             <city>{alphanumeric(2, 35)}</city>
             <country>{alpha(2).toUpperCase}</country>
           </Address>
@@ -106,7 +106,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <correlationIdentifier>{correlationId}</correlationIdentifier>
         <TransitOperation>
           <!--Optional:-->
-          <LRN>{alphanumeric(2, 22)}</LRN>
+          <LRN>{alphanumeric(1, 22)}</LRN>
           <!--Optional:-->
           <MRN>{mrn()}</MRN>
         </TransitOperation>
@@ -133,9 +133,9 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <name>{alphanumeric(1, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{alphanumeric(2, 17)}</postcode>
+            <postcode>{alphanumeric(1, 17)}</postcode>
             <city>{alphanumeric(2, 35)}</city>
             <country>{alpha(2).toUpperCase}</country>
           </Address>
@@ -158,19 +158,19 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <messageType>CC928C</messageType>
         <correlationIdentifier>{alphanumeric(1, 35)}</correlationIdentifier>
         <TransitOperation>
-          <LRN>{alphanumeric(2, 22)}</LRN>
+          <LRN>{alphanumeric(1, 22)}</LRN>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
           <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure>
-          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
-          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
-          <name>{alphanumeric(8, 70)}</name>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <name>{alphanumeric(1, 70)}</name>
           <Address>
-            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
-            <postcode>{alphanumeric(6, 17)}</postcode>
-            <city>{alphanumeric(3, 35)}</city>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
             <country>{alpha(2).toUpperCase}</country>
           </Address>
         </HolderOfTheTransitProcedure>
@@ -188,7 +188,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <!--Optional:-->
         <correlationIdentifier>{correlationId}</correlationIdentifier>
         <TransitOperation>
-          <LRN>{alphanumeric(2, 22)}</LRN>
+          <LRN>{alphanumeric(1, 22)}</LRN>
           <MRN>{mrn()}</MRN>
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
         </TransitOperation>
@@ -227,13 +227,13 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDestinationDeclared>
         <HolderOfTheTransitProcedure>
-          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
-          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
-          <name>{alphanumeric(8, 70)}</name>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <name>{alphanumeric(1, 70)}</name>
           <Address>
-            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
-            <postcode>{alphanumeric(6, 17)}</postcode>
-            <city>{alphanumeric(3, 35)}</city>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
             <country>{alpha(2).toUpperCase}</country>
           </Address>
         </HolderOfTheTransitProcedure>
@@ -279,23 +279,23 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <messageType>CC056C</messageType>
         <correlationIdentifier>{correlationId}</correlationIdentifier>
         <TransitOperation>
-          <LRN>{alphanumeric(2, 22)}</LRN>
+          <LRN>{alphanumeric(1, 22)}</LRN>
           <MRN>{mrn()}</MRN>
           <businessRejectionType>{alphanumeric(3)}</businessRejectionType>
           <rejectionDateAndTime>{generateLocalDateTime()}</rejectionDateAndTime>
-          <rejectionCode>{numeric(2)}</rejectionCode>
+          <rejectionCode>{numeric(1, 2)}</rejectionCode>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
           <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure>
-          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
-          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
-          <name>{alphanumeric(8, 70)}</name>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <name>{alphanumeric(1, 70)}</name>
           <Address>
-            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
-            <postcode>{alphanumeric(6, 17)}</postcode>
-            <city>{alphanumeric(3, 35)}</city>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
             <country>{alpha(2).toUpperCase}</country>
           </Address>
         </HolderOfTheTransitProcedure>
@@ -320,22 +320,22 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure>
           <!--Optional:-->
-          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
-          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
           <!--Optional:-->
-          <name>{alphanumeric(8, 70)}</name>
+          <name>{alphanumeric(1, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{alphanumeric(6, 17)}</postcode>
-            <city>{alphanumeric(3, 35)}</city>
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
             <country>{alpha(2).toUpperCase}</country>
           </Address>
           <!--Optional:-->
           <ContactPerson>
-            <name>{alphanumeric(8, 70)}</name>
+            <name>{alphanumeric(1, 70)}</name>
             <phoneNumber>{alphanumeric(1, 35)}</phoneNumber>
           </ContactPerson>
         </HolderOfTheTransitProcedure>
