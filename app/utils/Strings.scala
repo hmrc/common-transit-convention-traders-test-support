@@ -16,11 +16,9 @@
 
 package utils
 
-import cats.implicits.catsSyntaxTuple2Semigroupal
 import org.scalacheck.Gen
 
 import scala.util.Random
-import org.scalacheck.cats.implicits.genInstances
 
 object Strings {
 
@@ -59,7 +57,7 @@ object Strings {
       str <- Gen.stringOfN(len, Gen.alphaChar)
     } yield str.toUpperCase).sample.get
 
-  def num1(len: Int) =
+  private def num1(len: Int) =
     (for {
       initChar  <- Gen.choose(1, 9).map(_.toString)
       restChars <- Gen.stringOfN(len - 1, Gen.numChar)

@@ -34,6 +34,8 @@ object MessageType {
   case object UnloadingPermission              extends MessageType("IE043", "CC043C")
   case object RejectionFromOfficeOfDestination extends MessageType("IE057", "CC057C")
   case object RequestOnNonArrivedMovementDate  extends MessageType("IE140", "CC140C")
+  case object RejectionFromOfficeOfDeparture   extends MessageType("IE056", "CC056C")
+  case object ControlDecisionNotification      extends MessageType("IE060", "CC060C")
 
   val arrivalMessages: Seq[MessageType] = Seq(
     GoodsReleaseNotification,
@@ -47,7 +49,9 @@ object MessageType {
     InvalidationDecision,
     PositiveAcknowledgement,
     MRNAllocated,
-    ReleaseForTransit
+    ReleaseForTransit,
+    RejectionFromOfficeOfDeparture,
+    ControlDecisionNotification
   )
 
   val values: Seq[MessageType] = arrivalMessages ++ departureMessages
