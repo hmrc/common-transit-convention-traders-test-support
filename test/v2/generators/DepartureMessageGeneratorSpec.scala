@@ -27,6 +27,7 @@ import v2.models.MessageType.MRNAllocated
 import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
+import v2.models.MessageType.ControlDecisionNotification
 import v2.models.XMLMessage
 
 import java.io.StringReader
@@ -73,6 +74,12 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     "when supplied with message type " - {
       "should produce an IE056 Message" in {
         validate("cc056c", generator.generate(departureId)(RejectionFromOfficeOfDeparture))
+      }
+    }
+
+    "when supplied with message type ControlDecisionNotification" - {
+      "should produce an IE060 Message" in {
+        validate("cc060c", generator.generate(departureId)(ControlDecisionNotification))
       }
     }
   }
