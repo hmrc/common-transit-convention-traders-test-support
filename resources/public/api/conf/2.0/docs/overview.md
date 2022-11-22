@@ -143,6 +143,21 @@ Follow these steps:
    <td>Inject a non-arrived movement message to the trader indicating that there is insufficient information to discharge the transit</td>
    <td>Specify "IE140" for the <code>messageType</code>field</td>
    </tr>
+   <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie035-recovery-notification">Inject a request on recovery notification (IE035)</a></td>
+   <td>Inject a recovery notification from office of departure to inform the trader about recovery</td>
+   <td>Specify "IE035" for the <code>messageType</code>field</td>
+   </tr>
+   <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie051-no-release-for-transit">Inject a request on No Release for Transit (IE051)</a></td>
+   <td>Inject a No release for transit from office of departure to inform the trader about transit procedure</td>
+   <td>Specify "IE051" for the <code>messageType</code>field</td>
+   </tr>
+   <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie055-guarantee-not-valid">Inject a request on Guarantee Not Valid (IE055)</a></td>
+   <td>Inject a Guarantee is not valid from office of departure to inform the trader that declared guarantee is not valid</td>
+   <td>Specify "IE055" for the <code>messageType</code>field</td>
+   </tr>
 
 </table>
 

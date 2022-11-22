@@ -22,6 +22,7 @@ import utils.Strings.alpha
 import utils.Strings.alphanumeric
 import utils.Strings.alphanumericCapital
 import utils.Strings.decimalNumber
+import utils.Strings.grn
 import utils.Strings.mrn
 import utils.Strings.num
 import utils.Strings.numeric
@@ -30,9 +31,12 @@ import utils.Strings.zeroOrOne
 import v2.models.MessageType
 import v2.models.MessageType.AmendmentAcceptance
 import v2.models.MessageType.ControlDecisionNotification
+import v2.models.MessageType.GuaranteeNotValid
 import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
+import v2.models.MessageType.NoReleaseForTransit
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.RecoveryNotification
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
 import v2.models.XMLMessage
@@ -52,6 +56,10 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
     case ReleaseForTransit              => generateIE029Message(correlationId)
     case RejectionFromOfficeOfDeparture => generateIE056Message(correlationId)
     case ControlDecisionNotification    => generateIE060Message(correlationId)
+    case RecoveryNotification           => generateIE035Message(correlationId)
+    case NoReleaseForTransit            => generateIE051Message(correlationId)
+    case GuaranteeNotValid              => generateIE055Message(correlationId)
+
   }
 
   private def generateIE004Message(correlationId: String): XMLMessage =
@@ -348,5 +356,150 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <documentType>{alphanumeric(4)}</documentType>
         </RequestedDocument>
       </ncts:CC060C>
+    )
+
+  private def generateIE035Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC035C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+        <messageSender>{alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC035C</messageType>
+        <!--Optional:-->
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <MRN>{mrn()}</MRN>
+          <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
+        </TransitOperation>
+        <RecoveryNotification>
+          <!--Optional:-->
+          <recoveryNotificationDate>{generateLocalDate()}</recoveryNotificationDate>
+          <!--Optional:-->
+          <recoveryNotificationText>{alphanumeric(1, 512)}</recoveryNotificationText>
+          <amountClaimed>{decimalNumber(16, 2)}</amountClaimed>
+          <currency>{alpha(3)}</currency>
+        </RecoveryNotification>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <CustomsOfficeOfRecoveryAtDeparture>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfRecoveryAtDeparture>
+        <HolderOfTheTransitProcedure>
+          <!--Optional:-->
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <!--Optional:-->
+          <name>{alphanumeric(1, 70)}</name>
+          <!--Optional:-->
+          <Address>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
+            <!--Optional:-->
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
+            <country>{alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+        <!--Optional:-->
+        <Guarantor>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <name>{alphanumeric(1, 70)}</name>
+        </Guarantor>
+      </ncts:CC035C>
+    )
+
+  private def generateIE051Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC051C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+        <messageSender>{alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC051C</messageType>
+        <!--Optional:-->
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <MRN>{mrn()}</MRN>
+          <declarationSubmissionDateAndTime>{generateLocalDateTime()}</declarationSubmissionDateAndTime>
+          <noReleaseMotivationCode>{alphanumeric(2)}</noReleaseMotivationCode>
+          <noReleaseMotivationText>{alphanumeric(1, 512)}</noReleaseMotivationText>
+        </TransitOperation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <HolderOfTheTransitProcedure>
+          <!--Optional:-->
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+          <!--Optional:-->
+          <name>{alphanumeric(1, 70)}</name>
+          <!--Optional:-->
+          <Address>
+            <streetAndNumber>
+              {alphanumeric(1, 70)}</streetAndNumber>
+            <!--Optional:-->
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
+            <country>{alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+        <!--Optional:-->
+        <Representative>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <ContactPerson>
+            <name>{alphanumeric(1, 70)}</name>
+            <phoneNumber>{alphanumeric(1, 35)}</phoneNumber>
+          </ContactPerson>
+        </Representative>
+      </ncts:CC051C>
+    )
+
+  private def generateIE055Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC055C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+        <messageSender>{alphanumeric(1, 35)}</messageSender>
+        <messageRecipient>{correlationId}</messageRecipient>
+        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+        <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
+        <messageType>CC055C</messageType>
+        <!--Optional:-->
+        <correlationIdentifier>{correlationId}</correlationIdentifier>
+        <TransitOperation>
+          <MRN>{mrn()}</MRN>
+          <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
+        </TransitOperation>
+        <CustomsOfficeOfDeparture>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
+        </CustomsOfficeOfDeparture>
+        <HolderOfTheTransitProcedure>
+          <!--Optional:-->
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+          <!--Optional:-->
+          <name>{alphanumeric(1, 70)}</name>
+          <!--Optional:-->
+          <Address>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
+            <!--Optional:-->
+            <postcode>{alphanumeric(1, 17)}</postcode>
+            <city>{alphanumeric(1, 35)}</city>
+            <country>{alpha(2).toUpperCase}</country>
+          </Address>
+        </HolderOfTheTransitProcedure>
+        <!--1 to 99 repetitions:-->
+        <GuaranteeReference>
+          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          <GRN>{grn()}</GRN>
+          <InvalidGuaranteeReason>
+            <code>{alphanumeric(1, 3)}</code>
+            <!--Optional:-->
+            <text>{alphanumeric(1, 512)}</text>
+          </InvalidGuaranteeReason>
+        </GuaranteeReference>
+      </ncts:CC055C>
     )
 }

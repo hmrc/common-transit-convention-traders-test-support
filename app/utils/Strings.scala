@@ -96,6 +96,15 @@ object Strings {
       numeric(1)
     ).mkString.toUpperCase
 
+  def grn(): String =
+    //[0-9]{2}[A-Z]{2}[A-Z0-9]{12}[0-9]([A-Z][0-9]{6})?
+    Seq[String](
+      numeric(2),
+      alpha(2),
+      alphanumeric(12),
+      numeric(1)
+    ).mkString.toUpperCase
+
   def referenceNumber(): String =
     // [A-Z]{2}[A-Z0-9]{6}
     Seq(alpha(2), alphanumeric(6)).mkString.toUpperCase
