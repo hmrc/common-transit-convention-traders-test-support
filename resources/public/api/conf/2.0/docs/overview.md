@@ -106,16 +106,6 @@ Follow these steps:
    <td>Inject a message from the office at departure rejecting a declaration data message (IE015)</td>
    <td>Specify "IE016" for the <code>messageType</code> field
    </tr>
-   <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject a no release for transit message (IE051)</a></td>
-   <td>Inject a message from the office at departure that the movement cannot be released for transit</td>
-   <td>Specify "IE051" for the <code>messageType</code>field</td>
-   </tr>
-   <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/common-transit-convention-traders-test-support/2.0#_inject-a-fake-ncts-departure-message_post_accordion">Inject a guarantee not valid message (IE055)</a></td>
-   <td>Inject a message from the office of departure to the trader at departure that their guarantee is not valid</td>
-   <td>Specify "IE055" for the <code>messageType</code>field</td>
-   </tr>
 -->
    <tr>
    <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie060-control-decision-notification">Inject a control decision notification (IE060)</a></td>
@@ -149,13 +139,13 @@ Follow these steps:
    <td>Specify "IE035" for the <code>messageType</code>field</td>
    </tr>
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie051-no-release-for-transit">Inject a request on No Release for Transit (IE051)</a></td>
-   <td>Inject a No release for transit from office of departure to inform the trader about transit procedure</td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie051-no-release-for-transit">Inject a no release for transit message (IE051)</a></td>
+   <td>IInject a message from the office at departure that the movement cannot be released for transit</td>
    <td>Specify "IE051" for the <code>messageType</code>field</td>
    </tr>
    <tr>
-   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie055-guarantee-not-valid">Inject a request on Guarantee Not Valid (IE055)</a></td>
-   <td>Inject a Guarantee is not valid from office of departure to inform the trader that declared guarantee is not valid</td>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie055-guarantee-not-valid">Inject a guarantee not valid message (IE055)</a></td>
+   <td>Inject a message from the office of departure to the trader at departure that their guarantee is not valid</td>
    <td>Specify "IE055" for the <code>messageType</code>field</td>
    </tr>
 
