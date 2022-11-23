@@ -22,12 +22,15 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import v2.models.MovementId
 import v2.models.MessageType.AmendmentAcceptance
+import v2.models.MessageType.ControlDecisionNotification
+import v2.models.MessageType.GuaranteeNotValid
 import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
+import v2.models.MessageType.NoReleaseForTransit
 import v2.models.MessageType.PositiveAcknowledgement
+import v2.models.MessageType.RecoveryNotification
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
-import v2.models.MessageType.ControlDecisionNotification
 import v2.models.XMLMessage
 
 import java.io.StringReader
@@ -80,6 +83,24 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     "when supplied with message type ControlDecisionNotification" - {
       "should produce an IE060 Message" in {
         validate("cc060c", generator.generate(departureId)(ControlDecisionNotification))
+      }
+    }
+
+    "when supplied with message type RecoveryNotification" - {
+      "should produce an IE035 Message" in {
+        validate("cc035c", generator.generate(departureId)(RecoveryNotification))
+      }
+    }
+
+    "when supplied with message type NoReleaseForTransit" - {
+      "should produce an IE051 Message" in {
+        validate("cc051c", generator.generate(departureId)(NoReleaseForTransit))
+      }
+    }
+
+    "when supplied with message type GuaranteeNotValid" - {
+      "should produce an IE055 Message" in {
+        validate("cc055c", generator.generate(departureId)(GuaranteeNotValid))
       }
     }
   }

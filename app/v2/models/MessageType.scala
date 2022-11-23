@@ -36,6 +36,9 @@ object MessageType {
   case object RequestOnNonArrivedMovementDate  extends MessageType("IE140", "CC140C")
   case object RejectionFromOfficeOfDeparture   extends MessageType("IE056", "CC056C")
   case object ControlDecisionNotification      extends MessageType("IE060", "CC060C")
+  case object RecoveryNotification             extends MessageType("IE035", "CC035C")
+  case object NoReleaseForTransit              extends MessageType("IE051", "CC051C")
+  case object GuaranteeNotValid                extends MessageType("IE055", "CC055C")
 
   val arrivalMessages: Seq[MessageType] = Seq(
     GoodsReleaseNotification,
@@ -51,7 +54,10 @@ object MessageType {
     MRNAllocated,
     ReleaseForTransit,
     RejectionFromOfficeOfDeparture,
-    ControlDecisionNotification
+    ControlDecisionNotification,
+    RecoveryNotification,
+    NoReleaseForTransit,
+    GuaranteeNotValid
   )
 
   val values: Seq[MessageType] = arrivalMessages ++ departureMessages
