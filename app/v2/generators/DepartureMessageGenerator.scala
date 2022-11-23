@@ -320,6 +320,8 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <messageType>CC060C</messageType>
         <correlationIdentifier>{correlationId}</correlationIdentifier>
         <TransitOperation>
+          <LRN>{alphanumeric(1, 22)}</LRN>
+          <MRN>{mrn()}</MRN>
           <controlNotificationDateAndTime>{generateLocalDateTime()}</controlNotificationDateAndTime>
           <notificationType>{numeric(1)}</notificationType>
         </TransitOperation>
