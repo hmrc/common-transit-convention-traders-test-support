@@ -437,15 +437,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(1, 70)}</name>
-          <!--Optional:-->
-          <Address>
-            <streetAndNumber>
-              {alphanumeric(1, 70)}</streetAndNumber>
-            <!--Optional:-->
-            <postcode>{alphanumeric(1, 17)}</postcode>
-            <city>{alphanumeric(1, 35)}</city>
-            <country>{alpha(2).toUpperCase}</country>
-          </Address>
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Representative>
