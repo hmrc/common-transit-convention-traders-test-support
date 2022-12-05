@@ -441,8 +441,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <name>{alphanumeric(1, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>
-              {alphanumeric(1, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
             <!--Optional:-->
             <postcode>{alphanumeric(1, 17)}</postcode>
             <city>{alphanumeric(1, 35)}</city>
