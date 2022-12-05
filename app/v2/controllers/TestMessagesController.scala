@@ -17,9 +17,14 @@
 package v2.controllers
 
 import com.google.inject.ImplementedBy
+import config.Constants
 import v2.controllers.actions.AuthAction
 import v2.controllers.actions.MessageRequestAction
+import v2.models.CorrelationId
 import v2.models.HateoasResponse
+import v2.models.MessageId
+import v2.models.MovementId
+import v2.models.MovementType
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.mvc.Action
@@ -33,8 +38,6 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.ResponseHelper
 import v2.controllers.actions.ValidateMessageTypeActionProvider
 import v2.models.request.MessageRequest
-import v2.models.MovementId
-import v2.models.MovementType
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits._
@@ -46,14 +49,15 @@ trait V2TestMessagesController {
   def sendArrivalsResponse(departureId: MovementId): Action[JsValue]
 }
 
-class TestMessagesController @Inject()(cc: ControllerComponents,
-                                       authAction: AuthAction,
-                                       movementPersistenceService: MovementPersistenceService,
-                                       inboundRouterService: InboundRouterService,
-                                       messageRequestAction: MessageRequestAction,
-                                       validateDepartureMessageTypeActionProvider: ValidateMessageTypeActionProvider,
-                                       msgGenService: MessageGenerationService)
-    extends BackendController(cc)
+class TestMessagesController @Inject()(
+  cc: ControllerComponents,
+  authAction: AuthAction,
+  movementPersistenceService: MovementPersistenceService,
+  inboundRouterService: InboundRouterService,
+  messageRequestAction: MessageRequestAction,
+  validateDepartureMessageTypeActionProvider: ValidateMessageTypeActionProvider,
+  msgGenService: MessageGenerationService
+) extends BackendController(cc)
     with ResponseHelper
     with ErrorTranslator
     with V2TestMessagesController {
@@ -78,7 +82,9 @@ class TestMessagesController @Inject()(cc: ControllerComponents,
             message <- msgGenService.generateMessage(request.messageType, movementType, movementId).asPresentation
 
             // Send generated message to transit-movements-router
-            messageId <- inboundRouterService.post(request.messageType, message, movementId).asPresentation
+            messageId <- inboundRouterService
+              .post(request.messageType, message, CorrelationId(movementId, MessageId(Constants.DefaultTriggerId)))
+              .asPresentation
 
             // Check for matching departure message from transit-movements
             _ <- movementPersistenceService.getMessage(movementType, request.eori, movementId, messageId).asPresentation

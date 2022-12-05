@@ -20,6 +20,7 @@ import cats.data.EitherT
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import config.Constants
 import config.Constants.MessageIdHeaderKey
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,9 +28,10 @@ import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Utils
 import v2.connectors.InboundRouterConnector
-import v2.models.MovementId
+import v2.models.CorrelationId
 import v2.models.MessageId
 import v2.models.MessageType
+import v2.models.MovementId
 import v2.models.XMLMessage
 import v2.models.errors.RouterError
 
@@ -40,20 +42,20 @@ import scala.util.control.NonFatal
 @ImplementedBy(classOf[InboundRouterServiceImpl])
 trait InboundRouterService {
 
-  def post(messageType: MessageType, message: XMLMessage, departureId: MovementId)(implicit
-                                                                                   hc: HeaderCarrier,
-                                                                                   ec: ExecutionContext): EitherT[Future, RouterError, MessageId]
+  def post(messageType: MessageType, message: XMLMessage, correlationId: CorrelationId)(implicit
+                                                                                        hc: HeaderCarrier,
+                                                                                        ec: ExecutionContext): EitherT[Future, RouterError, MessageId]
 }
 
 @Singleton
 class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
-  def post(messageType: MessageType, message: XMLMessage, movementId: MovementId)(implicit
-                                                                                  hc: HeaderCarrier,
-                                                                                  ec: ExecutionContext): EitherT[Future, RouterError, MessageId] =
+  def post(messageType: MessageType, message: XMLMessage, correlationId: CorrelationId)(implicit
+                                                                                        hc: HeaderCarrier,
+                                                                                        ec: ExecutionContext): EitherT[Future, RouterError, MessageId] =
     EitherT(
       inboundRouterConnector
-        .post(messageType, message.wrapped, movementId)
+        .post(messageType, message.wrapped, correlationId)
         .map {
           response =>
             if (is2xx(response.status)) {
@@ -66,7 +68,7 @@ class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterCo
             }
         }
         .recover {
-          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(RouterError.MovementNotFound(movementId))
+          case UpstreamErrorResponse(_, NOT_FOUND, _, _) => Left(RouterError.MovementNotFound(correlationId.movementId))
           case NonFatal(thr)                             => Left(RouterError.Unexpected(Some(thr)))
         }
     )

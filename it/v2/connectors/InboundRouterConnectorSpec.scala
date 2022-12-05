@@ -21,7 +21,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import config.AppConfig
-import config.Constants
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
@@ -34,8 +33,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import utils.WiremockSuite
 import v2.generators.ItGenerators
+import v2.models.CorrelationId
 import v2.models.MessageType
-import v2.models.MovementId
 import v2.models.XMLMessage
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,21 +44,20 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
   "post" - {
 
     lazy val httpClient = app.injector.instanceOf[HttpClient]
-    lazy val appConfig = app.injector.instanceOf[AppConfig]
+    lazy val appConfig  = app.injector.instanceOf[AppConfig]
 
-    def targetUrl(movementId: MovementId) =
-      s"/transit-movements-router/movements/${movementId.value}-${Constants.DefaultTriggerId}/messages/"
+    def targetUrl(correlationId: CorrelationId) =
+      s"/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
-
-    "a successful injection returns a 202" in forAll(arbitrary[MovementId], arbitrary[MessageType]) {
-      (movementId, messageType) =>
+    "a successful injection returns a 202" in forAll(arbitraryCorrelationId.arbitrary, arbitrary[MessageType]) {
+      (correlationId, messageType) =>
         implicit val hc: HeaderCarrier = HeaderCarrier()
 
         lazy val sut = new InboundRouterConnector(httpClient, appConfig)
 
         server.stubFor(
           post(
-            urlEqualTo(targetUrl(movementId))
+            urlEqualTo(targetUrl(correlationId))
           )
             .willReturn(aResponse().withStatus(BAD_REQUEST))
         )
@@ -67,21 +65,21 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         // this takes precedence ONLY if the header exists.
         server.stubFor(
           post(
-            urlEqualTo(targetUrl(movementId))
+            urlEqualTo(targetUrl(correlationId))
           )
             .withHeader("X-Message-Type", equalTo(messageType.code))
             .willReturn(aResponse().withStatus(ACCEPTED))
         )
 
-        val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, movementId)
+        val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId)
 
         whenReady(result) {
           r => r.status mustBe ACCEPTED
         }
     }
 
-    "a failed injection returns a 500" in forAll(arbitrary[MovementId], arbitrary[MessageType]) {
-      (movementId, messageType) =>
+    "a failed injection returns a 500" in forAll(arbitraryCorrelationId.arbitrary, arbitrary[MessageType]) {
+      (correlationId, messageType) =>
         implicit val hc: HeaderCarrier = HeaderCarrier()
 
         lazy val sut = new InboundRouterConnector(httpClient, appConfig)
@@ -89,13 +87,13 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         // this takes precedence ONLY if the header exists.
         server.stubFor(
           post(
-            urlEqualTo(targetUrl(movementId))
+            urlEqualTo(targetUrl(correlationId))
           )
             .withHeader("X-Message-Type", equalTo(messageType.code))
             .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
         )
 
-        val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, movementId)
+        val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId)
 
         whenReady(result) {
           r => r.status mustBe INTERNAL_SERVER_ERROR
