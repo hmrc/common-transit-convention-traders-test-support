@@ -44,15 +44,7 @@ import v2.fakes.controllers.actions.FakeAuthAction
 import v2.fakes.controllers.actions.FakeMessageRequestAction
 import v2.fakes.controllers.actions.FakeValidateMessageTypeActionProvider
 import v2.generators.ModelGenerators
-import v2.models.CorrelationId
-import v2.models.EORINumber
-import v2.models.Message
-import v2.models.MessageId
-import v2.models.MessageType
-import v2.models.Movement
-import v2.models.MovementId
-import v2.models.MovementType
-import v2.models.XMLMessage
+import v2.models._
 import v2.models.errors.MessageGenerationError
 import v2.models.errors.PersistenceError
 import v2.models.errors.RouterError
@@ -145,8 +137,8 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
             mockMovementPersistenceService
               .getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any())
           ).thenAnswer(
-              _ => EitherT.leftT[Future, PersistenceError](PersistenceError.MovementNotFound(movementType, movement._id))
-            )
+            _ => EitherT.leftT[Future, PersistenceError](PersistenceError.MovementNotFound(movementType, movement._id))
+          )
 
           val sut = new TestMessagesController(
             stubControllerComponents(),
