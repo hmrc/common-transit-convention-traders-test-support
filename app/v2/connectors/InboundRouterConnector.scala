@@ -17,14 +17,13 @@
 package v2.connectors
 
 import config.AppConfig
-import config.Constants
 import connectors.util.CustomHttpReader
-import v2.models.MovementId
+import v2.models.CorrelationId
 import v2.models.MessageType
+import v2.models.WrappedXMLMessage
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
-import v2.models.WrappedXMLMessage
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -33,13 +32,14 @@ import scala.concurrent.Future
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   // Create a new message with the transit-movements-router service
-  def post(messageType: MessageType, message: WrappedXMLMessage, departureId: MovementId)(implicit hc: HeaderCarrier,
-                                                                                          ec: ExecutionContext): Future[HttpResponse] = {
+  def post(messageType: MessageType, message: WrappedXMLMessage, correlationId: CorrelationId)(implicit
+                                                                                               hc: HeaderCarrier,
+                                                                                               ec: ExecutionContext): Future[HttpResponse] = {
     val newHeaders = hc
       .copy()
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
 
-    val url = appConfig.transitMovementsRouterUrl + s"/transit-movements-router/movements/${departureId.value}-${Constants.DefaultTriggerId}/messages/"
+    val url = appConfig.transitMovementsRouterUrl + s"/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
     http.POSTString(url, message.value.mkString, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }

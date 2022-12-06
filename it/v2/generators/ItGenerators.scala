@@ -18,6 +18,9 @@ package v2.generators
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
+import org.scalacheck.Gen.hexChar
+import org.scalacheck.Gen.listOfN
+import v2.models.CorrelationId
 import v2.models.EORINumber
 import v2.models.MessageId
 import v2.models.MessageType
@@ -31,47 +34,46 @@ import java.time.ZoneOffset
 
 trait ItGenerators {
 
-  implicit lazy val arbitraryMovementId: Arbitrary[MovementId] = {
+  implicit lazy val arbitraryMovementId: Arbitrary[MovementId] =
     Arbitrary {
       for {
         id <- Gen.listOfN(16, Gen.hexChar).map(_.mkString.toLowerCase)
       } yield MovementId(id)
     }
-  }
 
-  implicit lazy val arbitraryMessageId: Arbitrary[MessageId] = {
+  implicit lazy val arbitraryMessageId: Arbitrary[MessageId] =
     Arbitrary {
       for {
         id <- Gen.listOfN(16, Gen.hexChar).map(_.mkString.toLowerCase)
       } yield MessageId(id)
     }
-  }
 
-  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] = {
+  implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
     Arbitrary {
       Gen.oneOf(MessageType.values)
     }
-  }
 
-  implicit lazy val arbitraryMovementType: Arbitrary[MovementType] = {
+  implicit lazy val arbitraryMovementType: Arbitrary[MovementType] =
     Arbitrary {
       Gen.oneOf(MovementType.values)
     }
-  }
 
-  implicit lazy val arbitraryEoriNumber: Arbitrary[EORINumber] = {
+  implicit lazy val arbitraryEoriNumber: Arbitrary[EORINumber] =
     Arbitrary {
       for {
         country <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
         number  <- Gen.listOfN(15, Gen.numChar).map(_.mkString)
       } yield EORINumber(s"$country$number")
     }
-  }
 
   implicit val arbitaryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = Arbitrary {
     for {
       countryCode <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
-      randomString <- Gen.listOfN(14, Gen.alphaNumChar).map(x => x.mkString.toUpperCase)
+      randomString <- Gen
+        .listOfN(14, Gen.alphaNumChar)
+        .map(
+          x => x.mkString.toUpperCase
+        )
     } yield MovementReferenceNumber(s"21$countryCode$randomString")
   }
 
@@ -82,4 +84,10 @@ trait ItGenerators {
       } yield OffsetDateTime.ofInstant(timestamp, ZoneOffset.UTC)
     }
 
+  implicit lazy val arbitraryCorrelationId: Arbitrary[CorrelationId] = Arbitrary {
+    for {
+      movementId <- listOfN(16, hexChar)
+      messageId  <- listOfN(16, hexChar)
+    } yield CorrelationId(MovementId(movementId.mkString), MessageId(messageId.mkString))
+  }
 }

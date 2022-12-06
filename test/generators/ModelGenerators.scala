@@ -24,22 +24,21 @@ import org.scalacheck.Gen
 
 trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
 
-  implicit lazy val arbitraryArrivalId: Arbitrary[ArrivalId] = {
+  implicit lazy val arbitraryArrivalId: Arbitrary[ArrivalId] =
     Arbitrary {
       for {
         id <- intWithMaxLength(9)
       } yield ArrivalId(id)
     }
-  }
 
-  implicit lazy val arbitraryDepartureId: Arbitrary[DepartureId] = {
+  implicit lazy val arbitraryDepartureId: Arbitrary[DepartureId] =
     Arbitrary {
       for {
         id <- intWithMaxLength(9)
       } yield DepartureId(id)
     }
-  }
 
   implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
     Arbitrary(Gen.oneOf(MessageType.values))
+
 }

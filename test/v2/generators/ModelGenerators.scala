@@ -16,16 +16,19 @@
 
 package v2.generators
 
-import v2.models.MovementId
-import v2.models.MessageType
-import org.scalacheck.Arbitrary
-import org.scalacheck.Gen
+import v2.models.CorrelationId
 import v2.models.EORINumber
 import v2.models.Message
 import v2.models.MessageId
+import v2.models.MessageType
 import v2.models.Movement
+import v2.models.MovementId
 import v2.models.MovementReferenceNumber
 import v2.models.MovementType
+import org.scalacheck.Arbitrary
+import org.scalacheck.Gen
+import org.scalacheck.Gen.hexChar
+import org.scalacheck.Gen.listOfN
 
 import java.time.Instant
 import java.time.OffsetDateTime
@@ -40,21 +43,19 @@ trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
       } yield OffsetDateTime.ofInstant(timestamp, ZoneOffset.UTC)
     }
 
-  implicit lazy val arbitraryMovementId: Arbitrary[MovementId] = {
+  implicit lazy val arbitraryMovementId: Arbitrary[MovementId] =
     Arbitrary {
       for {
         id <- Gen.listOfN(16, Gen.hexChar).map(_.mkString)
       } yield MovementId(id)
     }
-  }
 
-  implicit lazy val arbitraryMessageId: Arbitrary[MessageId] = {
+  implicit lazy val arbitraryMessageId: Arbitrary[MessageId] =
     Arbitrary {
       for {
         id <- Gen.listOfN(16, Gen.hexChar).map(_.mkString)
       } yield MessageId(id)
     }
-  }
 
   implicit lazy val arbitraryMessageType: Arbitrary[MessageType] =
     Arbitrary(Gen.oneOf(MessageType.values))
@@ -72,8 +73,12 @@ trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
 
   implicit val arbitaryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = Arbitrary {
     for {
-      countryCode  <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
-      randomString <- Gen.listOfN(14, Gen.alphaNumChar).map(x => x.mkString.toUpperCase)
+      countryCode <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
+      randomString <- Gen
+        .listOfN(14, Gen.alphaNumChar)
+        .map(
+          x => x.mkString.toUpperCase
+        )
     } yield MovementReferenceNumber(s"21$countryCode$randomString")
   }
 
@@ -93,8 +98,14 @@ trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
       id          <- arbitraryMessageId.arbitrary
       time        <- arbitraryOffsetDateTime.arbitrary
       messageType <- arbitraryMessageType.arbitrary
-      body        <- Gen.alphaNumStr
     } yield Message(id, time, messageType, Some(s"<test>body</test>"))
+  }
+
+  implicit lazy val arbitraryCorrelationId: Arbitrary[CorrelationId] = Arbitrary {
+    for {
+      movementId <- listOfN(16, hexChar)
+      messageId  <- listOfN(16, hexChar)
+    } yield CorrelationId(MovementId(movementId.mkString), MessageId(messageId.mkString))
   }
 
 }
