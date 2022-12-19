@@ -43,8 +43,7 @@ object MessageType {
   val arrivalMessages: Seq[MessageType] = Seq(
     GoodsReleaseNotification,
     UnloadingPermission,
-    RejectionFromOfficeOfDestination,
-    RequestOnNonArrivedMovementDate
+    RejectionFromOfficeOfDestination
   )
 
   val departureMessages: Seq[MessageType] = Seq(
@@ -57,7 +56,8 @@ object MessageType {
     ControlDecisionNotification,
     RecoveryNotification,
     NoReleaseForTransit,
-    GuaranteeNotValid
+    GuaranteeNotValid,
+    RequestOnNonArrivedMovementDate
   )
 
   val values: Seq[MessageType] = arrivalMessages ++ departureMessages
