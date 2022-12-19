@@ -56,12 +56,6 @@ class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionV
       }
     }
 
-    "when a non-arrived movement date is requested " - {
-      "should produce a valid IE140 message" in {
-        validate("cc140c", generator.generate(arrivalId)(RequestOnNonArrivedMovementDate))
-      }
-    }
-
   }
 
   private def validate(xsdRoot: String, xml: XMLMessage): Unit = {

@@ -31,6 +31,7 @@ import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.RecoveryNotification
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
+import v2.models.MessageType.RequestOnNonArrivedMovementDate
 import v2.models.XMLMessage
 
 import java.io.StringReader
@@ -101,6 +102,12 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     "when supplied with message type GuaranteeNotValid" - {
       "should produce an IE055 Message" in {
         validate("cc055c", generator.generate(departureId)(GuaranteeNotValid))
+      }
+    }
+
+    "when a non-arrived movement date is requested " - {
+      "should produce a valid IE140 message" in {
+        validate("cc140c", generator.generate(departureId)(RequestOnNonArrivedMovementDate))
       }
     }
   }
