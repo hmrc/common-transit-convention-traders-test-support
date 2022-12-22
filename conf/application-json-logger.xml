@@ -6,7 +6,5 @@
     </appender>
 
     <logger name="uk.gov" level="WARN"/>
-    <logger name="helpers.XmlBuilderHelper" level="${logger.XmlBuilderService:-INFO}"/>
-    <logger name="controllers.DepartureTestMessagesController" level="${logger.DepartureTestMessagesController:-ERROR}"/>
-    
+
 </configuration>
