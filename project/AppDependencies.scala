@@ -4,12 +4,10 @@ import sbt._
 object AppDependencies {
 
   val compile = Seq(
-    "uk.gov.hmrc"       %% "bootstrap-backend-play-28"       % "7.12.0",
-    "com.typesafe.play" %% "play-iteratees"                  % "2.6.1",
-    "com.typesafe.play" %% "play-iteratees-reactive-streams" % "2.6.1",
-    "org.scalacheck"    %% "scalacheck"                      % "1.15.4",
-    "org.typelevel"     %% "cats-core"                       % "2.7.0",
-    "io.chrisdavenport" %% "cats-scalacheck"                 % "0.3.0"
+    "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "5.24.0",
+    "org.scalacheck"    %% "scalacheck"                % "1.15.4",
+    "org.typelevel"     %% "cats-core"                 % "2.7.0",
+    "io.chrisdavenport" %% "cats-scalacheck"           % "0.3.0"
   )
 
   val test = Seq(

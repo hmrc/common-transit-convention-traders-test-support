@@ -39,14 +39,13 @@ trait BaseGenerators {
     for {
       seq1 <- gen
       seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
+    } yield
       seq1.toSeq.zip(seq2).foldRight("") {
         case ((n, Some(v)), m) =>
           m + n + v
         case ((n, _), m) =>
           m + n
       }
-    }
   }
 
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
@@ -55,10 +54,14 @@ trait BaseGenerators {
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (
+      x => x > Int.MaxValue
+    )
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (
+      x => x < Int.MinValue
+    )
 
   def nonNumerics: Gen[String] =
     alphaStr suchThat (_.nonEmpty)
@@ -67,7 +70,9 @@ trait BaseGenerators {
     arbitrary[BigDecimal]
       .suchThat(_.abs < Int.MaxValue)
       .suchThat(!_.isValidInt)
-      .map(_.formatted("%f"))
+      .map(
+        x => String.format(x.toString(), "%f")
+      )
 
   def intsBelowValue(value: Int): Gen[Int] =
     Gen.choose(Int.MinValue, value - 1)

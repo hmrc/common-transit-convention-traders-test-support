@@ -26,9 +26,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(PlayKeys.playDefaultPort := 9497)
   .settings(scoverageSettings: _*)
   .settings(
-    scalacOptions += "-Ypartial-unification"
-  )
-  .settings(
     RoutesKeys.routesImport ++= Seq(
       "models._"
     )

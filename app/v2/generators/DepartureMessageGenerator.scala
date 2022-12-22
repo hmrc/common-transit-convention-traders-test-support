@@ -127,8 +127,8 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <!--Optional:-->
           <decisionDateAndTime>{generateLocalDateTime()}</decisionDateAndTime>
           <!--Optional:-->
-          <decision>{zeroOrOne}</decision>
-          <initiatedByCustoms>{zeroOrOne}</initiatedByCustoms>
+          <decision>{zeroOrOne()}</decision>
+          <initiatedByCustoms>{zeroOrOne()}</initiatedByCustoms>
           <!--Optional:-->
           <justification>{alphanumeric(1, 512)}</justification>
         </Invalidation>
@@ -227,9 +227,9 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <releaseDate>{generateLocalDate()}</releaseDate>
           <security>{num(1)}</security>
-          <reducedDatasetIndicator>{zeroOrOne}</reducedDatasetIndicator>
+          <reducedDatasetIndicator>{zeroOrOne()}</reducedDatasetIndicator>
           <specificCircumstanceIndicator>{alphanumeric(3)}</specificCircumstanceIndicator>
-          <bindingItinerary>{zeroOrOne}</bindingItinerary>
+          <bindingItinerary>{zeroOrOne()}</bindingItinerary>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
           <referenceNumber>{referenceNumber()}</referenceNumber>
@@ -253,7 +253,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
         </Guarantee>
         <Consignment>
-          <containerIndicator>{zeroOrOne}</containerIndicator>
+          <containerIndicator>{zeroOrOne()}</containerIndicator>
           <grossMass>{decimalNumber(16, 6)}</grossMass>
           <PlaceOfLoading>
             <country>{alpha(2).toUpperCase}</country>

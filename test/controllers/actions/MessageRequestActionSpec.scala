@@ -53,7 +53,7 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
     val channelRequest = new ChannelRequest(request, ChannelType.api)
-    val result         = harness.execute(channelRequest).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
+    val result         = harness.execute(channelRequest).futureValue.toOption.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
     result.sealsCount mustBe 1
     result.goodsCount mustBe 1
@@ -67,17 +67,22 @@ class MessageRequestActionSpec extends AnyFreeSpec with ScalaFutures with Matche
     val body = JsObject(
       Seq(
         "message" -> JsObject(
-          Seq("messageType"          -> JsString("IE043"),
-              "goodsCount"           -> JsNumber(4),
-              "productCount"         -> JsNumber(5),
-              "specialMentionsCount" -> JsNumber(6),
-              "sealsCount"           -> JsNumber(7)))))
+          Seq(
+            "messageType"          -> JsString("IE043"),
+            "goodsCount"           -> JsNumber(4),
+            "productCount"         -> JsNumber(5),
+            "specialMentionsCount" -> JsNumber(6),
+            "sealsCount"           -> JsNumber(7)
+          )
+        )
+      )
+    )
 
     val request: FakeRequest[JsValue] =
       FakeRequest(method = "POST", uri = "", headers = FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> "application/json")), body)
 
     val channelRequest = new ChannelRequest(request, ChannelType.api)
-    val result         = harness.execute(channelRequest).futureValue.right.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
+    val result         = harness.execute(channelRequest).futureValue.toOption.get.instructions.asInstanceOf[UnloadingPermissionGenInstructions]
 
     result.goodsCount mustBe 4
     result.productCount mustBe 5
