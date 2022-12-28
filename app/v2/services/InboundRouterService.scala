@@ -20,7 +20,6 @@ import cats.data.EitherT
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import config.Constants
 import config.Constants.MessageIdHeaderKey
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,7 +30,6 @@ import v2.connectors.InboundRouterConnector
 import v2.models.CorrelationId
 import v2.models.MessageId
 import v2.models.MessageType
-import v2.models.MovementId
 import v2.models.XMLMessage
 import v2.models.errors.RouterError
 

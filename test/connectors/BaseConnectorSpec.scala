@@ -29,7 +29,6 @@ import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.Authorization
 
 class BaseConnectorSpec
     extends AnyFreeSpec

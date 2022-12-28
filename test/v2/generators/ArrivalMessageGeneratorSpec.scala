@@ -22,7 +22,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import v2.models.MessageType.GoodsReleaseNotification
 import v2.models.MessageType.RejectionFromOfficeOfDestination
-import v2.models.MessageType.RequestOnNonArrivedMovementDate
 import v2.models.MessageType.UnloadingPermission
 import v2.models.MovementId
 import v2.models.XMLMessage

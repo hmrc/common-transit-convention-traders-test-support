@@ -119,7 +119,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
           <!--Optional:-->
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <security>{Strings.numeric(1)}</security>
-          <reducedDatasetIndicator>{Strings.zeroOrOne}</reducedDatasetIndicator>
+          <reducedDatasetIndicator>{Strings.zeroOrOne()}</reducedDatasetIndicator>
         </TransitOperation>
         <CustomsOfficeOfDestinationActual>
           <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
@@ -150,7 +150,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         <Consignment>
           <!--Optional:-->
           <countryOfDestination>{Strings.alpha(2)}</countryOfDestination>
-          <containerIndicator>{Strings.zeroOrOne}</containerIndicator>
+          <containerIndicator>{Strings.zeroOrOne()}</containerIndicator>
           <!--Optional:-->
           <inlandModeOfTransport>{Strings.numeric(1)}</inlandModeOfTransport>
           <!--Optional:-->
@@ -199,7 +199,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <!--0 to 9999 repetitions:-->
             <GoodsReference>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber}</declarationGoodsItemNumber>
+              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
             </GoodsReference>
           </TransportEquipment>
           <!--0 to 999 repetitions:-->
@@ -290,12 +290,12 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <!--0 to 9999 repetitions:-->
               <GoodsReference>
                 <sequenceNumber>{Strings.numeric(1, 4)}</sequenceNumber>
-                <declarationGoodsItemNumber>{generateDeclarationGoodsNumber}</declarationGoodsItemNumber>
+                <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               </GoodsReference>
             </TransportEquipment>
             <!--Optional:-->
             <Transhipment>
-              <containerIndicator>{Strings.zeroOrOne}</containerIndicator>
+              <containerIndicator>{Strings.zeroOrOne()}</containerIndicator>
               <TransportMeans>
                 <typeOfIdentification>{Strings.numeric(2)}</typeOfIdentification>
                 <identificationNumber>{Strings.alphanumeric(8, 35)}</identificationNumber>
@@ -385,7 +385,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <!--1 to 999 repetitions:-->
             <ConsignmentItem>
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
-              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber}</declarationGoodsItemNumber>
+              <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               <!--Optional:-->
               <declarationType>{Strings.alphanumeric(1, 5)}</declarationType>
               <!--Optional:-->
