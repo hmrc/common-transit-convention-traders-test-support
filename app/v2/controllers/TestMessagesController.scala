@@ -65,9 +65,8 @@ class TestMessagesController @Inject()(
   override def sendDepartureResponse(movementId: MovementId): Action[JsValue] =
     injectEISResponse(MovementType.Departure, movementId)
 
-  override def sendArrivalsResponse(movementId: MovementId): Action[JsValue] = {
+  override def sendArrivalsResponse(movementId: MovementId): Action[JsValue] =
     injectEISResponse(MovementType.Arrival, movementId)
-  }
 
   def injectEISResponse(movementType: MovementType, movementId: MovementId): Action[JsValue] =
     (authAction andThen messageRequestAction andThen validateDepartureMessageTypeActionProvider(movementType))
