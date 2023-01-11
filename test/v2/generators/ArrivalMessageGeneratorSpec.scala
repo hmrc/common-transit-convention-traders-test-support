@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,12 @@ import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
+import v2.models.MessageType.Discrepancies
+import v2.models.MessageType.ForwardedIncidentNotificationToED
 import v2.models.MessageType.GoodsReleaseNotification
 import v2.models.MessageType.RejectionFromOfficeOfDestination
 import v2.models.MessageType.UnloadingPermission
+import v2.models.MessageType.WriteOffNotification
 import v2.models.MovementId
 import v2.models.XMLMessage
 
@@ -52,6 +55,25 @@ class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionV
     "when an rejection of office of destination is requested" - {
       "should produce a valid IE057 message" in {
         validate("cc057c", generator.generate(arrivalId)(RejectionFromOfficeOfDestination))
+      }
+    }
+
+    "when a discrepancies is requested" - {
+      "should produce a valid IE019 message" in {
+        val message1 = generator.generate(arrivalId)(Discrepancies)
+        validate("cc019c", message1)
+      }
+    }
+
+    "when a write off notification is requested" - {
+      "should produce a valid IE045 message" in {
+        validate("cc045c", generator.generate(arrivalId)(WriteOffNotification))
+      }
+    }
+
+    "when a forwarded incident notification to ED is requested" - {
+      "should produce a valid IE182 message" in {
+        validate("cc182c", generator.generate(arrivalId)(ForwardedIncidentNotificationToED))
       }
     }
 

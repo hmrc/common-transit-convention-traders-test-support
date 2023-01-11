@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,8 +65,9 @@ class TestMessagesController @Inject()(
   override def sendDepartureResponse(movementId: MovementId): Action[JsValue] =
     injectEISResponse(MovementType.Departure, movementId)
 
-  override def sendArrivalsResponse(movementId: MovementId): Action[JsValue] =
+  override def sendArrivalsResponse(movementId: MovementId): Action[JsValue] = {
     injectEISResponse(MovementType.Arrival, movementId)
+  }
 
   def injectEISResponse(movementType: MovementType, movementId: MovementId): Action[JsValue] =
     (authAction andThen messageRequestAction andThen validateDepartureMessageTypeActionProvider(movementType))
