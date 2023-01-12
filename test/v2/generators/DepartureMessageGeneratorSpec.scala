@@ -23,6 +23,8 @@ import org.scalatest.matchers.should.Matchers
 import v2.models.MovementId
 import v2.models.MessageType.AmendmentAcceptance
 import v2.models.MessageType.ControlDecisionNotification
+import v2.models.MessageType.Discrepancies
+import v2.models.MessageType.ForwardedIncidentNotificationToED
 import v2.models.MessageType.GuaranteeNotValid
 import v2.models.MessageType.InvalidationDecision
 import v2.models.MessageType.MRNAllocated
@@ -32,6 +34,7 @@ import v2.models.MessageType.RecoveryNotification
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
 import v2.models.MessageType.RequestOnNonArrivedMovementDate
+import v2.models.MessageType.WriteOffNotification
 import v2.models.XMLMessage
 
 import java.io.StringReader
@@ -108,6 +111,25 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     "when a non-arrived movement date is requested " - {
       "should produce a valid IE140 message" in {
         validate("cc140c", generator.generate(departureId)(RequestOnNonArrivedMovementDate))
+      }
+    }
+
+    "when a discrepancies is requested" - {
+      "should produce a valid IE019 message" in {
+        val message1 = generator.generate(departureId)(Discrepancies)
+        validate("cc019c", message1)
+      }
+    }
+
+    "when a write off notification is requested" - {
+      "should produce a valid IE045 message" in {
+        validate("cc045c", generator.generate(departureId)(WriteOffNotification))
+      }
+    }
+
+    "when a forwarded incident notification to ED is requested" - {
+      "should produce a valid IE182 message" in {
+        validate("cc182c", generator.generate(departureId)(ForwardedIncidentNotificationToED))
       }
     }
   }
