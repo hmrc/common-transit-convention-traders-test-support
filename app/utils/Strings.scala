@@ -112,6 +112,10 @@ object Strings {
   def alpha(length: Int): String =
     Random.alphanumeric.filter(_.isLetter).take(length).mkString
 
+  def declarationGoodsItemNumber(): String =
+    // [1-9][0-9]{0,2}|[1][0-9]{3}
+    Seq(between1And9, between1And9).mkString
+
   def country(): String = {
     val values = List(
       "AD",

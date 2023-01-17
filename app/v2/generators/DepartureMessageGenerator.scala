@@ -24,6 +24,7 @@ import utils.Strings.alphanumeric
 import utils.Strings.alphanumericCapital
 import utils.Strings.country
 import utils.Strings.decimalNumber
+import utils.Strings.declarationGoodsItemNumber
 import utils.Strings.grn
 import utils.Strings.mrn
 import utils.Strings.num
@@ -269,7 +270,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
             <grossMass>{decimalNumber(16, 6)}</grossMass>
             <ConsignmentItem>
               <goodsItemNumber>{numeric(5)}</goodsItemNumber>
-              <declarationGoodsItemNumber>{numeric(2)}</declarationGoodsItemNumber>
+              <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
                 <GoodsMeasure>
