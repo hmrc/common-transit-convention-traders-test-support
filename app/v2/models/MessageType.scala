@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,20 +25,23 @@ import play.api.libs.json.Writes
 abstract class MessageType(val code: String, val rootNode: String) extends Product with Serializable
 
 object MessageType {
-  case object AmendmentAcceptance              extends MessageType("IE004", "CC004C")
-  case object InvalidationDecision             extends MessageType("IE009", "CC009C")
-  case object PositiveAcknowledgement          extends MessageType("IE928", "CC928C")
-  case object MRNAllocated                     extends MessageType("IE028", "CC028C")
-  case object GoodsReleaseNotification         extends MessageType("IE025", "CC025C")
-  case object ReleaseForTransit                extends MessageType("IE029", "CC029C")
-  case object UnloadingPermission              extends MessageType("IE043", "CC043C")
-  case object RejectionFromOfficeOfDestination extends MessageType("IE057", "CC057C")
-  case object RequestOnNonArrivedMovementDate  extends MessageType("IE140", "CC140C")
-  case object RejectionFromOfficeOfDeparture   extends MessageType("IE056", "CC056C")
-  case object ControlDecisionNotification      extends MessageType("IE060", "CC060C")
-  case object RecoveryNotification             extends MessageType("IE035", "CC035C")
-  case object NoReleaseForTransit              extends MessageType("IE051", "CC051C")
-  case object GuaranteeNotValid                extends MessageType("IE055", "CC055C")
+  case object AmendmentAcceptance               extends MessageType("IE004", "CC004C")
+  case object InvalidationDecision              extends MessageType("IE009", "CC009C")
+  case object PositiveAcknowledgement           extends MessageType("IE928", "CC928C")
+  case object MRNAllocated                      extends MessageType("IE028", "CC028C")
+  case object GoodsReleaseNotification          extends MessageType("IE025", "CC025C")
+  case object ReleaseForTransit                 extends MessageType("IE029", "CC029C")
+  case object UnloadingPermission               extends MessageType("IE043", "CC043C")
+  case object RejectionFromOfficeOfDestination  extends MessageType("IE057", "CC057C")
+  case object RequestOnNonArrivedMovementDate   extends MessageType("IE140", "CC140C")
+  case object RejectionFromOfficeOfDeparture    extends MessageType("IE056", "CC056C")
+  case object ControlDecisionNotification       extends MessageType("IE060", "CC060C")
+  case object RecoveryNotification              extends MessageType("IE035", "CC035C")
+  case object NoReleaseForTransit               extends MessageType("IE051", "CC051C")
+  case object GuaranteeNotValid                 extends MessageType("IE055", "CC055C")
+  case object Discrepancies                     extends MessageType("IE019", "CC019C")
+  case object WriteOffNotification              extends MessageType("IE045", "CC045C")
+  case object ForwardedIncidentNotificationToED extends MessageType("IE182", "CC182C")
 
   val arrivalMessages: Seq[MessageType] = Seq(
     GoodsReleaseNotification,
@@ -57,7 +60,10 @@ object MessageType {
     RecoveryNotification,
     NoReleaseForTransit,
     GuaranteeNotValid,
-    RequestOnNonArrivedMovementDate
+    RequestOnNonArrivedMovementDate,
+    Discrepancies,
+    WriteOffNotification,
+    ForwardedIncidentNotificationToED
   )
 
   val values: Seq[MessageType] = arrivalMessages ++ departureMessages
