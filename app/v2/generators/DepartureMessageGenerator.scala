@@ -22,6 +22,7 @@ import utils.Strings
 import utils.Strings.alpha
 import utils.Strings.alphanumeric
 import utils.Strings.alphanumericCapital
+import utils.Strings.country
 import utils.Strings.decimalNumber
 import utils.Strings.grn
 import utils.Strings.mrn
@@ -554,50 +555,50 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
   private def generateIE019Message(correlationId: String): XMLMessage =
     XMLMessage(
       <ncts:CC019C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
-        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageSender>{alphanumeric(1, 35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
-        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
         <messageType>CC019C</messageType>
         <!--Optional:-->
-        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
+        <correlationIdentifier>{alphanumeric(1, 35)}</correlationIdentifier>
         <TransitOperation>
-          <MRN>{Strings.mrn()}</MRN>
+          <MRN>{mrn()}</MRN>
           <discrepanciesNotificationDate>{generateLocalDate()}</discrepanciesNotificationDate>
           <!--Optional:-->
           <discrepanciesNotificationText>discrepanciesNotification</discrepanciesNotificationText>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure>
           <!--Optional:-->
-          <identificationNumber>{Strings.alphanumeric(8, 17)}</identificationNumber>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
           <!--Optional:-->
-          <TIRHolderIdentificationNumber>{Strings.alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
           <!--Optional:-->
           <name>{Strings.alphanumeric(8, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{Strings.alphanumeric(8, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{Strings.alphanumeric(6, 17)}</postcode>
-            <city>{Strings.alphanumeric(3, 35)}</city>
-            <country>{Strings.country().toUpperCase}</country>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{country().toUpperCase}</country>
           </Address>
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
-          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
-          <name>{Strings.alphanumeric(8, 70)}</name>
+          <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{Strings.alphanumeric(6, 17)}</postcode>
-            <city>{Strings.alphanumeric(3, 35)}</city>
-            <country>{Strings.country().toUpperCase}</country>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{country().toUpperCase}</country>
           </Address>
         </Guarantor>
       </ncts:CC019C>
@@ -606,48 +607,48 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
   private def generateIE045Message(correlationId: String): XMLMessage =
     XMLMessage(
       <ncts:CC045C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
-        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageSender>{alphanumeric(1, 35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
-        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
         <messageType>CC045C</messageType>
         <!--Optional:-->
-        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
+        <correlationIdentifier>{alphanumeric(1, 35)}</correlationIdentifier>
         <TransitOperation>
-          <MRN>{Strings.mrn()}</MRN>
+          <MRN>{mrn()}</MRN>
           <writeOffDate>{generateLocalDate()}</writeOffDate>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <HolderOfTheTransitProcedure>
           <!--Optional:-->
-          <identificationNumber>{Strings.alphanumeric(8, 17)}</identificationNumber>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
           <!--Optional:-->
-          <TIRHolderIdentificationNumber>{Strings.alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
+          <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
           <!--Optional:-->
-          <name>{Strings.alphanumeric(8, 70)}</name>
+          <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{Strings.alphanumeric(8, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{Strings.alphanumeric(6, 17)}</postcode>
-            <city>{Strings.alphanumeric(3, 35)}</city>
-            <country>{Strings.country().toUpperCase}</country>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{country().toUpperCase}</country>
           </Address>
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
-          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
-          <name>{Strings.alphanumeric(8, 70)}</name>
+          <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
           <Address>
-            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
+            <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
             <!--Optional:-->
-            <postcode>{Strings.alphanumeric(6, 17)}</postcode>
-            <city>{Strings.alphanumeric(3, 35)}</city>
-            <country>{Strings.country().toUpperCase}</country>
+            <postcode>{alphanumeric(6, 17)}</postcode>
+            <city>{alphanumeric(3, 35)}</city>
+            <country>{country().toUpperCase}</country>
           </Address>
         </Guarantor>
       </ncts:CC045C>
@@ -656,41 +657,41 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
   private def generateIE182Message(correlationId: String): XMLMessage =
     XMLMessage(
       <ncts:CC182C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
-        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
+        <messageSender>{alphanumeric(1, 35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
-        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
+        <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
         <messageType>CC182C</messageType>
         <!--Optional:-->
-        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
+        <correlationIdentifier>{alphanumeric(1, 35)}</correlationIdentifier>
         <TransitOperation>
-          <MRN>{Strings.mrn()}</MRN>
+          <MRN>{mrn()}</MRN>
           <incidentNotificationDateAndTime>{generateLocalDateTime()}</incidentNotificationDateAndTime>
         </TransitOperation>
         <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfDeparture>
         <CustomsOfficeOfIncidentRegistration>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
+          <referenceNumber>{referenceNumber()}</referenceNumber>
         </CustomsOfficeOfIncidentRegistration>
         <Consignment>
           <!--1 to 9 repetitions:-->
           <Incident>
-            <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-            <code>{Strings.numeric(1)}</code>
-            <text>{Strings.alphanumeric(20, 512)}</text>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+            <code>{numeric(1)}</code>
+            <text>{alphanumeric(20, 512)}</text>
             <!--Optional:-->
             <Endorsement>
               <date>{generateLocalDate()}</date>
-              <authority>{Strings.alphanumeric(20, 35)}</authority>
-              <place>{Strings.alphanumeric(20, 35)}</place>
-              <country>{Strings.alpha(2).toUpperCase}</country>
+              <authority>{alphanumeric(20, 35)}</authority>
+              <place>{alphanumeric(20, 35)}</place>
+              <country>{alpha(2).toUpperCase}</country>
             </Endorsement>
             <Location>
-              <qualifierOfIdentification>{Strings.alpha(1).toUpperCase}</qualifierOfIdentification>
+              <qualifierOfIdentification>{alpha(1).toUpperCase}</qualifierOfIdentification>
               <!--Optional:-->
-              <UNLocode>{Strings.alphanumeric(5, 17)}</UNLocode>
-              <country>{Strings.alpha(2).toUpperCase}</country>
+              <UNLocode>{alphanumeric(5, 17)}</UNLocode>
+              <country>{alpha(2).toUpperCase}</country>
               <!--Optional:-->
               <GNSS>
                 <latitude>90.000000</latitude>
@@ -698,37 +699,37 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
               </GNSS>
               <!--Optional:-->
               <Address>
-                <streetAndNumber>{Strings.alphanumeric(8, 70)}</streetAndNumber>
+                <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
                 <!--Optional:-->
-                <postcode>{Strings.alphanumeric(6, 17)}</postcode>
-                <city>{Strings.alphanumeric(3, 35)}</city>
+                <postcode>{alphanumeric(6, 17)}</postcode>
+                <city>{alphanumeric(3, 35)}</city>
               </Address>
             </Location>
             <!--0 to 9999 repetitions:-->
             <TransportEquipment>
-              <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
+              <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
               <!--Optional:-->
-              <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
+              <containerIdentificationNumber>{alphanumeric(8, 17)}</containerIdentificationNumber>
               <!--Optional:-->
-              <numberOfSeals>{Strings.numeric(1, 4)}</numberOfSeals>
+              <numberOfSeals>{numeric(1, 4)}</numberOfSeals>
               <!--0 to 99 repetitions:-->
               <Seal>
-                <sequenceNumber>{Strings.numeric(1, 4)}</sequenceNumber>
-                <identifier>{Strings.alphanumeric(5, 20)}</identifier>
+                <sequenceNumber>{numeric(1, 4)}</sequenceNumber>
+                <identifier>{alphanumeric(5, 20)}</identifier>
               </Seal>
               <!--0 to 9999 repetitions:-->
               <GoodsReference>
-                <sequenceNumber>{Strings.numeric(1, 4)}</sequenceNumber>
+                <sequenceNumber>{numeric(1, 4)}</sequenceNumber>
                 <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               </GoodsReference>
             </TransportEquipment>
             <!--Optional:-->
             <Transhipment>
-              <containerIndicator>{Strings.zeroOrOne()}</containerIndicator>
+              <containerIndicator>{zeroOrOne()}</containerIndicator>
               <TransportMeans>
-                <typeOfIdentification>{Strings.numeric(2)}</typeOfIdentification>
-                <identificationNumber>{Strings.alphanumeric(8, 35)}</identificationNumber>
-                <nationality>{Strings.alpha(2).toUpperCase}</nationality>
+                <typeOfIdentification>{numeric(2)}</typeOfIdentification>
+                <identificationNumber>{alphanumeric(8, 35)}</identificationNumber>
+                <nationality>{alpha(2).toUpperCase}</nationality>
               </TransportMeans>
             </Transhipment>
           </Incident>
