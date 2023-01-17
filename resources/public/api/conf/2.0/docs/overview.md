@@ -148,6 +148,21 @@ Follow these steps:
    <td>Inject a message from the office of departure to the trader at departure that their guarantee is not valid</td>
    <td>Specify "IE055" for the <code>messageType</code>field</td>
    </tr>
+   <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie045-write-off-notification">Inject a Write-Off notification message (IE045)</a></td>
+   <td>Inject a message from the office at departure that the transit movement has been discharged</td>
+   <td>Specify "IE045" for the <code>messageType</code>field</td>
+   </tr>
+   <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie019-discrepancies">Inject a Discrepancies message (IE019)</a></td>
+   <td>Inject a message from the office at departure that the transit movement has major discrepancies</td>
+   <td>Specify "IE019" for the <code>messageType</code>field</td>
+   </tr>
+   <tr>
+   <td><a href="https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-tis/documentation/messagetypes.html#ie182-forwarded-incident-notification-to-ed">Inject a Forwarded Incident Notification To ED message (IE182)</a></td>
+   <td>Inject a message from the office at departure that the transit movement require investigation by a custom officer</td>
+   <td>Specify "IE182" for the <code>messageType</code>field</td>
+   </tr>
 
 </table>
 
