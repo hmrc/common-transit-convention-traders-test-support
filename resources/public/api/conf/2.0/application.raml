@@ -6,21 +6,13 @@ protocols: [ HTTPS ]
 baseUri: https://common-transit-convention-traders-test-support.hmrc.gov.uk/
 version: 2.0
 
-documentation:
- - title: Overview
-   content: !include docs/overview.md
- - title: Versioning
-   content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/versioning.md
- - title: Errors
-   content: !include docs/errors.md
-
 mediaType: [ application/json, application/xml ]
 
 uses:
-  sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml
-  headers: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/headers.raml
-  annotations: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/annotations.raml
-  types: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml
+  sec: securitySchemes.raml
+  headers: headers.raml
+  annotations: annotations.raml
+  types: types.raml
 
 traits:
   contentJsonHeader:

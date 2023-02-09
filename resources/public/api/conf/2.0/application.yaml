@@ -1,0 +1,428 @@
+openapi: 3.0.3
+info:
+  title: CTC Traders Test Support
+  contact: {}
+  version: '2.0'
+  description: |
+    # Overview
+    This API allows testers to inject departure and arrival movement notifications as 
+    if they have come from the office of departure or the office of destination by the New Computerised Transit System (NCTS).
+servers:
+  - url: https://test-api.service.hmrc.gov.uk
+    description: Sandbox
+  - url: https://api.service.hmrc.gov.uk
+    description: Production
+paths:
+  /test/customs/transits/movements/arrivals/{arrivalId}/messages:
+    post:
+      tags:
+      - Arrivals
+      summary: Inject a fake NCTS Phase 5 arrival message
+      description: >
+        Inject a message type into the test NCTS database for a given arrival.
+      operationId: postFakeNCTSPhase5ArrivalMessage
+      parameters:
+        - $ref: '#/components/parameters/acceptHeader'
+        - $ref: '#/components/parameters/contentTypeHeader'
+        - in: path
+          name: arrivalId
+          description: The ID specifying the arrival.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: abcdef1234567890
+      requestBody:
+        description: JSON with message type
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestCustomsTransitsMovementsArrivalsMessagesRequest'
+              - description: JSON with message type
+                example:
+                  message:
+                    messageType: IEXXX
+            example:
+              message:
+                messageType: IEXXX
+        required: true
+      responses:
+        '201':
+          description: When a test message has been successfully injected.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/TestCustomsTransitsMovementsArrivalsMessagesResponse'
+                - description: JSON Payload
+                  example:
+                    _links:
+                      self:
+                        href: /customs/transits/movements/arrivals/1234567890abcdef/messages/1234567890abcdef
+                      arrival:
+                        href: /customs/transits/movements/arrivals/1234567890abcdef
+                    arrivalId: 1234567890abcdef
+                    messageId: 1234567890abcdef
+                    messageType: IEXXX
+                    body: <CCXXX>...</CCXXX>
+              example:
+                _links:
+                  self:
+                    href: /customs/transits/movements/arrivals/1234567890abcdef/messages/1234567890abcdef
+                  arrival:
+                    href: /customs/transits/movements/arrivals/1234567890abcdef
+                arrivalId: 1234567890abcdef
+                messageId: 1234567890abcdef
+                messageType: IEXXX
+                body: <CCXXX>...</CCXXX>
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BadRequest'
+                  - description: The supplied JSON payload was invalid.
+                    example:
+                      code: BAD_REQUEST
+                      message: The supplied JSON payload was invalid.
+              example:
+                code: BAD_REQUEST
+                message: The supplied JSON payload was invalid.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/NotFound'
+                  - description: The specified arrivals does not exist, has been archived or is not available to the EORI number.
+                    example:
+                      code: NOT_FOUND
+                      message: Arrival with arrival ID was not found.
+              example:
+                code: NOT_FOUND
+                message: Arrival with arrival ID was not found.
+      security:
+        - userRestricted:
+            - common-transit-convention-traders-test-support
+  /test/customs/transits/movements/departures/{departureId}/messages:
+    post:
+      tags:
+      - Departures
+      summary: Inject a fake NCTS Phase 5 departure message
+      description: >
+        Inject a message type into the test NCTS database for a given departure.
+      operationId: postfakeNCTSPhase5DepartureMessage
+      parameters:
+        - $ref: '#/components/parameters/acceptHeader'
+        - $ref: '#/components/parameters/contentTypeHeader'
+        - in: path
+          name: departureId
+          description: The ID specifying the departure.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: abcdef1234567890
+      requestBody:
+        description: JSON with message type
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestCustomsTransitsMovementsDeparturesMessagesRequest'
+              - description: JSON with message type
+                example:
+                  message:
+                    messageType: IEXXX
+            example:
+              message:
+                messageType: IEXXX
+        required: true
+      responses:
+        '201':
+          description: When a test message has been successfully injected.
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/TestCustomsTransitsMovementsDeparturesMessagesResponse'
+                - description: JSON Payload
+                  example:
+                    _links:
+                      self:
+                        href: /customs/transits/movements/departures/1234567890abcdef/messages/1234567890abcdef
+                      departure:
+                        href: /customs/transits/movements/departures/1234567890abcdef
+                    departureId: 1234567890abcdef
+                    messageId: 1234567890abcdef
+                    messageType: IEXXX
+                    body: <CCXXX>...</CCXXX>
+              example:
+                _links:
+                  self:
+                    href: /customs/transits/movements/departures/1234567890abcdef/messages/1234567890abcdef
+                  departure:
+                    href: /customs/transits/movements/departures/1234567890abcdef
+                departureId: 1234567890abcdef
+                messageId: 1234567890abcdef
+                messageType: IEXXX
+                body: <CCXXX>...</CCXXX>
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BadRequest'
+                  - description: The supplied JSON payload was invalid.
+                    example:
+                      code: BAD_REQUEST
+                      message: The supplied JSON payload was invalid.
+              example:
+                code: BAD_REQUEST
+                message: The supplied JSON payload was invalid.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/NotFound'
+                  - description: The specified departure does not exist, has been archived or is not available to the EORI number.
+                    example:
+                      code: NOT_FOUND
+                      message: Departure with departure ID was not found.
+              example:
+                code: NOT_FOUND
+                message: Departure with departure ID was not found.
+      security:
+        - userRestricted:
+            - common-transit-convention-traders-test-support
+
+components:
+  schemas:
+    BadRequest:
+      title: BadRequest
+      description: An error in the supplied payload.
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          enum:
+            - BAD_REQUEST
+          type: string
+        message:
+          type: string
+          description: The description of the error.
+    NotFound:
+      title: NotFound
+      description: The specified movement does not exist, has been archived or is not available to the EORI number.
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          enum:
+            - NOT_FOUND
+          type: string
+        message:
+          type: string
+          description: The description of the error.
+    Arrival:
+      title: Arrival
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+      example:
+        href: /customs/transits/movements/arrivals/1234567890abcdef
+    Departure:
+      title: Departure
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+      example:
+        href: /customs/transits/movements/departures/1234567890abcdef
+    Links:
+      title: Links
+      required:
+      - self
+      - arrival
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+        arrival:
+          $ref: '#/components/schemas/Arrival'
+      example:
+        self:
+          href: /customs/transits/movements/arrivals/1234567890abcdef/messages/1234567890abcdef
+        arrival:
+          href: /customs/transits/movements/arrivals/1234567890abcdef
+    Links1:
+      title: Links1
+      required:
+      - self
+      - departure
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+        departure:
+          $ref: '#/components/schemas/Departure'
+      example:
+        self:
+          href: /customs/transits/movements/departures/1234567890abcdef/messages/1234567890abcdef
+        departure:
+          href: /customs/transits/movements/departures/1234567890abcdef
+    Message:
+      title: Message
+      required:
+      - messageType
+      type: object
+      properties:
+        messageType:
+          type: string
+      example:
+        messageType: IEXXX
+    Self:
+      title: Self
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+      example:
+        href: /customs/transits/movements/arrivals/1234567890abcdef/messages/1234567890abcdef
+    TestCustomsTransitsMovementsArrivalsMessagesRequest:
+      title: TestCustomsTransitsMovementsArrivalsMessagesRequest
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+      example:
+        message:
+          messageType: IEXXX
+    TestCustomsTransitsMovementsArrivalsMessagesResponse:
+      title: TestCustomsTransitsMovementsArrivalsMessagesResponse
+      required:
+      - _links
+      - arrivalId
+      - messageId
+      - messageType
+      - body
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Links'
+        arrivalId:
+          type: string
+        messageId:
+          type: string
+        messageType:
+          type: string
+        body:
+          type: string
+      example:
+        _links:
+          self:
+            href: /customs/transits/movements/arrivals/1234567890abcdef/messages/1234567890abcdef
+          arrival:
+            href: /customs/transits/movements/arrivals/1234567890abcdef
+        arrivalId: 1234567890abcdef
+        messageId: 1234567890abcdef
+        messageType: IEXXX
+        body: <CCXXX>...</CCXXX>
+    TestCustomsTransitsMovementsDeparturesMessagesRequest:
+      title: TestCustomsTransitsMovementsDeparturesMessagesRequest
+      required:
+      - message
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+      example:
+        message:
+          messageType: IEXXX
+    TestCustomsTransitsMovementsDeparturesMessagesResponse:
+      title: TestCustomsTransitsMovementsDeparturesMessagesResponse
+      required:
+      - _links
+      - departureId
+      - messageId
+      - messageType
+      - body
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Links1'
+        departureId:
+          type: string
+        messageId:
+          type: string
+        messageType:
+          type: string
+        body:
+          type: string
+      example:
+        _links:
+          self:
+            href: /customs/transits/movements/departures/1234567890abcdef/messages/1234567890abcdef
+          departure:
+            href: /customs/transits/movements/departures/1234567890abcdef
+        departureId: 1234567890abcdef
+        messageId: 1234567890abcdef
+        messageType: IEXXX
+        body: <CCXXX>...</CCXXX>
+  parameters:
+    acceptHeader:
+      name: Accept
+      in: header
+      description: >-
+        Specifies the response format and the
+        [version](/api-documentation/docs/reference-guide#versioning) of the API
+        to be used.
+      required: true
+      schema:
+        type: string
+        enum: [
+          "application/vnd.hmrc.2.0+json"
+        ]
+    contentTypeHeader:
+      name: Content-Type
+      in: header
+      description: The media type of the request body.
+      schema:
+        type: string
+        enum:
+          - application/json
+      required: true
+  securitySchemes:
+    userRestricted:
+      type: oauth2
+      description: >-
+        HMRC supports OAuth 2.0 for authenticating user restricted API requests using
+        an OAuth 2.0 Bearer Token in the AUTHORIZATION header. See
+        https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/user-restricted-endpoints
+        for details.
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://api.service.hmrc.gov.uk/oauth/authorize'
+          tokenUrl: 'https://api.service.hmrc.gov.uk/oauth/token'
+          refreshUrl: 'https://api.service.hmrc.gov.uk/oauth/refresh'
+          scopes:
+            common-transit-convention-traders-test-support: Access all aspects of ctc api test support.
