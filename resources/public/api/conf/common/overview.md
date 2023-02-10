@@ -6,27 +6,27 @@ You should read:
 - [Roadmap](/roadmaps/common-transit-convention-traders-roadmap/) to review our progress and to learn about what you can test
 - [Tutorials](/api-documentation/docs/tutorials) to learn how to develop your own client applications, including example clients, for this API
 
-## Changelog
+### Changelog
 
 You can find the changelog in the [common-transit-convention-traders-test-support](https://github.com/hmrc/common-transit-convention-traders-test-support/wiki/CTC-Traders-Test-Support-API-v2.0-changelog) GitHub wiki.
 
-## How to get set up for testing
+### How to get set up for testing
 
 Follow these steps:
 
 1. Register for a [developer account](/developer/registration).
 
-2. Create an application. 
+2. Create an application.
 
 3. Subscribe to any API you might be working on. We suggest the [Create Test User API](/api-documentation/docs/api/service/api-platform-test-user/1.0), the [CTC Traders API](/api-documentation/docs/api/service/common-transit-convention-traders/1.0) and this API.
 
 4. Create a [Client ID and Client Secret](/api-documentation/docs/authorisation/credentials).
 
-5. Use the [Create Test User API](/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details. 
+5. Use the [Create Test User API](/api-documentation/docs/api/service/api-platform-test-user/1.0) to get a user ID, password, EORI enrolment and other test details.
 
 <!--For more information about how to get set up for testing, see [CTC Traders API Testing guide](/guides/ctc-traders-phase5-testing-guide).-->
 
-## How to use this API
+### How to use this API
 
 This API is not connected to the NCTS core, so you can use it for any test scenario you choose.
 
@@ -36,11 +36,11 @@ Follow these steps:
 
 1. Use the [CTC Traders API](/api-documentation/docs/api/service/common-transit-convention-traders/2.0) to send messages from a trader to the NCTS.
 
-2. Use this API to inject a response. See the table below for a list of supported messages that you can inject. 
+2. Use this API to inject a response. See the table below for a list of supported messages that you can inject.
 
 3. Use the CTC Traders API to retrieve a list of your messages for this movement. This will include both your trader and your injected NCTS messages.
 
-## Messages you can inject now
+### Messages you can inject now
 
 <table>
 	<tr>
@@ -166,7 +166,7 @@ Follow these steps:
 
 </table>
 
-## Reference materials
+### Reference materials
 
 <!--### CURL commands
 
