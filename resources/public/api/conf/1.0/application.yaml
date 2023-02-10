@@ -18,7 +18,7 @@ paths:
       - Arrivals
       summary: Inject a fake NCTS arrival message
       description: >
-        Inject a message type into the test NCTS database for a given arrival Movement.
+        Inject a message type into the test NCTS database for a given arrival.
       operationId: postFakeNCTSArrivalMessage
       parameters:
         - $ref: '#/components/parameters/contentTypeHeader'
