@@ -5,8 +5,7 @@ info:
   version: '2.0'
   description: |
     # Overview
-    Use the CTC Traders Test Support API to inject departure and arrival movement notifications as if they have come from a customs office of departure
-    or destination through the New Computerised Transit System (NCTS).
+    Use the CTC Traders Test Support API to inject departure and arrival movement notifications as if they have come from a customs office of departure or destination through the New Computerised Transit System (NCTS).
 servers:
   - url: https://test-api.service.hmrc.gov.uk
     description: Sandbox
