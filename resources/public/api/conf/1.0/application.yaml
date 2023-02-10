@@ -5,8 +5,8 @@ info:
   version: '1.0'
   description: |
     # Overview
-    This API allows testers to inject departure and arrival movement notifications as 
-    if they have come from the office of departure or the office of destination by the New Computerised Transit System (NCTS).
+    Use the CTC Traders Test Support API to inject departure and arrival movement notifications as if they have come from a customs office of departure
+    or destination through the New Computerised Transit System (NCTS).
 servers:
   - url: https://test-api.service.hmrc.gov.uk
     description: Sandbox
@@ -17,15 +17,15 @@ paths:
     post:
       tags:
       - Arrivals
-      summary: Inject a fake NCTS Arrival Message
+      summary: Inject a fake NCTS arrival message
       description: >
-        Inject a message type into the test NCTS database for a given Arrival Movement.
+        Inject a message type into the test NCTS database for a given arrival Movement.
       operationId: postFakeNCTSArrivalMessage
       parameters:
         - $ref: '#/components/parameters/contentTypeHeader'
         - in: path
           name: arrivalId
-          description: The ID specifying the Arrival
+          description: The arrival ID specifying the arrival to return.
           required: true
           style: simple
           schema:
@@ -48,13 +48,13 @@ paths:
         required: true
       responses:
         '201':
-          description: When a test message has been successfully injected.
+          description: A successful test message injection response.
           content:
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/TestCustomsTransitsMovementsArrivalsMessagesResponse'
-                - description: JSON Payload
+                - description: JSON payload
                   example:
                     _links:
                       self:
@@ -94,7 +94,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/errorResponse'
-                  - description: When the Arrival Movement does not exist, has been archived or is not available to the EORI number.
+                  - description: Supplied arrival not found or does not exist or has been archived or is not available to the EORI number.
                     example:
                       statusCode: 404
               example:
@@ -107,15 +107,15 @@ paths:
     post:
       tags:
       - Departures
-      summary: Inject a fake NCTS Departure Message
+      summary: Inject a fake NCTS departure message
       description: >
-        Inject a message type into the test NCTS database for a given Movement Departure.
+        Inject a message type into the test NCTS database for a given departure.
       operationId: postFakeNCTSDepartureMessage
       parameters:
         - $ref: '#/components/parameters/contentTypeHeader'
         - in: path
           name: departureId
-          description: The ID specifying the Departure
+          description: The departure ID specifying the departure to return.
           required: true
           style: simple
           schema:
@@ -138,13 +138,13 @@ paths:
         required: true
       responses:
         '201':
-          description: When a test message has been successfully injected.
+          description: A successful test message injection response.
           content:
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/TestCustomsTransitsMovementsDeparturesMessagesResponse'
-                - description: JSON Payload
+                - description: JSON payload
                   example:
                     _links:
                       self:
@@ -184,7 +184,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/errorResponse'
-                  - description: When the Arrival Movement does not exist, has been archived or is not available to the EORI number.
+                  - description: Supplied departure not found or does not exist or has been archived or is not available to the EORI number.
                     example:
                       statusCode: 404
               example:

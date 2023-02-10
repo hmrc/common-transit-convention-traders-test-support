@@ -5,8 +5,8 @@ info:
   version: '2.0'
   description: |
     # Overview
-    This API allows testers to inject departure and arrival movement notifications as 
-    if they have come from the office of departure or the office of destination by the New Computerised Transit System (NCTS).
+    Use the CTC Traders Test Support API to inject departure and arrival movement notifications as if they have come from a customs office of departure
+    or destination through the New Computerised Transit System (NCTS).
 servers:
   - url: https://test-api.service.hmrc.gov.uk
     description: Sandbox
@@ -17,7 +17,7 @@ paths:
     post:
       tags:
       - Arrivals
-      summary: Inject a fake NCTS Phase 5 arrival message
+      summary: Inject a fake NCTS phase 5 arrival message
       description: >
         Inject a message type into the test NCTS database for a given arrival.
       operationId: postFakeNCTSPhase5ArrivalMessage
@@ -26,7 +26,7 @@ paths:
         - $ref: '#/components/parameters/contentTypeHeader'
         - in: path
           name: arrivalId
-          description: The ID specifying the arrival.
+          description: The arrival ID specifying the arrival to return.
           required: true
           style: simple
           schema:
@@ -49,13 +49,13 @@ paths:
         required: true
       responses:
         '201':
-          description: When a test message has been successfully injected.
+          description: A successful test message injection response.
           content:
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/TestCustomsTransitsMovementsArrivalsMessagesResponse'
-                - description: JSON Payload
+                - description: JSON payload
                   example:
                     _links:
                       self:
@@ -97,7 +97,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/NotFound'
-                  - description: The specified arrivals does not exist, has been archived or is not available to the EORI number.
+                  - description: Supplied arrival not found or does not exist or has been archived or is not available to the EORI number.
                     example:
                       code: NOT_FOUND
                       message: Arrival with arrival ID was not found.
@@ -111,7 +111,7 @@ paths:
     post:
       tags:
       - Departures
-      summary: Inject a fake NCTS Phase 5 departure message
+      summary: Inject a fake NCTS phase 5 departure message
       description: >
         Inject a message type into the test NCTS database for a given departure.
       operationId: postfakeNCTSPhase5DepartureMessage
@@ -120,7 +120,7 @@ paths:
         - $ref: '#/components/parameters/contentTypeHeader'
         - in: path
           name: departureId
-          description: The ID specifying the departure.
+          description: The departure ID specifying the departure to return.
           required: true
           style: simple
           schema:
@@ -143,13 +143,13 @@ paths:
         required: true
       responses:
         '201':
-          description: When a test message has been successfully injected.
+          description: A successful test message injection response.
           content:
             application/json:
               schema:
                 allOf:
                 - $ref: '#/components/schemas/TestCustomsTransitsMovementsDeparturesMessagesResponse'
-                - description: JSON Payload
+                - description: JSON payload
                   example:
                     _links:
                       self:
@@ -191,7 +191,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/NotFound'
-                  - description: The specified departure does not exist, has been archived or is not available to the EORI number.
+                  - description: Supplied departure not found or does not exist or has been archived or is not available to the EORI number.
                     example:
                       code: NOT_FOUND
                       message: Departure with departure ID was not found.
