@@ -40,7 +40,7 @@ import v2.controllers.actions.ValidateMessageTypeActionProvider
 import v2.models.request.MessageRequest
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.ExecutionContext
 
 @ImplementedBy(classOf[TestMessagesController])
 trait V2TestMessagesController {
@@ -57,7 +57,8 @@ class TestMessagesController @Inject()(
   messageRequestAction: MessageRequestAction,
   validateDepartureMessageTypeActionProvider: ValidateMessageTypeActionProvider,
   msgGenService: MessageGenerationService
-) extends BackendController(cc)
+)(implicit ec: ExecutionContext)
+    extends BackendController(cc)
     with ResponseHelper
     with ErrorTranslator
     with V2TestMessagesController {

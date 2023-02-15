@@ -58,9 +58,10 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
     "when posting a message, should succeed and respond with the message Id" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(CREATED, "Created", Map(MessageIdHeaderKey -> Seq("3")))
-      val wrappedMessage         = <TraderChannelResponse><msg></msg></TraderChannelResponse>
+      val wrappedXMLMessage      = XMLMessage(<msg></msg>).wrapped
 
-      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedMessage)), any[String].asInstanceOf[CorrelationId])(any(), any()))
+      when(
+        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
@@ -77,9 +78,10 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
     "when posting a message, should fail if location header missing" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(CREATED, "Created")
-      val wrappedXMLMessage      = <TraderChannelResponse><msg></msg></TraderChannelResponse>
+      val wrappedXMLMessage      = XMLMessage(<msg></msg>).wrapped
 
-      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[CorrelationId])(any(), any()))
+      when(
+        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
@@ -100,9 +102,10 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
     "when posting a message, should fail if connector cannot complete its write" in {
       val inboundRouterConnector = mock[InboundRouterConnector]
       val response               = HttpResponse(INTERNAL_SERVER_ERROR, "Error")
-      val wrappedXMLMessage      = <TraderChannelResponse><msg></msg></TraderChannelResponse>
+      val wrappedXMLMessage      = XMLMessage(<msg></msg>).wrapped
 
-      when(inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage)), any[String].asInstanceOf[CorrelationId])(any(), any()))
+      when(
+        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any()))
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
