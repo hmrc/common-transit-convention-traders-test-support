@@ -35,6 +35,7 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
 
   protected lazy val app: Application =
     new GuiceApplicationBuilder()
+      .configure(configure: _*)
       .configure(
         "metrics.jvm" -> false,
         portConfigKey -> server.port().toString
@@ -43,6 +44,8 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
       .build()
 
   protected lazy val injector: Injector = app.injector
+
+  protected def configure: Seq[(String, Any)] = Seq.empty
 
   protected def bindings: Seq[GuiceableModule] = Seq.empty
 

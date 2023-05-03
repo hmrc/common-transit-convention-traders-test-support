@@ -26,6 +26,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import play.api.http.HeaderNames
 import play.api.http.Status.ACCEPTED
 import play.api.http.Status.BAD_REQUEST
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -40,6 +41,11 @@ import v2.models.XMLMessage
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite with ItGenerators with ScalaCheckDrivenPropertyChecks with ScalaFutures {
+
+  override val configure: Seq[(String, Any)] = Seq(
+    "microservice.services.transit-movements-router.bearerToken.enabled" -> true,
+    "microservice.services.transit-movements-router.bearerToken.token"   -> "bearertokengb"
+  )
 
   "post" - {
 
@@ -67,6 +73,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
           post(
             urlEqualTo(targetUrl(correlationId))
           )
+            .withHeader(HeaderNames.AUTHORIZATION, equalTo("Bearer bearertokengb"))
             .withHeader("X-Message-Type", equalTo(messageType.code))
             .willReturn(aResponse().withStatus(ACCEPTED))
         )

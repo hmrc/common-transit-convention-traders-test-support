@@ -18,6 +18,7 @@ package v2.connectors
 
 import config.AppConfig
 import connectors.util.CustomHttpReader
+import uk.gov.hmrc.http.Authorization
 import v2.models.CorrelationId
 import v2.models.MessageType
 import v2.models.WrappedXMLMessage
@@ -31,15 +32,19 @@ import scala.concurrent.Future
 
 class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
+  lazy val auth: Option[Authorization] =
+    if (appConfig.bearerTokenEnabled) Some(Authorization(s"Bearer ${appConfig.bearerTokenToken}"))
+    else None
+
   // Create a new message with the transit-movements-router service
   def post(messageType: MessageType, message: WrappedXMLMessage, correlationId: CorrelationId)(implicit
                                                                                                hc: HeaderCarrier,
                                                                                                ec: ExecutionContext): Future[HttpResponse] = {
     val newHeaders = hc
-      .copy()
+      .copy(authorization = auth)
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
 
-    val url = appConfig.transitMovementsRouterUrl + s"/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
+    val url = s"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
     http.POSTString(url, message.value.mkString, requestHeaders)(CustomHttpReader, newHeaders, ec)
   }
