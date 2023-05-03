@@ -38,4 +38,8 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   val enableVersionOne: Boolean = config.get[Boolean]("enableVersionOne")
   val transitMovementsUrl       = servicesConfig.baseUrl("transit-movements")
   val transitMovementsRouterUrl = servicesConfig.baseUrl("transit-movements-router")
+
+  lazy val bearerTokenEnabled = config.get[Boolean]("microservice.services.transit-movements-router.bearerToken.enabled")
+  lazy val bearerTokenToken   = config.get[String]("microservice.services.transit-movements-router.bearerToken.token")
+
 }
