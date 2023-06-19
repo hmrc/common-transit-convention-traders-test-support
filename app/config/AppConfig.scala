@@ -42,4 +42,5 @@ class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig)
   lazy val bearerTokenEnabled = config.get[Boolean]("microservice.services.transit-movements-router.bearerToken.enabled")
   lazy val bearerTokenToken   = config.get[String]("microservice.services.transit-movements-router.bearerToken.token")
 
+  lazy val internalAuthToken = config.get[String]("internal-auth.token")
 }
