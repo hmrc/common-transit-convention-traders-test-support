@@ -19,7 +19,6 @@ lazy val microservice = Project(appName, file("."))
     ThisBuild / scalafmtOnCompile := true,
     ThisBuild / useSuperShell := false
   )
-  .settings(publishingSettings: _*)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(ScoverageSettings())
   .settings(inThisBuild(buildSettings))
