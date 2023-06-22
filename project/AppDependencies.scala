@@ -24,6 +24,7 @@ object AppDependencies {
     "org.typelevel"          %% "cats-laws"              % "2.7.0",
     "org.typelevel"          %% "discipline-core"        % "1.4.0",
     "org.typelevel"          %% "discipline-scalatest"   % "2.1.5",
-    "com.vladsch.flexmark"    % "flexmark-all"           % "0.62.2"
+    "com.vladsch.flexmark"    % "flexmark-all"           % "0.62.2",
+    "uk.gov.hmrc"            %% "bootstrap-test-play-28" % bootstrapVersion,
   ).map(_ % "test, it")
 }

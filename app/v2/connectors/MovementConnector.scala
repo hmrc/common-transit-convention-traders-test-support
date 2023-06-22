@@ -24,7 +24,7 @@ import v2.models.Movement
 import v2.models.EORINumber
 import v2.models.Message
 import v2.models.MessageId
-import play.api.mvc.RequestHeader
+import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
@@ -40,13 +40,12 @@ import scala.concurrent.Future
 class MovementConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(implicit
-                                                                                        requestHeader: RequestHeader,
                                                                                         hc: HeaderCarrier,
                                                                                         ec: ExecutionContext): Future[Movement] = {
     val url = constructMovementUri(movementType, eori, movementId)
 
     http
-      .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
+      .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))), ec)
       .flatMap {
         response =>
           response.status match {
@@ -57,14 +56,15 @@ class MovementConnector @Inject()(http: HttpClient, appConfig: AppConfig) extend
   }
 
   def getMessage(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId)(implicit
-                                                                                                             request: RequestHeader,
                                                                                                              hc: HeaderCarrier,
                                                                                                              ec: ExecutionContext): Future[Message] = {
 
     val uri = constructMessageUri(movementType, eori, movementId, messageId)
 
     http
-      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders)(CustomHttpReader, enforceAuthHeaderCarrier(Seq()), ec)
+      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders)(CustomHttpReader,
+                                                                    hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))),
+                                                                    ec)
       .flatMap {
         response =>
           response.status match {

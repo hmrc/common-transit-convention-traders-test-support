@@ -45,7 +45,7 @@ class MovementPersistenceServiceSpec extends SpecBase with ModelGenerators {
         val mockDepartureConnector = mock[MovementConnector]
         when(
           mockDepartureConnector
-            .getMovement(eqTo(movementType), EORINumber(eqTo(movement.enrollmentEORINumber.value)), MovementId(eqTo(movement._id.value)))(any(), any(), any()))
+            .getMovement(eqTo(movementType), EORINumber(eqTo(movement.enrollmentEORINumber.value)), MovementId(eqTo(movement._id.value)))(any(), any()))
           .thenReturn(Future.successful[Movement](movement))
 
         val departureService = new MovementPersistenceServiceImpl(mockDepartureConnector)
@@ -64,7 +64,7 @@ class MovementPersistenceServiceSpec extends SpecBase with ModelGenerators {
 
         when(
           mockDepartureConnector
-            .getMovement(eqTo(movementType), EORINumber(eqTo(movement.enrollmentEORINumber.value)), MovementId(eqTo(movement._id.value)))(any(), any(), any()))
+            .getMovement(eqTo(movementType), EORINumber(eqTo(movement.enrollmentEORINumber.value)), MovementId(eqTo(movement._id.value)))(any(), any()))
           .thenReturn(Future.failed(failedResponse))
 
         val departureService = new MovementPersistenceServiceImpl(mockDepartureConnector)

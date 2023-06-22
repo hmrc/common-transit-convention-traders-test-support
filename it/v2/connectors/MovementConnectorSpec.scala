@@ -17,6 +17,7 @@
 package v2.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import config.AppConfig
@@ -27,6 +28,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import play.api.http.HeaderNames
 import play.api.http.Status.NOT_FOUND
 import play.api.http.Status.OK
 import play.api.libs.json.Json
@@ -55,6 +57,12 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
   lazy val httpClient = app.injector.instanceOf[HttpClient]
   lazy val appConfig = app.injector.instanceOf[AppConfig]
 
+  val token = Gen.alphaNumStr.sample.get
+
+  override val configure: Seq[(String, Any)] = Seq(
+    "internal-auth.token" -> token
+  )
+
   "getMovement" - {
 
     def getMovementUri(movementType: MovementType, eori: EORINumber, movementId: MovementId)
@@ -75,6 +83,7 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
           get(
             urlEqualTo(getMovementUri(movementType, eori, movementId))
           )
+            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(
               aResponse()
                 .withBody(Json.stringify(
@@ -115,6 +124,7 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
           get(
             urlEqualTo(getMovementUri(movementType, eori, movementId))
           )
+            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(aResponse().withStatus(NOT_FOUND))
         )
         val sut = new MovementConnector(httpClient, appConfig)
@@ -147,12 +157,12 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
       (movementType, eori, movementId, messageId, messageType, offsetDateTime) =>
         val maybeBody = Gen.option(Gen.alphaNumStr).sample.value // we can only do six generators above, so here's the seventh
         implicit val hc: HeaderCarrier = HeaderCarrier()
-        implicit val request: Request[AnyContent] = FakeRequest("GET", "/")
 
         server.stubFor(
           get(
             urlEqualTo(getMessageUri(movementType, eori, movementId, messageId))
           )
+            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(
               aResponse()
                 .withBody(Json.stringify(
@@ -185,12 +195,12 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
     ) {
       (movementType, eori, movementId, messageId) =>
         implicit val hc: HeaderCarrier = HeaderCarrier()
-        implicit val request: Request[AnyContent] = FakeRequest("GET", "/")
 
         server.stubFor(
           get(
             urlEqualTo(getMessageUri(movementType, eori, movementId, messageId))
           )
+            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(aResponse().withStatus(NOT_FOUND))
         )
         val sut = new MovementConnector(httpClient, appConfig)
