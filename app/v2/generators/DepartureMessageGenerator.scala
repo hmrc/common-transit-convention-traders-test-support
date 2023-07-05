@@ -44,7 +44,6 @@ import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.RecoveryNotification
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
-import v2.models.MessageType.RequestOnNonArrivedMovementDate
 import v2.models.MessageType.WriteOffNotification
 import v2.models.XMLMessage
 
@@ -66,7 +65,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
     case RecoveryNotification              => generateIE035Message(correlationId)
     case NoReleaseForTransit               => generateIE051Message(correlationId)
     case GuaranteeNotValid                 => generateIE055Message(correlationId)
-    case RequestOnNonArrivedMovementDate   => generateIE140Message(correlationId)
     case Discrepancies                     => generateIE019Message(correlationId)
     case WriteOffNotification              => generateIE045Message(correlationId)
     case ForwardedIncidentNotificationToED => generateIE182Message(correlationId)

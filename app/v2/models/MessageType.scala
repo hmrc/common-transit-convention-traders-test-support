@@ -33,7 +33,6 @@ object MessageType {
   case object ReleaseForTransit                 extends MessageType("IE029", "CC029C")
   case object UnloadingPermission               extends MessageType("IE043", "CC043C")
   case object RejectionFromOfficeOfDestination  extends MessageType("IE057", "CC057C")
-  case object RequestOnNonArrivedMovementDate   extends MessageType("IE140", "CC140C")
   case object RejectionFromOfficeOfDeparture    extends MessageType("IE056", "CC056C")
   case object ControlDecisionNotification       extends MessageType("IE060", "CC060C")
   case object RecoveryNotification              extends MessageType("IE035", "CC035C")
@@ -60,7 +59,6 @@ object MessageType {
     RecoveryNotification,
     NoReleaseForTransit,
     GuaranteeNotValid,
-    RequestOnNonArrivedMovementDate,
     Discrepancies,
     WriteOffNotification,
     ForwardedIncidentNotificationToED
