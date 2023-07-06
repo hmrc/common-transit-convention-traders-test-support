@@ -512,45 +512,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
       </ncts:CC055C>
     )
 
-  private def generateIE140Message(correlationId: String): XMLMessage =
-    XMLMessage(
-      <ncts:CC140C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
-        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
-        <messageRecipient>{correlationId}</messageRecipient>
-        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
-        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
-        <messageType>CC140C</messageType>
-        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
-        <TransitOperation>
-          <MRN>{Strings.mrn()}</MRN>
-          <requestOnNonArrivedMovementDate>{generateLocalDate()}</requestOnNonArrivedMovementDate>
-          <limitForResponseDate>2008-11-15</limitForResponseDate>
-        </TransitOperation>
-        <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
-        </CustomsOfficeOfDeparture>
-        <CustomsOfficeOfEnquiryAtDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
-        </CustomsOfficeOfEnquiryAtDeparture>
-        <HolderOfTheTransitProcedure>
-          <!--Optional:-->
-          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
-          <!--Optional:-->
-          <TIRHolderIdentificationNumber>{Strings.alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
-          <!--Optional:-->
-          <name>{Strings.alphanumeric(1, 70)}</name>
-          <!--Optional:-->
-          <Address>
-            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
-            <!--Optional:-->
-            <postcode>{Strings.alphanumeric(2, 17)}</postcode>
-            <city>{Strings.alphanumeric(2, 35)}</city>
-            <country>{Strings.alpha(2).toUpperCase}</country>
-          </Address>
-        </HolderOfTheTransitProcedure>
-      </ncts:CC140C>
-    )
-
   private def generateIE019Message(correlationId: String): XMLMessage =
     XMLMessage(
       <ncts:CC019C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
