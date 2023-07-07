@@ -44,7 +44,6 @@ import v2.models.MessageType.PositiveAcknowledgement
 import v2.models.MessageType.RecoveryNotification
 import v2.models.MessageType.RejectionFromOfficeOfDeparture
 import v2.models.MessageType.ReleaseForTransit
-import v2.models.MessageType.RequestOnNonArrivedMovementDate
 import v2.models.MessageType.WriteOffNotification
 import v2.models.XMLMessage
 
@@ -66,7 +65,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
     case RecoveryNotification              => generateIE035Message(correlationId)
     case NoReleaseForTransit               => generateIE051Message(correlationId)
     case GuaranteeNotValid                 => generateIE055Message(correlationId)
-    case RequestOnNonArrivedMovementDate   => generateIE140Message(correlationId)
     case Discrepancies                     => generateIE019Message(correlationId)
     case WriteOffNotification              => generateIE045Message(correlationId)
     case ForwardedIncidentNotificationToED => generateIE182Message(correlationId)
@@ -512,45 +510,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
           </InvalidGuaranteeReason>
         </GuaranteeReference>
       </ncts:CC055C>
-    )
-
-  private def generateIE140Message(correlationId: String): XMLMessage =
-    XMLMessage(
-      <ncts:CC140C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
-        <messageSender>{Strings.alphanumeric(1, 35)}</messageSender>
-        <messageRecipient>{correlationId}</messageRecipient>
-        <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
-        <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
-        <messageType>CC140C</messageType>
-        <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
-        <TransitOperation>
-          <MRN>{Strings.mrn()}</MRN>
-          <requestOnNonArrivedMovementDate>{generateLocalDate()}</requestOnNonArrivedMovementDate>
-          <limitForResponseDate>2008-11-15</limitForResponseDate>
-        </TransitOperation>
-        <CustomsOfficeOfDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
-        </CustomsOfficeOfDeparture>
-        <CustomsOfficeOfEnquiryAtDeparture>
-          <referenceNumber>{Strings.referenceNumber()}</referenceNumber>
-        </CustomsOfficeOfEnquiryAtDeparture>
-        <HolderOfTheTransitProcedure>
-          <!--Optional:-->
-          <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
-          <!--Optional:-->
-          <TIRHolderIdentificationNumber>{Strings.alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
-          <!--Optional:-->
-          <name>{Strings.alphanumeric(1, 70)}</name>
-          <!--Optional:-->
-          <Address>
-            <streetAndNumber>{Strings.alphanumeric(2, 70)}</streetAndNumber>
-            <!--Optional:-->
-            <postcode>{Strings.alphanumeric(2, 17)}</postcode>
-            <city>{Strings.alphanumeric(2, 35)}</city>
-            <country>{Strings.alpha(2).toUpperCase}</country>
-          </Address>
-        </HolderOfTheTransitProcedure>
-      </ncts:CC140C>
     )
 
   private def generateIE019Message(correlationId: String): XMLMessage =
