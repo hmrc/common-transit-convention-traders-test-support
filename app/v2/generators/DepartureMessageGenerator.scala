@@ -503,11 +503,12 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <GuaranteeReference>
           <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
           <GRN>{grn()}</GRN>
-          <InvalidGuaranteeReason>
+          <GuaranteeTypeWithGrn>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
             <code>{alphanumeric(1, 3)}</code>
             <!--Optional:-->
             <text>{alphanumeric(1, 512)}</text>
-          </InvalidGuaranteeReason>
+          </GuaranteeTypeWithGrn>
         </GuaranteeReference>
       </ncts:CC055C>
     )
