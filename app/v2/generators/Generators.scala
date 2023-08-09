@@ -35,6 +35,4 @@ trait Generators {
 
   def generateDeclarationGoodsNumber(): String = Strings.between1And9.toString ++ Strings.numeric(2)
 
-  def generateNumberOfSeals(): String = Strings.between1And9.toString ++ Strings.between0And9.toString
-
 }

@@ -190,7 +190,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
             <!--Optional:-->
             <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
-            <numberOfSeals>{generateNumberOfSeals()}</numberOfSeals>
+            <numberOfSeals>0</numberOfSeals>
             <!--0 to 99 repetitions:-->
             <Seal>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>

@@ -159,8 +159,4 @@ object Strings {
     Random.shuffle(values).head
   }
 
-  def between0And3: Int = Gen.choose(0, 3).sample.getOrElse(1)
-
-  def between0And9: Int = Gen.choose(0, 9).sample.getOrElse(1)
-
 }
