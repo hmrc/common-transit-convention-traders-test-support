@@ -227,7 +227,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <TransitOperation>
           <LRN>{alphanumeric(1, 22)}</LRN>
           <MRN>{mrn()}</MRN>
-          <declarationType>{alphanumeric(1, 5)}</declarationType>
+          <DeclarationType>{alphanumeric(1, 5)}</DeclarationType>
           <additionalDeclarationType>{alpha(1)}</additionalDeclarationType>
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <releaseDate>{generateLocalDate()}</releaseDate>
@@ -255,7 +255,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         </HolderOfTheTransitProcedure>
         <Guarantee>
           <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
-          <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
+          <GuaranteeType>{alphanumericCapital(1)}</GuaranteeType>
         </Guarantee>
         <Consignment>
           <containerIndicator>{zeroOrOne()}</containerIndicator>
