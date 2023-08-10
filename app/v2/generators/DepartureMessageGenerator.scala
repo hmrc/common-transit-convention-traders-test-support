@@ -267,9 +267,9 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
             <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
             <grossMass>{decimalNumber(16, 6)}</grossMass>
             <ConsignmentItem>
-              <DeclarationType>{alphanumeric(1, 5)}</DeclarationType>
               <goodsItemNumber>{numeric(5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
+              <DeclarationType>{alphanumeric(1, 5)}</DeclarationType>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
                 <GoodsMeasure>
