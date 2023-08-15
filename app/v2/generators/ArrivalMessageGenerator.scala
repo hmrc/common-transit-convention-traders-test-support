@@ -63,12 +63,12 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
           <!--1 to 99 repetitions:-->
           <HouseConsignment>
             <sequenceNumber>1</sequenceNumber>
-            <releaseType>0</releaseType>
+            <ReleaseType>0</ReleaseType>
             <!--0 to 999 repetitions:-->
             <ConsignmentItem>
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
-              <releaseType>0</releaseType>
+              <ReleaseType>0</ReleaseType>
               <Commodity>
                 <descriptionOfGoods>{Strings.alphanumeric(64)}</descriptionOfGoods>
                 <!--Optional:-->
@@ -93,7 +93,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
                 <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
                 <typeOfPackages>{Strings.alphanumeric(2)}</typeOfPackages>
                 <!--Optional:-->
-                <numberOfPackages>{Strings.numeric(1, 8)}</numberOfPackages>
+                <numberOfPackages>0</numberOfPackages>
                 <!--Optional:-->
                 <shippingMarks>{Strings.alphanumeric(64)}</shippingMarks>
               </Packaging>
@@ -115,7 +115,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         <TransitOperation>
           <MRN>{Strings.mrn()}</MRN>
           <!--Optional:-->
-          <declarationType>{Strings.alphanumeric(5)}</declarationType>
+          <DeclarationType>{Strings.alphanumeric(5)}</DeclarationType>
           <!--Optional:-->
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <security>{Strings.numeric(1)}</security>
@@ -190,7 +190,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
             <!--Optional:-->
             <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
-            <numberOfSeals>{Strings.numeric(1, 4)}</numberOfSeals>
+            <numberOfSeals>0</numberOfSeals>
             <!--0 to 99 repetitions:-->
             <Seal>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
@@ -387,7 +387,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               <!--Optional:-->
-              <declarationType>{Strings.alphanumeric(1, 5)}</declarationType>
+              <DeclarationType>{Strings.alphanumeric(1, 5)}</DeclarationType>
               <!--Optional:-->
               <countryOfDestination>{Strings.alpha(2).toUpperCase}</countryOfDestination>
               <!--Optional:-->
