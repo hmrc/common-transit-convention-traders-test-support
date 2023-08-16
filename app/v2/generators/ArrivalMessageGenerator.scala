@@ -63,12 +63,12 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
           <!--1 to 99 repetitions:-->
           <HouseConsignment>
             <sequenceNumber>1</sequenceNumber>
-            <ReleaseType>0</ReleaseType>
+            <releaseType>0</releaseType>
             <!--0 to 999 repetitions:-->
             <ConsignmentItem>
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
-              <ReleaseType>0</ReleaseType>
+              <releaseType>0</releaseType>
               <Commodity>
                 <descriptionOfGoods>{Strings.alphanumeric(64)}</descriptionOfGoods>
                 <!--Optional:-->
@@ -115,7 +115,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
         <TransitOperation>
           <MRN>{Strings.mrn()}</MRN>
           <!--Optional:-->
-          <DeclarationType>{Strings.alphanumeric(5)}</DeclarationType>
+          <declarationType>{Strings.alphanumeric(5)}</declarationType>
           <!--Optional:-->
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <security>{Strings.numeric(1)}</security>
@@ -190,7 +190,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
             <!--Optional:-->
             <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
-            <numberOfSeals>0</numberOfSeals>
+            <numberOfSeals>{Strings.numeric(1, 4)}</numberOfSeals>
             <!--0 to 99 repetitions:-->
             <Seal>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
@@ -387,7 +387,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <goodsItemNumber>{Strings.numeric(1, 5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               <!--Optional:-->
-              <DeclarationType>{Strings.alphanumeric(1, 5)}</DeclarationType>
+              <declarationType>{Strings.alphanumeric(1, 5)}</declarationType>
               <!--Optional:-->
               <countryOfDestination>{Strings.alpha(2).toUpperCase}</countryOfDestination>
               <!--Optional:-->

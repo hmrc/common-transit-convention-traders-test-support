@@ -227,7 +227,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <TransitOperation>
           <LRN>{alphanumeric(1, 22)}</LRN>
           <MRN>{mrn()}</MRN>
-          <DeclarationType>{alphanumeric(1, 5)}</DeclarationType>
+          <declarationType>{alphanumeric(1, 5)}</declarationType>
           <additionalDeclarationType>{alpha(1)}</additionalDeclarationType>
           <declarationAcceptanceDate>{generateLocalDate()}</declarationAcceptanceDate>
           <releaseDate>{generateLocalDate()}</releaseDate>
@@ -255,7 +255,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         </HolderOfTheTransitProcedure>
         <Guarantee>
           <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
-          <GuaranteeType>{alphanumericCapital(1)}</GuaranteeType>
+          <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
         </Guarantee>
         <Consignment>
           <containerIndicator>{zeroOrOne()}</containerIndicator>
@@ -269,7 +269,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
             <ConsignmentItem>
               <goodsItemNumber>{numeric(5)}</goodsItemNumber>
               <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
-              <DeclarationType>{alphanumeric(1, 5)}</DeclarationType>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
                 <GoodsMeasure>
@@ -504,12 +503,12 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <GuaranteeReference>
           <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
           <GRN>{grn()}</GRN>
-          <GuaranteeTypeWithGrn>
+          <InvalidGuaranteeReason>
             <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
             <code>{alphanumeric(1, 3)}</code>
             <!--Optional:-->
             <text>{alphanumeric(1, 512)}</text>
-          </GuaranteeTypeWithGrn>
+          </InvalidGuaranteeReason>
         </GuaranteeReference>
       </ncts:CC055C>
     )
