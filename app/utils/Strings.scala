@@ -42,6 +42,12 @@ object Strings {
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
   }
 
+  def numericNonZeroStart(lengthStart: Int, lengthEnd: Int): String = {
+    val first = Gen.choose(1, 9).map(_.toString).sample.getOrElse("1")
+    val rest  = numeric(lengthStart, lengthEnd - 1)
+    first + rest
+  }
+
   def alpha(maxLen: Int, minLen: Int = 1) =
     (for {
       len <- Gen.choose(minLen, maxLen)
