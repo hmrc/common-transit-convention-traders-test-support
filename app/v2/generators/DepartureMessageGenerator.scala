@@ -29,6 +29,7 @@ import utils.Strings.grn
 import utils.Strings.mrn
 import utils.Strings.num
 import utils.Strings.numeric
+import utils.Strings.numericNonZeroStart
 import utils.Strings.referenceNumber
 import utils.Strings.zeroOrOne
 import v2.models.MessageType
@@ -260,9 +261,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
         <Consignment>
           <containerIndicator>{zeroOrOne()}</containerIndicator>
           <grossMass>{decimalNumber(16, 6)}</grossMass>
-          <PlaceOfLoading>
-            <country>{alpha(2).toUpperCase}</country>
-          </PlaceOfLoading>
           <HouseConsignment>
             <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
             <grossMass>{decimalNumber(16, 6)}</grossMass>
@@ -271,9 +269,6 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
               <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
-                <GoodsMeasure>
-                  <grossMass>{decimalNumber(16, 6)}</grossMass>
-                </GoodsMeasure>
               </Commodity>
               <Packaging>
                 <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
@@ -672,7 +667,7 @@ class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators w
               <!--Optional:-->
               <containerIdentificationNumber>{alphanumeric(8, 17)}</containerIdentificationNumber>
               <!--Optional:-->
-              <numberOfSeals>{numeric(1, 4)}</numberOfSeals>
+              <numberOfSeals>{numericNonZeroStart(1, 4)}</numberOfSeals>
               <!--0 to 99 repetitions:-->
               <Seal>
                 <sequenceNumber>{numeric(1, 4)}</sequenceNumber>

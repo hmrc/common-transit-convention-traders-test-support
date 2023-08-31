@@ -82,11 +82,6 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
                   <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
                   <UNNumber>{Strings.alphanumeric(4)}</UNNumber>
                 </DangerousGoods>
-                <GoodsMeasure>
-                  <grossMass>1000.00</grossMass>
-                  <!--Optional:-->
-                  <netMass>1000.00</netMass>
-                </GoodsMeasure>
               </Commodity>
               <!--1 to 99 repetitions:-->
               <Packaging>
@@ -190,7 +185,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
             <!--Optional:-->
             <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
-            <numberOfSeals>{Strings.numeric(1, 4)}</numberOfSeals>
+            <numberOfSeals>{Strings.numericNonZeroStart(1, 4)}</numberOfSeals>
             <!--0 to 99 repetitions:-->
             <Seal>
               <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
@@ -281,7 +276,7 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
               <!--Optional:-->
               <containerIdentificationNumber>{Strings.alphanumeric(8, 17)}</containerIdentificationNumber>
               <!--Optional:-->
-              <numberOfSeals>{Strings.numeric(1, 4)}</numberOfSeals>
+              <numberOfSeals>{Strings.numericNonZeroStart(1, 4)}</numberOfSeals>
               <!--0 to 99 repetitions:-->
               <Seal>
                 <sequenceNumber>{Strings.numeric(1, 4)}</sequenceNumber>
@@ -420,18 +415,13 @@ class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators wit
                   <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
                   <UNNumber>{Strings.numeric(4)}</UNNumber>
                 </DangerousGoods>
-                <GoodsMeasure>
-                  <grossMass>2468.1234</grossMass>
-                  <!--Optional:-->
-                  <netMass>12345.78900</netMass>
-                </GoodsMeasure>
               </Commodity>
               <!--1 to 99 repetitions:-->
               <Packaging>
                 <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
                 <typeOfPackages>{Strings.alphanumeric(2)}</typeOfPackages>
                 <!--Optional:-->
-                <numberOfPackages>{Strings.numeric(1, 8)}</numberOfPackages>
+                <numberOfPackages>{Strings.numericNonZeroStart(1, 8)}</numberOfPackages>
                 <!--Optional:-->
                 <shippingMarks>{Strings.numeric(2, 512)}</shippingMarks>
               </Packaging>
