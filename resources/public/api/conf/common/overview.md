@@ -6,6 +6,8 @@ You should read:
 - [Roadmap](/roadmaps/common-transit-convention-traders-roadmap/) to review our progress and to learn about what you can test
 - [Tutorials](/api-documentation/docs/tutorials) to learn how to develop your own client applications, including example clients, for this API
 
+**Advance notice:** After 18 October 2023, you will no longer be able to use this API. This is because the API was implemented as a temporary solution to facilitate your testing while the NCTS5 Trader Test environment was being built and tested. After the API is removed, if you do not already have access to the NCTS5 Trader Test environment, you will gain access to it automatically without having to request it. For more information about NCTS5 Trader Test, see [CTC Traders API phase 5 testing guide](https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-testing-guide/#trader-test).
+
 ### Changelog
 
 You can find the changelog in the [common-transit-convention-traders-test-support](https://github.com/hmrc/common-transit-convention-traders-test-support/wiki/CTC-Traders-Test-Support-API-v2.0-changelog) GitHub wiki.
