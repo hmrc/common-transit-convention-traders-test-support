@@ -14,8 +14,8 @@
     "versions": [
       {
         "version": "2.0",
-        "status": "BETA",
-        "endpointsEnabled": true,
+        "status": "DEPRECATED",
+        "endpointsEnabled": false,
         "access": {
           "type": "PUBLIC"
         }
