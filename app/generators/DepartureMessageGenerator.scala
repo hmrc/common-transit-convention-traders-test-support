@@ -34,7 +34,7 @@ import utils.Strings
 import java.time.Clock
 import scala.xml.NodeSeq
 
-class DepartureMessageGenerator @Inject()(clock: Clock) extends Generator(clock) {
+class DepartureMessageGenerator @Inject() (clock: Clock) extends Generator(clock) {
 
   val guaranteeRef = s"${Strings.numeric(2)}GB${Strings.alphanumeric(13)}"
 

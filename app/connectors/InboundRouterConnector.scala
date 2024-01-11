@@ -28,7 +28,7 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   def post(messageType: MessageType, message: String, itemId: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val xMessageRecipient = mdtpString.format(messageType.source, itemId, Constants.MessageCorrelationId)

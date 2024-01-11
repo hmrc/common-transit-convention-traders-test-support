@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.connectors
+package test.v2.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -35,11 +35,12 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.mvc.Request
 import play.api.test.FakeRequest
+import test.utils.WiremockSuite
+import test.v2.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.WiremockSuite
-import v2.generators.ItGenerators
+import v2.connectors.MovementConnector
 import v2.models.EORINumber
 import v2.models.Message
 import v2.models.MessageId
@@ -52,10 +53,17 @@ import v2.models.MovementType
 import java.time.OffsetDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite with ItGenerators with ScalaCheckDrivenPropertyChecks with ScalaFutures with OptionValues {
+class MovementConnectorSpec
+    extends AnyFreeSpec
+    with Matchers
+    with WiremockSuite
+    with ItGenerators
+    with ScalaCheckDrivenPropertyChecks
+    with ScalaFutures
+    with OptionValues {
 
   lazy val httpClient = app.injector.instanceOf[HttpClient]
-  lazy val appConfig = app.injector.instanceOf[AppConfig]
+  lazy val appConfig  = app.injector.instanceOf[AppConfig]
 
   val token = Gen.alphaNumStr.sample.get
 
@@ -65,8 +73,8 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
 
   "getMovement" - {
 
-    def getMovementUri(movementType: MovementType, eori: EORINumber, movementId: MovementId)
-      = s"/transit-movements/traders/${eori.value}/movements/${movementType.urlFragment}/${movementId.value}"
+    def getMovementUri(movementType: MovementType, eori: EORINumber, movementId: MovementId) =
+      s"/transit-movements/traders/${eori.value}/movements/${movementType.urlFragment}/${movementId.value}"
 
     "a successful retrieval should result in a Movement object being returned" in forAll(
       arbitrary[MovementType],
@@ -76,38 +84,41 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
       arbitrary[OffsetDateTime]
     ) {
       (movementType, eori, movementId, maybeMrn, offsetDateTime) =>
-        implicit val hc: HeaderCarrier = HeaderCarrier()
+        implicit val hc: HeaderCarrier            = HeaderCarrier()
         implicit val request: Request[AnyContent] = FakeRequest("GET", "/")
 
         server.stubFor(
           get(
             urlEqualTo(getMovementUri(movementType, eori, movementId))
-          )
-            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
+          ).withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(
               aResponse()
-                .withBody(Json.stringify(
-                  Json.obj(
-                    "_id" -> movementId.value,
-                    "enrollmentEORINumber" -> eori.value,
-                    "movementEORINumber" -> eori.value,
-                    "movementReferenceNumber" -> maybeMrn,
-                    "created" -> offsetDateTime,
-                    "updated" -> offsetDateTime
+                .withBody(
+                  Json.stringify(
+                    Json.obj(
+                      "_id"                     -> movementId.value,
+                      "enrollmentEORINumber"    -> eori.value,
+                      "movementEORINumber"      -> eori.value,
+                      "movementReferenceNumber" -> maybeMrn,
+                      "created"                 -> offsetDateTime,
+                      "updated"                 -> offsetDateTime
+                    )
                   )
-                ))
-                .withStatus(OK))
+                )
+                .withStatus(OK)
+            )
         )
         val sut = new MovementConnector(httpClient, appConfig)
         whenReady(sut.getMovement(movementType, eori, movementId)) {
-          r => r mustBe Movement(
-            _id = movementId,
-            enrollmentEORINumber = eori,
-            movementEORINumber = eori,
-            movementReferenceNumber = maybeMrn,
-            created = offsetDateTime,
-            updated = offsetDateTime
-          )
+          r =>
+            r mustBe Movement(
+              _id = movementId,
+              enrollmentEORINumber = eori,
+              movementEORINumber = eori,
+              movementReferenceNumber = maybeMrn,
+              created = offsetDateTime,
+              updated = offsetDateTime
+            )
         }
     }
 
@@ -117,20 +128,21 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
       arbitrary[MovementId]
     ) {
       (movementType, eori, movementId) =>
-        implicit val hc: HeaderCarrier = HeaderCarrier()
+        implicit val hc: HeaderCarrier            = HeaderCarrier()
         implicit val request: Request[AnyContent] = FakeRequest("GET", "/")
 
         server.stubFor(
           get(
             urlEqualTo(getMovementUri(movementType, eori, movementId))
-          )
-            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
+          ).withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(aResponse().withStatus(NOT_FOUND))
         )
         val sut = new MovementConnector(httpClient, appConfig)
         val result = sut
           .getMovement(movementType, eori, movementId)
-          .map(_ => fail("Should not have succeeded"))
+          .map(
+            _ => fail("Should not have succeeded")
+          )
           .recover {
             case UpstreamErrorResponse(_, NOT_FOUND, _, _) => ()
           }
@@ -143,8 +155,8 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
 
   "getMessage" - {
 
-    def getMessageUri(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId)
-      = s"/transit-movements/traders/${eori.value}/movements/${movementType.urlFragment}/${movementId.value}/messages/${messageId.value}"
+    def getMessageUri(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId) =
+      s"/transit-movements/traders/${eori.value}/movements/${movementType.urlFragment}/${movementId.value}/messages/${messageId.value}"
 
     "a successful retrieval should result in a Movement object being returned" in forAll(
       arbitrary[MovementType],
@@ -155,25 +167,27 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
       arbitrary[OffsetDateTime]
     ) {
       (movementType, eori, movementId, messageId, messageType, offsetDateTime) =>
-        val maybeBody = Gen.option(Gen.alphaNumStr).sample.value // we can only do six generators above, so here's the seventh
+        val maybeBody                  = Gen.option(Gen.alphaNumStr).sample.value // we can only do six generators above, so here's the seventh
         implicit val hc: HeaderCarrier = HeaderCarrier()
 
         server.stubFor(
           get(
             urlEqualTo(getMessageUri(movementType, eori, movementId, messageId))
-          )
-            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
+          ).withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(
               aResponse()
-                .withBody(Json.stringify(
-                  Json.obj(
-                    "id" -> messageId.value,
-                    "received" -> offsetDateTime,
-                    "messageType" -> messageType,
-                    "body" -> maybeBody
+                .withBody(
+                  Json.stringify(
+                    Json.obj(
+                      "id"          -> messageId.value,
+                      "received"    -> offsetDateTime,
+                      "messageType" -> messageType,
+                      "body"        -> maybeBody
+                    )
                   )
-                ))
-                .withStatus(OK))
+                )
+                .withStatus(OK)
+            )
         )
         val sut = new MovementConnector(httpClient, appConfig)
         whenReady(sut.getMessage(movementType, eori, movementId, messageId)) {
@@ -199,14 +213,15 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
         server.stubFor(
           get(
             urlEqualTo(getMessageUri(movementType, eori, movementId, messageId))
-          )
-            .withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
+          ).withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(aResponse().withStatus(NOT_FOUND))
         )
         val sut = new MovementConnector(httpClient, appConfig)
         val result = sut
           .getMessage(movementType, eori, movementId, messageId)
-          .map(_ => fail("Should not have succeeded"))
+          .map(
+            _ => fail("Should not have succeeded")
+          )
           .recover {
             case UpstreamErrorResponse(_, NOT_FOUND, _, _) => ()
           }
@@ -216,7 +231,6 @@ class MovementConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite
     }
 
   }
-
 
   override protected def portConfigKey: String = "microservice.services.transit-movements.port"
 }

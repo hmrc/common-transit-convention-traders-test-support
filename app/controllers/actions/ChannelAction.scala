@@ -29,7 +29,7 @@ import play.api.mvc.Result
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ChannelAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, ChannelRequest] {
+class ChannelAction @Inject() ()(implicit val executionContext: ExecutionContext) extends ActionRefiner[Request, ChannelRequest] {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
 

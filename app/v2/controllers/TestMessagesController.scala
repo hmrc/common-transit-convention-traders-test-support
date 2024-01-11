@@ -49,7 +49,7 @@ trait V2TestMessagesController {
   def sendArrivalsResponse(departureId: MovementId): Action[JsValue]
 }
 
-class TestMessagesController @Inject()(
+class TestMessagesController @Inject() (
   cc: ControllerComponents,
   authAction: AuthAction,
   movementPersistenceService: MovementPersistenceService,
@@ -78,8 +78,7 @@ class TestMessagesController @Inject()(
           (for {
 
             // Get matching departure from transit-movements
-            _ <- (movementPersistenceService.getMovement(movementType, request.eori, movementId)).asPresentation
-
+            _       <- movementPersistenceService.getMovement(movementType, request.eori, movementId).asPresentation
             message <- msgGenService.generateMessage(request.messageType, movementType, movementId).asPresentation
 
             // Send generated message to transit-movements-router

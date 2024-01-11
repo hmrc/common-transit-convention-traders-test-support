@@ -24,6 +24,7 @@ import play.api.libs.json._
 case class TestMessage(messageType: MessageType)
 
 object TestMessage {
+
   implicit val readsTestMessage: Reads[TestMessage] =
     (
       (__ \ "message" \ "messageType").read[String] and

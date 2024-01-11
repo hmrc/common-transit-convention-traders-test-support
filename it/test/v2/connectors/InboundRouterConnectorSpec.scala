@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2.connectors
+package test.v2.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -30,10 +30,11 @@ import play.api.http.HeaderNames
 import play.api.http.Status.ACCEPTED
 import play.api.http.Status.BAD_REQUEST
 import play.api.http.Status.INTERNAL_SERVER_ERROR
+import test.utils.WiremockSuite
+import test.v2.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
-import utils.WiremockSuite
-import v2.generators.ItGenerators
+import v2.connectors.InboundRouterConnector
 import v2.models.CorrelationId
 import v2.models.MessageType
 import v2.models.XMLMessage
@@ -64,16 +65,14 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         server.stubFor(
           post(
             urlEqualTo(targetUrl(correlationId))
-          )
-            .willReturn(aResponse().withStatus(BAD_REQUEST))
+          ).willReturn(aResponse().withStatus(BAD_REQUEST))
         )
 
         // this takes precedence ONLY if the header exists.
         server.stubFor(
           post(
             urlEqualTo(targetUrl(correlationId))
-          )
-            .withHeader(HeaderNames.AUTHORIZATION, equalTo("Bearer bearertokengb"))
+          ).withHeader(HeaderNames.AUTHORIZATION, equalTo("Bearer bearertokengb"))
             .withHeader("X-Message-Type", equalTo(messageType.code))
             .willReturn(aResponse().withStatus(ACCEPTED))
         )
@@ -81,7 +80,8 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId)
 
         whenReady(result) {
-          r => r.status mustBe ACCEPTED
+          r =>
+            r.status mustBe ACCEPTED
         }
     }
 
@@ -95,15 +95,15 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         server.stubFor(
           post(
             urlEqualTo(targetUrl(correlationId))
-          )
-            .withHeader("X-Message-Type", equalTo(messageType.code))
+          ).withHeader("X-Message-Type", equalTo(messageType.code))
             .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
         )
 
         val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId)
 
         whenReady(result) {
-          r => r.status mustBe INTERNAL_SERVER_ERROR
+          r =>
+            r.status mustBe INTERNAL_SERVER_ERROR
         }
     }
 

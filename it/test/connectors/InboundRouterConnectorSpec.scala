@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package connectors
+package test.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import connectors.InboundRouterConnector
 import models.MessageType
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.IntegrationPatience
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.test.Helpers._
+import test.utils.WiremockSuite
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.WiremockSuite
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -36,8 +38,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       val connector = app.injector.instanceOf[InboundRouterConnector]
 
       server.stubFor(
-        post(
-          urlEqualTo("/transit-movements-trader-router/messages"))
+        post(urlEqualTo("/transit-movements-trader-router/messages"))
           .withHeader("X-Message-Recipient", equalTo("MDTP-ARR-1-1"))
           .withHeader("X-Message-Type", equalTo("IE008"))
           .willReturn(aResponse().withStatus(CREATED))
@@ -55,8 +56,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
         val connector = app.injector.instanceOf[InboundRouterConnector]
 
         server.stubFor(
-          post(
-            urlEqualTo("/transit-movements-trader-router/messages"))
+          post(urlEqualTo("/transit-movements-trader-router/messages"))
             .withHeader("X-Message-Recipient", equalTo("MDTP-ARR-1-1"))
             .withHeader("X-Message-Type", equalTo("IE008"))
             .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
@@ -75,8 +75,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       val connector = app.injector.instanceOf[InboundRouterConnector]
 
       server.stubFor(
-        post(
-          urlEqualTo("/transit-movements-trader-router/messages"))
+        post(urlEqualTo("/transit-movements-trader-router/messages"))
           .withHeader("X-Message-Recipient", equalTo("MDTP-DEP-1-1"))
           .withHeader("X-Message-Type", equalTo("IE016"))
           .willReturn(aResponse().withStatus(BAD_REQUEST))

@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import javax.inject.Inject
 
-class DocumentationController @Inject()(appConfig: AppConfig, assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
+class DocumentationController @Inject() (appConfig: AppConfig, assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
 
   lazy val definitionAction: Action[AnyContent] =
     if (appConfig.enableVersionOne) assets.at("/public/api", "definition_with_v1.json")

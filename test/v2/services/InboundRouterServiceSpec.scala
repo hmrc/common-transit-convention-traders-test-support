@@ -61,7 +61,8 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
       val wrappedXMLMessage      = XMLMessage(<msg></msg>).wrapped
 
       when(
-        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any()))
+        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any())
+      )
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
@@ -81,7 +82,8 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
       val wrappedXMLMessage      = XMLMessage(<msg></msg>).wrapped
 
       when(
-        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any()))
+        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any())
+      )
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)
@@ -94,7 +96,7 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
             response.leftSideValue match {
               case RouterError.Unexpected(Some(thr)) => thr.getMessage mustBe "X-Message-Id header missing from router response"
               case _                                 => fail("Expected a different error")
-          }
+            }
         )
       }
     }
@@ -105,7 +107,8 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
       val wrappedXMLMessage      = XMLMessage(<msg></msg>).wrapped
 
       when(
-        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any()))
+        inboundRouterConnector.post(any[MessageType], WrappedXMLMessage(eqTo(wrappedXMLMessage.value)), any[String].asInstanceOf[CorrelationId])(any(), any())
+      )
         .thenReturn(Future.successful[HttpResponse](response))
 
       val inboundRouterService = new InboundRouterServiceImpl(inboundRouterConnector)

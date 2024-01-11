@@ -34,11 +34,12 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[MessageGenerationServiceImpl])
 trait MessageGenerationService {
 
-  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(
-    implicit ec: ExecutionContext): EitherT[Future, MessageGenerationError, XMLMessage]
+  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(implicit
+    ec: ExecutionContext
+  ): EitherT[Future, MessageGenerationError, XMLMessage]
 }
 
-class MessageGenerationServiceImpl @Inject()(
+class MessageGenerationServiceImpl @Inject() (
   arrivalMessageGenerator: ArrivalMessageGenerator,
   departureMessageGenerator: DepartureMessageGenerator
 ) extends MessageGenerationService {
@@ -48,8 +49,9 @@ class MessageGenerationServiceImpl @Inject()(
     case MovementType.Departure => departureMessageGenerator
   }
 
-  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(
-    implicit ec: ExecutionContext): EitherT[Future, MessageGenerationError, XMLMessage] =
+  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(implicit
+    ec: ExecutionContext
+  ): EitherT[Future, MessageGenerationError, XMLMessage] =
     EitherT.fromEither[Future](
       generators(movementType)
         .generate(movementId)

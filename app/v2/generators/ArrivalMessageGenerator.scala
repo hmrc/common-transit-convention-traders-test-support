@@ -30,7 +30,7 @@ import java.time.Clock
 @ImplementedBy(classOf[ArrivalMessageGeneratorImpl])
 trait ArrivalMessageGenerator extends MessageGenerator
 
-class ArrivalMessageGeneratorImpl @Inject()(clock: Clock) extends Generators with ArrivalMessageGenerator {
+class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators with ArrivalMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
     case GoodsReleaseNotification         => generateIE025Message(correlationId)

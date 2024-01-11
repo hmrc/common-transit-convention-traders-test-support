@@ -25,7 +25,7 @@ import play.api.mvc._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-case class FakeChannelAction @Inject()()(implicit override val executionContext: ExecutionContext) extends ChannelAction {
+case class FakeChannelAction @Inject() ()(implicit override val executionContext: ExecutionContext) extends ChannelAction {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, ChannelRequest[A]]] = {
     val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get

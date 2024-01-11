@@ -26,7 +26,7 @@ import utils.Strings
 import java.time.Clock
 import scala.xml.NodeSeq
 
-class ArrivalMessageGenerator @Inject()(clock: Clock) extends Generator(clock) {
+class ArrivalMessageGenerator @Inject() (clock: Clock) extends Generator(clock) {
 
   def generate(): PartialFunction[MessageType, NodeSeq] = {
     case ArrivalRejection          => generateIE008Message()

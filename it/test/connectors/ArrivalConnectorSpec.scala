@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package connectors
+package test.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{ArrivalId, ChannelType}
+import connectors.ArrivalConnector
+import models.ArrivalId
+import models.ChannelType
 import org.scalacheck.Gen
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.IntegrationPatience
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import test.utils.WiremockSuite
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.WiremockSuite
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -36,12 +39,14 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
   "get" - {
     "must return OK when arrival is found" in {
       val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
-      val connector = app.injector.instanceOf[ArrivalConnector]
+      val connector            = app.injector.instanceOf[ArrivalConnector]
 
-      server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
-        .willReturn(aResponse().withStatus(OK)))
+      server.stubFor(
+        get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
+          .willReturn(aResponse().withStatus(OK))
+      )
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(arrivalId, channel).futureValue
@@ -51,11 +56,13 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
 
     "must return HttpResponse with a not found if not found" in {
       val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
-      val connector = app.injector.instanceOf[ArrivalConnector]
-      server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
-        .willReturn(aResponse().withStatus(NOT_FOUND)))
+      val connector            = app.injector.instanceOf[ArrivalConnector]
+      server.stubFor(
+        get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
+          .willReturn(aResponse().withStatus(NOT_FOUND))
+      )
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(arrivalId, channel).futureValue
@@ -65,11 +72,13 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
 
     "must return HttpResponse with a bad request if there is a bad request" in {
       val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
-      val connector = app.injector.instanceOf[ArrivalConnector]
-      server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
-        .willReturn(aResponse().withStatus(BAD_REQUEST)))
+      val connector            = app.injector.instanceOf[ArrivalConnector]
+      server.stubFor(
+        get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
+          .willReturn(aResponse().withStatus(BAD_REQUEST))
+      )
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(arrivalId, channel).futureValue
@@ -79,11 +88,13 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
 
     "must return HttpResponse with an internal server if there is an internal server error" in {
       val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
-      val connector = app.injector.instanceOf[ArrivalConnector]
-      server.stubFor(get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
-        .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR)))
+      val connector            = app.injector.instanceOf[ArrivalConnector]
+      server.stubFor(
+        get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
+          .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
+      )
 
-      implicit val hc = HeaderCarrier()
+      implicit val hc            = HeaderCarrier()
       implicit val requestHeader = FakeRequest()
 
       val result = connector.get(arrivalId, channel).futureValue

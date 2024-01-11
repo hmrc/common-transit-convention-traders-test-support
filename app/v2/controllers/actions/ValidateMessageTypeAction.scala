@@ -29,6 +29,7 @@ import scala.concurrent.Future
 
 class ValidateMessageTypeAction(messageTypes: Seq[MessageType])(implicit val executionContext: ExecutionContext)
     extends ActionRefiner[MessageRequest, MessageRequest] {
+
   override protected def refine[A](request: MessageRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     if (messageTypes.contains(request.messageType)) Future.successful(Right(request))
     else

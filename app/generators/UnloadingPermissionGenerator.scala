@@ -26,7 +26,7 @@ import utils.Strings
 import java.time.Clock
 import scala.xml.NodeSeq
 
-class UnloadingPermissionGenerator @Inject()(
+class UnloadingPermissionGenerator @Inject() (
   GOOITEGDSGenerator: GOOITEGDSGenerator,
   sealGenerator: SealGenerator,
   clock: Clock

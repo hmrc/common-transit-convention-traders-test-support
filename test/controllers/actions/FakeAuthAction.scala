@@ -24,7 +24,7 @@ import uk.gov.hmrc.auth.core._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-case class FakeAuthAction @Inject()(
+case class FakeAuthAction @Inject() (
   override val authConnector: AuthConnector,
   config: AppConfig,
   override val parser: BodyParsers.Default

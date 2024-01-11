@@ -1,20 +1,19 @@
 import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "common-transit-convention-traders-test-support"
 
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
+
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(itSettings): _*)
-  .settings(inConfig(IntegrationTest)(scalafmtSettings): _*)
+  .settings(inConfig(Test)(ScalafmtPlugin.scalafmtConfigSettings))
   .settings(inConfig(Test)(testSettings): _*)
-  .settings(scalaVersion := "2.13.8")
   .settings(Compile / unmanagedResourceDirectories += baseDirectory.value / "resources")
   .settings(
-    majorVersion := 0,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     ThisBuild / scalafmtOnCompile := true,
     ThisBuild / useSuperShell := false
@@ -34,6 +33,11 @@ lazy val microservice = Project(appName, file("."))
     scalacOptions += "-Wconf:src=routes/.*:s"
   )
 
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings())
+
 lazy val scoverageSettings =
   Seq(
     ScoverageKeys.coverageExcludedPackages := """uk\.gov\.hmrc\.BuildInfo*;.*\.Routes;.*\.RoutesPrefix;.*\.Reverse[^.]*;testonly;config.*""",
@@ -49,27 +53,11 @@ lazy val buildSettings = Def.settings(
   scalafmtOnCompile := true
 )
 
-lazy val itSettings = Defaults.itSettings ++ Seq(
-  unmanagedSourceDirectories := Seq(
-    baseDirectory.value / "it",
-    baseDirectory.value / "test" / "generators"
-  ),
-  unmanagedResourceDirectories := Seq(
-    baseDirectory.value / "it" / "resources"
-  ),
-  parallelExecution := false,
-  fork := true,
-  javaOptions ++= Seq(
-    "-Dconfig.resource=it.application.conf",
-    "-Dlogger.resource=it.logback.xml"
-  ),
-  ThisBuild / scalafmtTestOnCompile := true
-)
-
 lazy val testSettings = Seq(
-  fork := true,
+  Test / fork := true,
   javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
+    "-Dconfig.resource=test.application.conf",
+    "-Djdk.xml.maxOccurLimit=10000"
   ),
   unmanagedResourceDirectories := Seq(
     baseDirectory.value / "test" / "resources"

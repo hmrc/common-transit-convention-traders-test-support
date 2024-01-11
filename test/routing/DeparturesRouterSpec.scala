@@ -16,7 +16,7 @@
 
 package routing
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
@@ -59,10 +59,12 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
       "must route to the v2 controller and return Accepted when successful" in {
 
         val request =
-          FakeRequest(method = "POST",
-                      uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
-                      body = Json.obj("a" -> "1"),
-                      headers = departureHeaders)
+          FakeRequest(
+            method = "POST",
+            uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
+            body = Json.obj("a" -> "1"),
+            headers = departureHeaders
+          )
         val result = call(sut.injectEISResponse("1234567890abcdef"), request)
 
         status(result) mustBe ACCEPTED

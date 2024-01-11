@@ -30,7 +30,7 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
   lazy val auth: Option[Authorization] =
     if (appConfig.bearerTokenEnabled) Some(Authorization(s"Bearer ${appConfig.bearerTokenToken}"))
@@ -38,8 +38,9 @@ class InboundRouterConnector @Inject()(http: HttpClient, appConfig: AppConfig) e
 
   // Create a new message with the transit-movements-router service
   def post(messageType: MessageType, message: WrappedXMLMessage, correlationId: CorrelationId)(implicit
-                                                                                               hc: HeaderCarrier,
-                                                                                               ec: ExecutionContext): Future[HttpResponse] = {
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val newHeaders = hc
       .copy(authorization = auth)
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)

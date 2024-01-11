@@ -16,7 +16,7 @@
 
 package v2.fakes.controllers
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import com.google.inject.Inject
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
@@ -27,7 +27,7 @@ import v2.controllers.V2TestMessagesController
 import v2.controllers.stream.StreamingParsers
 import v2.models.MovementId
 
-class FakeV2TestMessagesController @Inject()()(implicit val materializer: Materializer)
+class FakeV2TestMessagesController @Inject() ()(implicit val materializer: Materializer)
     extends BaseController
     with V2TestMessagesController
     with StreamingParsers {

@@ -20,11 +20,13 @@ import play.api.libs.json.Json
 import play.api.libs.json.OFormat
 
 import java.time.OffsetDateTime
-import v2.models.formats.CommonFormats._
 
 object Movement {
-  implicit val format: OFormat[Movement] = Json.format[Movement]
+
+  implicit val format: OFormat[Movement] =
+    Json.format[Movement]
 }
+
 case class Movement(
   _id: MovementId,
   enrollmentEORINumber: EORINumber,

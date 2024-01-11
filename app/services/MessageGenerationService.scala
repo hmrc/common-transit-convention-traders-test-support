@@ -26,7 +26,7 @@ import play.api.libs.json.JsValue
 
 import scala.xml.NodeSeq
 
-class MessageGenerationService @Inject()(
+class MessageGenerationService @Inject() (
   departureMessageGenerator: DepartureMessageGenerator,
   arrivalMessageGenerator: ArrivalMessageGenerator,
   unloadingPermissionGenerator: UnloadingPermissionGenerator

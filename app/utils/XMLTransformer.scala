@@ -28,9 +28,13 @@ import scala.xml.transform.RuleTransformer
 object XMLTransformer {
 
   def populateRefNumEPT1(message: NodeSeq, messageType: String, messages: Seq[MovementMessage]): NodeSeq =
-    messages.filter(movementMessage => movementMessage.messageType == messageType).lastOption match {
+    messages
+      .filter(
+        movementMessage => movementMessage.messageType == messageType
+      )
+      .lastOption match {
       case Some(movementMessage: MovementMessage) =>
-        val element = (movementMessage.message \\ "RefNumEPT1")
+        val element = movementMessage.message \\ "RefNumEPT1"
         if (element.nonEmpty)
           updateMessage(message, element.text)
         else

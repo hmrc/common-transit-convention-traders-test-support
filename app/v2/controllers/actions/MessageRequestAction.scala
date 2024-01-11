@@ -37,7 +37,8 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[MessageRequestActionImpl])
 trait MessageRequestAction extends ActionRefiner[AuthRequest, MessageRequest]
 
-class MessageRequestActionImpl @Inject()()(implicit val executionContext: ExecutionContext) extends MessageRequestAction {
+class MessageRequestActionImpl @Inject() ()(implicit val executionContext: ExecutionContext) extends MessageRequestAction {
+
   override protected def refine[A](request: AuthRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     request.body match {
       case body: JsValue =>

@@ -25,13 +25,14 @@ object DepartureWithMessages {
   implicit val format = Json.format[DepartureWithMessages]
 }
 
-case class DepartureWithMessages(departureId: Int,
-                                 location: String,
-                                 messagesLocation: String,
-                                 movementReferenceNumber: Option[String],
-                                 referenceNumber: String,
-                                 status: String,
-                                 created: LocalDateTime,
-                                 updated: LocalDateTime,
-                                 messages: Seq[MovementMessage])
-    extends BaseDeparture
+case class DepartureWithMessages(
+  departureId: Int,
+  location: String,
+  messagesLocation: String,
+  movementReferenceNumber: Option[String],
+  referenceNumber: String,
+  status: String,
+  created: LocalDateTime,
+  updated: LocalDateTime,
+  messages: Seq[MovementMessage]
+) extends BaseDeparture

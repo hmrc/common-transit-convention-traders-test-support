@@ -36,10 +36,12 @@ object ResponseDeparture {
     )
 }
 
-case class ResponseDeparture(departure: String,
-                             created: LocalDateTime,
-                             updated: LocalDateTime,
-                             movementReferenceNumber: Option[String],
-                             referenceNumber: String,
-                             status: String,
-                             messages: String)
+case class ResponseDeparture(
+  departure: String,
+  created: LocalDateTime,
+  updated: LocalDateTime,
+  movementReferenceNumber: Option[String],
+  referenceNumber: String,
+  status: String,
+  messages: String
+)
