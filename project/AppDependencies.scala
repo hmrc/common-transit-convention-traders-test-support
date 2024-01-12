@@ -18,7 +18,6 @@ object AppDependencies {
     "org.typelevel"     %% "cats-laws"              % "2.10.0",
     "org.typelevel"     %% "discipline-core"        % "1.5.1",
     "org.typelevel"     %% "discipline-scalatest"   % "2.2.0",
-    "uk.gov.hmrc"       %% "bootstrap-test-play-30" % bootstrapVersion,
-    "io.chrisdavenport" %% "cats-scalacheck"        % "0.3.2"
+    "uk.gov.hmrc"       %% "bootstrap-test-play-30" % bootstrapVersion
   ).map(_ % Test)
 }
