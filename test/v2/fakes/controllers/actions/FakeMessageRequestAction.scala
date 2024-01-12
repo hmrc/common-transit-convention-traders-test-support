@@ -27,6 +27,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 case class FakeMessageRequestAction(messageType: MessageType) extends MessageRequestAction {
+
   override protected def refine[A](request: AuthRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     Future.successful(Right(MessageRequest(request.request, EORINumber(request.eori), messageType)))
 

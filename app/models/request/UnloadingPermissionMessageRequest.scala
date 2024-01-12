@@ -21,8 +21,9 @@ import models.MessageType
 import models.generation.UnloadingPermissionGenInstructions
 import play.api.mvc.Request
 
-case class UnloadingPermissionMessageRequest[A](request: Request[A],
-                                                override val channel: ChannelType,
-                                                messageType: MessageType,
-                                                instructions: UnloadingPermissionGenInstructions)
-    extends BaseMessageRequest[A](request, channel, messageType, instructions)
+case class UnloadingPermissionMessageRequest[A](
+  request: Request[A],
+  override val channel: ChannelType,
+  messageType: MessageType,
+  instructions: UnloadingPermissionGenInstructions
+) extends BaseMessageRequest[A](request, channel, messageType, instructions)

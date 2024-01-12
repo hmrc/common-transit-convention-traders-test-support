@@ -123,7 +123,8 @@ class DepartureTestMessagesControllerSpec
         when(mockDepartureConnector.getMessages(any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(departureWithMessages)))
         when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2"))))
+          )
         when(mockDepartureMessageConnector.get(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(movement)))
 
         val application = baseApplicationBuilder
@@ -164,10 +165,12 @@ class DepartureTestMessagesControllerSpec
           .build()
 
         running(application) {
-          val request = FakeRequest(method = POST,
-                                    uri = routing.routes.DeparturesRouter.injectEISResponse(departureString).url,
-                                    headers = FakeHeaders(Nil),
-                                    body = AnyContentAsEmpty)
+          val request = FakeRequest(
+            method = POST,
+            uri = routing.routes.DeparturesRouter.injectEISResponse(departureString).url,
+            headers = FakeHeaders(Nil),
+            body = AnyContentAsEmpty
+          )
 
           val result = route(application, request).value
 
@@ -233,7 +236,8 @@ class DepartureTestMessagesControllerSpec
           .thenReturn(Future.successful(Left(HttpResponse(BAD_REQUEST, "bad_request"))))
         when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2"))))
+          )
         when(mockDepartureMessageConnector.get(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(movement)))
 
         val application = baseApplicationBuilder
@@ -291,7 +295,8 @@ class DepartureTestMessagesControllerSpec
         when(mockDepartureConnector.getMessages(any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(departureWithMessages)))
         when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2"))))
+          )
         when(mockDepartureMessageConnector.get(any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(Left(HttpResponse(BAD_REQUEST, "bad_request"))))
 
@@ -324,7 +329,8 @@ class DepartureTestMessagesControllerSpec
         when(mockDepartureConnector.getMessages(any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(NOT_FOUND, "text"))))
         when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2"))))
+          )
         when(mockDepartureMessageConnector.get(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(NOT_FOUND, "text2"))))
 
         val application = baseApplicationBuilder
@@ -378,7 +384,8 @@ class DepartureTestMessagesControllerSpec
         when(mockDepartureConnector.getMessages(any(), any())(any(), any(), any())).thenReturn(Future.successful(Left(HttpResponse(INTERNAL_SERVER_ERROR, ""))))
         when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2"))))
+          )
         when(mockDepartureMessageConnector.get(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(movement)))
 
         val application = baseApplicationBuilder
@@ -436,7 +443,8 @@ class DepartureTestMessagesControllerSpec
         when(mockDepartureConnector.getMessages(any(), any())(any(), any(), any())).thenReturn(Future.successful(Right(departureWithMessages)))
         when(mockInboundRouterConnector.post(any(), any(), any())(any(), any()))
           .thenReturn(
-            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2")))))
+            Future.successful(HttpResponse(OK, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/2"))))
+          )
         when(mockDepartureMessageConnector.get(any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(Left(HttpResponse(INTERNAL_SERVER_ERROR, ""))))
 
@@ -494,14 +502,15 @@ class DepartureTestMessagesControllerSpec
         val mockDepartureConnector = mock[DepartureConnector]
 
         when(mockDepartureConnector.createDeclarationMessage(any(), any())(any(), any(), any())).thenReturn(
-          Future.successful(HttpResponse(ACCEPTED, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/1")))))
+          Future.successful(HttpResponse(ACCEPTED, "", Map(LOCATION -> Seq("/transits-movements-trader-at-departure/movements/departures/1/messages/1"))))
+        )
         val channel = Gen.oneOf(ChannelType.values).sample.value
         val application = baseApplicationBuilder
           .overrides(
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
             bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
-            bind[DepartureConnector].toInstance(mockDepartureConnector),
+            bind[DepartureConnector].toInstance(mockDepartureConnector)
           )
           .build()
 
@@ -531,7 +540,7 @@ class DepartureTestMessagesControllerSpec
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
             bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
-            bind[DepartureConnector].toInstance(mockDepartureConnector),
+            bind[DepartureConnector].toInstance(mockDepartureConnector)
           )
           .build()
 
@@ -557,7 +566,7 @@ class DepartureTestMessagesControllerSpec
             bind[AuthAction].to[FakeAuthAction],
             bind[ChannelAction].to[FakeChannelAction],
             bind[VersionOneEnabledCheckAction].to[FakeVersionOneEnabledCheckAction],
-            bind[DepartureConnector].toInstance(mockDepartureConnector),
+            bind[DepartureConnector].toInstance(mockDepartureConnector)
           )
           .build()
 

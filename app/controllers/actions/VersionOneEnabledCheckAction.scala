@@ -33,7 +33,7 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[VersionOneEnabledCheckActionImpl])
 trait VersionOneEnabledCheckAction extends ActionFilter[Request] with ActionBuilder[Request, AnyContent]
 
-class VersionOneEnabledCheckActionImpl @Inject()(appConfig: AppConfig, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
+class VersionOneEnabledCheckActionImpl @Inject() (appConfig: AppConfig, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
     extends VersionOneEnabledCheckAction
     with Results {
 

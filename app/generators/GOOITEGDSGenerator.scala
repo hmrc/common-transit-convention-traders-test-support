@@ -22,7 +22,7 @@ import utils.Strings
 import scala.annotation.tailrec
 import scala.xml.NodeSeq
 
-class GOOITEGDSGenerator @Inject()(productGenerator: ProductGenerator, specialMentionsGenerator: SpecialMentionsGenerator) {
+class GOOITEGDSGenerator @Inject() (productGenerator: ProductGenerator, specialMentionsGenerator: SpecialMentionsGenerator) {
 
   def generate(goodsCount: Int, productCount: Int, specialMentionsCount: Int): NodeSeq = {
     @tailrec

@@ -48,7 +48,7 @@ trait V1ArrivalTestMessagesController {
   def injectEISResponse(arrivalId: ArrivalId): Action[JsValue]
 }
 
-class ArrivalTestMessagesController @Inject()(
+class ArrivalTestMessagesController @Inject() (
   cc: ControllerComponents,
   arrivalConnector: ArrivalConnector,
   inboundRouterConnector: InboundRouterConnector,

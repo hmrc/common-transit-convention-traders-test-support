@@ -36,7 +36,8 @@ import play.api.mvc.Results.BadRequest
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class MessageRequestAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[ChannelRequest, MessageRequest] {
+class MessageRequestAction @Inject() ()(implicit val executionContext: ExecutionContext) extends ActionRefiner[ChannelRequest, MessageRequest] {
+
   override protected def refine[A](request: ChannelRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     request.body match {
       case body: JsValue =>

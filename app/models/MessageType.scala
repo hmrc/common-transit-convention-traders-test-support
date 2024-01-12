@@ -75,5 +75,9 @@ object MessageType extends Enumerable.Implicits {
   )
 
   implicit val enumerable: Enumerable[MessageType] =
-    Enumerable(values.map(v => v.code -> v): _*)
+    Enumerable(
+      values.map(
+        v => v.code -> v
+      ): _*
+    )
 }

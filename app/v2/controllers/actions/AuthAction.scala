@@ -46,7 +46,7 @@ import scala.concurrent.Future
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthRequest, AnyContent] with ActionFunction[Request, AuthRequest]
 
-class AuthActionImpl @Inject()(
+class AuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default
 )(implicit val executionContext: ExecutionContext)
@@ -74,12 +74,11 @@ class AuthActionImpl @Inject()(
           NewEnrolmentKey,
           NewEnrolmentIdKey
         ).map {
-            eoriNumber =>
-              block(AuthRequest(request, eoriNumber))
-          }
-          .getOrElse {
-            Future.failed(InsufficientEnrolments(s"Unable to retrieve enrolment for $NewEnrolmentKey"))
-          }
+          eoriNumber =>
+            block(AuthRequest(request, eoriNumber))
+        }.getOrElse {
+          Future.failed(InsufficientEnrolments(s"Unable to retrieve enrolment for $NewEnrolmentKey"))
+        }
     }
   } recover {
     case e: InsufficientEnrolments =>

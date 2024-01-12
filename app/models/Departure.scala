@@ -35,12 +35,13 @@ trait BaseDeparture {
   def updated: LocalDateTime
 }
 
-case class Departure(departureId: Int,
-                     location: String,
-                     messagesLocation: String,
-                     movementReferenceNumber: Option[String],
-                     referenceNumber: String,
-                     status: String,
-                     created: LocalDateTime,
-                     updated: LocalDateTime)
-    extends BaseDeparture
+case class Departure(
+  departureId: Int,
+  location: String,
+  messagesLocation: String,
+  movementReferenceNumber: Option[String],
+  referenceNumber: String,
+  status: String,
+  created: LocalDateTime,
+  updated: LocalDateTime
+) extends BaseDeparture

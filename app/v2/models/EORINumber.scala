@@ -16,4 +16,11 @@
 
 package v2.models
 
+import play.api.libs.json.Format
+import play.api.libs.json.Json
+
 case class EORINumber(value: String) extends AnyVal
+
+object EORINumber {
+  implicit lazy val eORINumberFormat: Format[EORINumber] = Json.valueFormat[EORINumber]
+}

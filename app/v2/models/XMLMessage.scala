@@ -54,7 +54,9 @@ case class XMLMessage(value: NodeSeq) extends AnyVal {
     WrappedXMLMessage(<n1:TraderChannelResponse xmlns:txd="http://ncts.dgtaxud.ec"
                                                 xmlns:n1="http://www.hmrc.gov.uk/eis/ncts5/v1"
                                                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                                                xsi:schemaLocation="http://www.hmrc.gov.uk/eis/ncts5/v1 EIS_WrapperV10_TraderChannelSubmission-51.8.xsd">{inside}</n1:TraderChannelResponse>)
+                                                xsi:schemaLocation="http://www.hmrc.gov.uk/eis/ncts5/v1 EIS_WrapperV10_TraderChannelSubmission-51.8.xsd">{
+      inside
+    }</n1:TraderChannelResponse>)
   }
 }
 

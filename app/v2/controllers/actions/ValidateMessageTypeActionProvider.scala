@@ -30,7 +30,7 @@ trait ValidateMessageTypeActionProvider {
 }
 
 @Singleton
-class ValidateMessageTypeActionProviderImpl @Inject()()(implicit ec: ExecutionContext) extends ValidateMessageTypeActionProvider {
+class ValidateMessageTypeActionProviderImpl @Inject() ()(implicit ec: ExecutionContext) extends ValidateMessageTypeActionProvider {
 
   lazy val arrivalMessageTypeAction   = new ValidateMessageTypeAction(MessageType.arrivalMessages)
   lazy val departureMessageTypeAction = new ValidateMessageTypeAction(MessageType.departureMessages)

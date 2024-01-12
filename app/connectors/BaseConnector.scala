@@ -51,8 +51,9 @@ class BaseConnector extends HttpErrorFunctions {
       }
     } else Left(response)
 
-  protected def enforceAuthHeaderCarrier(extraHeaders: Seq[(String, String)])(implicit requestHeader: RequestHeader,
-                                                                              headerCarrier: HeaderCarrier): HeaderCarrier = {
+  protected def enforceAuthHeaderCarrier(
+    extraHeaders: Seq[(String, String)]
+  )(implicit requestHeader: RequestHeader, headerCarrier: HeaderCarrier): HeaderCarrier = {
     val newHeaderCarrier = headerCarrier
       .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
       .withExtraHeaders(extraHeaders: _*)

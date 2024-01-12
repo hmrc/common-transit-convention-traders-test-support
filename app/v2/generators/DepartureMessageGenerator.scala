@@ -53,7 +53,7 @@ import java.time.Clock
 @ImplementedBy(classOf[DepartureMessageGeneratorImpl])
 trait DepartureMessageGenerator extends MessageGenerator
 
-class DepartureMessageGeneratorImpl @Inject()(clock: Clock) extends Generators with DepartureMessageGenerator {
+class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators with DepartureMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
     case AmendmentAcceptance               => generateIE004Message(correlationId)

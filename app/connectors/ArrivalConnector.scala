@@ -30,10 +30,13 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ArrivalConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class ArrivalConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def get(arrivalId: ArrivalId,
-          channelType: ChannelType)(implicit requestHeader: RequestHeader, hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def get(arrivalId: ArrivalId, channelType: ChannelType)(implicit
+    requestHeader: RequestHeader,
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url = s"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId.index.toString)}"
 
     http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)

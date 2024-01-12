@@ -40,25 +40,27 @@ import scala.util.control.NonFatal
 @ImplementedBy(classOf[MovementPersistenceServiceImpl])
 trait MovementPersistenceService {
 
-  def getMovement(movementType: MovementType, eori: EORINumber, departureId: MovementId)(implicit rh: RequestHeader,
-                                                                                         hc: HeaderCarrier,
-                                                                                         ec: ExecutionContext): EitherT[Future, PersistenceError, Movement]
+  def getMovement(movementType: MovementType, eori: EORINumber, departureId: MovementId)(implicit
+    rh: RequestHeader,
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): EitherT[Future, PersistenceError, Movement]
 
-  def getMessage(movementType: MovementType, eori: EORINumber, departureId: MovementId, messageId: MessageId)(
-    implicit
+  def getMessage(movementType: MovementType, eori: EORINumber, departureId: MovementId, messageId: MessageId)(implicit
     request: RequestHeader,
     hc: HeaderCarrier,
-    ec: ExecutionContext): EitherT[Future, PersistenceError, Message]
+    ec: ExecutionContext
+  ): EitherT[Future, PersistenceError, Message]
 }
 
 @Singleton
-class MovementPersistenceServiceImpl @Inject()(movementConnector: MovementConnector) extends MovementPersistenceService {
+class MovementPersistenceServiceImpl @Inject() (movementConnector: MovementConnector) extends MovementPersistenceService {
 
-  override def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(
-    implicit
+  override def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(implicit
     rh: RequestHeader,
     hc: HeaderCarrier,
-    ec: ExecutionContext): EitherT[Future, PersistenceError, Movement] =
+    ec: ExecutionContext
+  ): EitherT[Future, PersistenceError, Movement] =
     EitherT {
       movementConnector
         .getMovement(movementType, eori, movementId)
@@ -69,11 +71,11 @@ class MovementPersistenceServiceImpl @Inject()(movementConnector: MovementConnec
         }
     }
 
-  override def getMessage(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId)(
-    implicit
+  override def getMessage(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId)(implicit
     request: RequestHeader,
     hc: HeaderCarrier,
-    ec: ExecutionContext): EitherT[Future, PersistenceError, Message] =
+    ec: ExecutionContext
+  ): EitherT[Future, PersistenceError, Message] =
     EitherT {
       movementConnector
         .getMessage(movementType, eori, movementId, messageId)

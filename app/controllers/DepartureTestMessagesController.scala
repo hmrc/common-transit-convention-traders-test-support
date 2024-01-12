@@ -55,16 +55,18 @@ trait V1DepartureTestMessagesController {
 }
 
 @Singleton
-class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
-                                                departureConnector: DepartureConnector,
-                                                inboundRouterConnector: InboundRouterConnector,
-                                                departureMessageConnector: DepartureMessageConnector,
-                                                versionOneEnabledCheckAction: VersionOneEnabledCheckAction,
-                                                authAction: AuthAction,
-                                                channelAction: ChannelAction,
-                                                messageRequestAction: MessageRequestAction,
-                                                validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
-                                                msgGenService: MessageGenerationService)(implicit ec: ExecutionContext)
+class DepartureTestMessagesController @Inject() (
+  cc: ControllerComponents,
+  departureConnector: DepartureConnector,
+  inboundRouterConnector: InboundRouterConnector,
+  departureMessageConnector: DepartureMessageConnector,
+  versionOneEnabledCheckAction: VersionOneEnabledCheckAction,
+  authAction: AuthAction,
+  channelAction: ChannelAction,
+  messageRequestAction: MessageRequestAction,
+  validateDepartureMessageTypeAction: ValidateDepartureMessageTypeAction,
+  msgGenService: MessageGenerationService
+)(implicit ec: ExecutionContext)
     extends BackendController(cc)
     with V1DepartureTestMessagesController
     with HttpErrorFunctions
@@ -143,7 +145,9 @@ class DepartureTestMessagesController @Inject()(cc: ControllerComponents,
                           MessageType.DepartureDeclaration,
                           request.body,
                           locationValue
-                        )))
+                        )
+                      )
+                    )
                   case None =>
                     logger.error("Failed to submit departure declaration: 'LOCATION' is missing in response.header")
                     InternalServerError

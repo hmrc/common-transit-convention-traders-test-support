@@ -48,17 +48,19 @@ class ValidateDepartureMessageTypeActionSpec
     with ScalaFutures
     with MockitoSugar
     with BeforeAndAfterEach {
+
   override lazy val app = GuiceApplicationBuilder()
     .build()
 
   override def beforeEach(): Unit =
     super.beforeEach()
 
-  class Harness(channelAction: ChannelAction,
-                messageRequestAction: MessageRequestAction,
-                validateMessageTypeAction: ValidateDepartureMessageTypeAction,
-                cc: ControllerComponents)
-      extends BackendController(cc) {
+  class Harness(
+    channelAction: ChannelAction,
+    messageRequestAction: MessageRequestAction,
+    validateMessageTypeAction: ValidateDepartureMessageTypeAction,
+    cc: ControllerComponents
+  ) extends BackendController(cc) {
 
     def post: Action[JsValue] =
       (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen channelAction andThen messageRequestAction andThen validateMessageTypeAction)

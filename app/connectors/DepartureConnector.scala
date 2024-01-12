@@ -31,11 +31,13 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class DepartureConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
 
-  def getMessages(departureId: DepartureId, channelType: ChannelType)(implicit requestHeader: RequestHeader,
-                                                                      hc: HeaderCarrier,
-                                                                      ec: ExecutionContext): Future[Either[HttpResponse, DepartureWithMessages]] = {
+  def getMessages(departureId: DepartureId, channelType: ChannelType)(implicit
+    requestHeader: RequestHeader,
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Either[HttpResponse, DepartureWithMessages]] = {
     val url = s"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
 
     http
@@ -46,9 +48,11 @@ class DepartureConnector @Inject()(http: HttpClient, appConfig: AppConfig) exten
       }
   }
 
-  def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit requestHeader: RequestHeader,
-                                                                               hc: HeaderCarrier,
-                                                                               ec: ExecutionContext): Future[HttpResponse] = {
+  def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit
+    requestHeader: RequestHeader,
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url                             = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
     val channelHeader: (String, String) = ("Channel", channelType.toString)
     val headers: Seq[(String, String)]  = requestHeaders :+ channelHeader

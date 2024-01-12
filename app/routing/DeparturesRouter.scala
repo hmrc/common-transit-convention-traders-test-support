@@ -16,9 +16,9 @@
 
 package routing
 
-import akka.stream.Materializer
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
 import com.google.inject.Inject
 import controllers.V1DepartureTestMessagesController
 import models.DepartureId
@@ -30,12 +30,11 @@ import v2.controllers.V2TestMessagesController
 import v2.controllers.stream.StreamingParsers
 import v2.models.Bindings
 
-class DeparturesRouter @Inject()(
+class DeparturesRouter @Inject() (
   val controllerComponents: ControllerComponents,
   v1Departures: V1DepartureTestMessagesController,
   v2Departures: V2TestMessagesController
-)(implicit
-  val materializer: Materializer)
+)(implicit val materializer: Materializer)
     extends BaseController
     with StreamingParsers
     with VersionedRouting {

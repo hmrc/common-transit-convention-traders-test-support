@@ -25,7 +25,8 @@ import play.api.mvc.Results.NotImplemented
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ValidateArrivalMessageTypeAction @Inject()()(implicit val executionContext: ExecutionContext) extends ActionRefiner[MessageRequest, MessageRequest] {
+class ValidateArrivalMessageTypeAction @Inject() ()(implicit val executionContext: ExecutionContext) extends ActionRefiner[MessageRequest, MessageRequest] {
+
   override protected def refine[A](request: MessageRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     if (MessageType.arrivalMessages.contains(request.messageType)) {
       Future.successful(Right(request))

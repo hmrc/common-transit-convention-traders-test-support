@@ -41,16 +41,18 @@ import scala.util.control.NonFatal
 trait InboundRouterService {
 
   def post(messageType: MessageType, message: XMLMessage, correlationId: CorrelationId)(implicit
-                                                                                        hc: HeaderCarrier,
-                                                                                        ec: ExecutionContext): EitherT[Future, RouterError, MessageId]
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): EitherT[Future, RouterError, MessageId]
 }
 
 @Singleton
-class InboundRouterServiceImpl @Inject()(inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
+class InboundRouterServiceImpl @Inject() (inboundRouterConnector: InboundRouterConnector) extends InboundRouterService with HttpErrorFunctions {
 
   def post(messageType: MessageType, message: XMLMessage, correlationId: CorrelationId)(implicit
-                                                                                        hc: HeaderCarrier,
-                                                                                        ec: ExecutionContext): EitherT[Future, RouterError, MessageId] =
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): EitherT[Future, RouterError, MessageId] =
     EitherT(
       inboundRouterConnector
         .post(messageType, message.wrapped, correlationId)

@@ -26,6 +26,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 trait ErrorTranslator {
+
   implicit class ErrorConverter[E, A](value: EitherT[Future, E, A]) {
 
     def asPresentation(implicit c: Converter[E], ec: ExecutionContext): EitherT[Future, PresentationError, A] =
@@ -47,6 +48,7 @@ trait ErrorTranslator {
   }
 
   implicit val messageGenerationErrorConverter = new Converter[MessageGenerationError] {
+
     override def convert(input: MessageGenerationError): PresentationError = input match {
       case MessageGenerationError.MessageTypeNotSupported(messageType) =>
         PresentationError.notImplementedError(s"Message type ${messageType.code} is not supported for this movement type")
@@ -54,6 +56,7 @@ trait ErrorTranslator {
   }
 
   implicit val routerErrorConverter = new Converter[RouterError] {
+
     override def convert(input: RouterError): PresentationError = input match {
       case RouterError.MovementNotFound(_) => PresentationError.internalServiceError(cause = None)
       case err: RouterError.Unexpected     => PresentationError.internalServiceError(cause = err.thr)

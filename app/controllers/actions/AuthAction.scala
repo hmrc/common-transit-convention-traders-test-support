@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class AuthAction @Inject()(
+class AuthAction @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default
 )(implicit val executionContext: ExecutionContext)

@@ -23,11 +23,15 @@ sealed abstract class MovementType(val name: String, val urlFragment: String) ex
 }
 
 object MovementType {
+
   case object Arrival extends MovementType("arrival", "arrivals") {
+
     override def generateBaseUrl(movementId: MovementId) =
       routing.routes.DeparturesRouter.injectEISResponse(movementId.value).urlWithContext
   }
+
   case object Departure extends MovementType("departure", "departures") {
+
     override def generateBaseUrl(movementId: MovementId) =
       routing.routes.ArrivalsRouter.injectEISResponse(movementId.value).urlWithContext
   }
