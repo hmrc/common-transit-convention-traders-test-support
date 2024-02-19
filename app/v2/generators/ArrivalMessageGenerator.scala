@@ -45,7 +45,7 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
         <messageIdentification>{Strings.alphanumeric(1, 35)}</messageIdentification>
-        <messageType>CC928C</messageType>
+        <messageType>CC025C</messageType>
         <correlationIdentifier>{Strings.alphanumeric(1, 35)}</correlationIdentifier>
         <TransitOperation>
           <MRN>{Strings.mrn()}</MRN>
