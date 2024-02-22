@@ -33,6 +33,6 @@ class ValidateMessageTypeAction(messageTypes: Seq[MessageType])(implicit val exe
   override protected def refine[A](request: MessageRequest[A]): Future[Either[Result, MessageRequest[A]]] =
     if (messageTypes.contains(request.messageType)) Future.successful(Right(request))
     else
-      Future.successful(Left(NotImplemented(Json.toJson(PresentationError.notImplementedError(s"Support for ${request.messageType.code} is not implemented")))))
+      Future.successful(Left(NotImplemented(Json.toJson(PresentationError.notImplementedError(s"API has not been implemented")))))
 
 }
