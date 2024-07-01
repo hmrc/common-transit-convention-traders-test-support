@@ -257,10 +257,23 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
         <Guarantee>
           <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
           <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
+          <GuaranteeReference>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+            <GRN>{grn()}</GRN>
+            <accessCode>****</accessCode>
+            <amountToBeCovered>10</amountToBeCovered>
+            <currency>GBP</currency>
+          </GuaranteeReference>
         </Guarantee>
         <Consignment>
           <containerIndicator>{zeroOrOne()}</containerIndicator>
           <grossMass>{decimalNumber(16, 6)}</grossMass>
+          <DepartureTransportMeans>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          </DepartureTransportMeans>
+          <ActiveBorderTransportMeans>
+            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          </ActiveBorderTransportMeans>
           <HouseConsignment>
             <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
             <grossMass>{decimalNumber(16, 6)}</grossMass>
@@ -269,6 +282,9 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
               <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
+                <CommodityCode>
+                  <harmonizedSystemSubHeadingCode>{Strings.alphanumeric(6)}</harmonizedSystemSubHeadingCode>
+                </CommodityCode>
               </Commodity>
               <Packaging>
                 <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
