@@ -154,7 +154,7 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
           <Consignor>
             <!--Optional:-->
             <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
-            <!--Optional:-->
+          
             <name>{Strings.alphanumeric(8, 70)}</name>
             <!--Optional:-->
             <Address>
@@ -169,7 +169,7 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
           <Consignee>
             <!--Optional:-->
             <identificationNumber>{Strings.alphanumeric(1, 17)}</identificationNumber>
-            <!--Optional:-->
+
             <name>{Strings.alphanumeric(8, 70)}</name>
             <!--Optional:-->
             <Address>
@@ -200,9 +200,6 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
           <!--0 to 999 repetitions:-->
           <DepartureTransportMeans>
             <sequenceNumber>{Strings.numeric(1, 5)}</sequenceNumber>
-            <typeOfIdentification>{Strings.numeric(2)}</typeOfIdentification>
-            <identificationNumber>{Strings.alphanumeric(8, 35)}</identificationNumber>
-            <nationality>{Strings.alpha(2).toUpperCase}</nationality>
           </DepartureTransportMeans>
           <!--0 to 9999 repetitions:-->
           <PreviousDocument>
@@ -466,7 +463,6 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
             </ConsignmentItem>
           </HouseConsignment>
         </Consignment>
-        
       </ncts:CC043C>
     )
 
