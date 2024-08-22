@@ -26,8 +26,9 @@ import v2.models.Message
 import v2.models.MessageId
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.Utils
 import v2.models.MovementType
 import v2.models.formats.CommonFormats.movementFormat
@@ -37,13 +38,14 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class MovementConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector {
 
   def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Movement] = {
     val url = constructMovementUri(movementType, eori, movementId)
 
     http
-      .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))), ec)
+      .get(url"$url")(hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))))
+      .execute[HttpResponse](CustomHttpReader, ec)
       .flatMap {
         response =>
           response.status match {
@@ -51,6 +53,7 @@ class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) exten
             case _  => response.error
           }
       }
+
   }
 
   def getMessage(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId)(implicit
@@ -61,11 +64,9 @@ class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) exten
     val uri = constructMessageUri(movementType, eori, movementId, messageId)
 
     http
-      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders)(
-        CustomHttpReader,
-        hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))),
-        ec
-      )
+      .get(url"$uri")(hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))))
+      .setHeader(responseHeaders: _*)
+      .execute[HttpResponse](CustomHttpReader, ec)
       .flatMap {
         response =>
           response.status match {
@@ -73,6 +74,7 @@ class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) exten
             case _  => response.error
           }
       }
+
   }
 
   private def constructBaseUri(movementType: MovementType, eori: EORINumber) =

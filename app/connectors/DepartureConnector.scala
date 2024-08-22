@@ -23,15 +23,16 @@ import models.DepartureId
 import models.DepartureWithMessages
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class DepartureConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class DepartureConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector {
 
   def getMessages(departureId: DepartureId, channelType: ChannelType)(implicit
     requestHeader: RequestHeader,
@@ -41,11 +42,14 @@ class DepartureConnector @Inject() (http: HttpClient, appConfig: AppConfig) exte
     val url = s"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
 
     http
-      .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
+      .get(url"$url")(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .setHeader(responseHeaders(channelType): _*)
+      .execute[HttpResponse](CustomHttpReader, ec)
       .map {
         response =>
           extractIfSuccessful[DepartureWithMessages](response)
       }
+
   }
 
   def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit
@@ -57,7 +61,12 @@ class DepartureConnector @Inject() (http: HttpClient, appConfig: AppConfig) exte
     val channelHeader: (String, String) = ("Channel", channelType.toString)
     val headers: Seq[(String, String)]  = requestHeaders :+ channelHeader
 
-    http.POSTString[HttpResponse](url, requestData.toString, headers)(CustomHttpReader, enforceAuthHeaderCarrier(Seq.empty), ec)
+    http
+      .post(url"$url")(enforceAuthHeaderCarrier(Seq.empty))
+      .withBody(requestData.toString())
+      .setHeader(headers: _*)
+      .execute[HttpResponse](CustomHttpReader, ec)
+
   }
 
 }

@@ -17,12 +17,12 @@
 package models
 
 import java.time.LocalDateTime
-
 import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
 object ResponseDeparture {
 
-  implicit val format = Json.format[ResponseDeparture]
+  implicit val format: OFormat[ResponseDeparture] = Json.format[ResponseDeparture]
 
   def apply(d: Departure): ResponseDeparture =
     ResponseDeparture(
