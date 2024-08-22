@@ -34,7 +34,6 @@ import test.utils.WiremockSuite
 import v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
-import v2_1.connectors.InboundRouterConnector
 import v2_1.models.CorrelationId
 import v2_1.models.MessageType
 import v2_1.models.XMLMessage

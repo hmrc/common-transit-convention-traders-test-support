@@ -51,13 +51,11 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
 
   override def beforeAll(): Unit = {
     server.start()
-    app
     super.beforeAll()
   }
 
   override def beforeEach(): Unit = {
     server.resetAll()
-    app
     super.beforeEach()
   }
 
