@@ -21,10 +21,14 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Suite
+import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Application
-import play.api.inject.Injector
+import play.api.inject.{Injector, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.guice.GuiceableModule
+import uk.gov.hmrc.http.client.HttpClientV2
+
+import scala.:+
 
 trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
@@ -33,6 +37,7 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
 
   protected def portConfigKey: String
 
+  private val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
   protected lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure(configure: _*)
@@ -40,7 +45,7 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
         "metrics.jvm" -> false,
         portConfigKey -> server.port().toString
       )
-      .overrides(bindings: _*)
+      .overrides(bindings :+ bind[HttpClientV2].toInstance(mockHttpClient) :_*)
       .build()
 
   protected lazy val injector: Injector = app.injector
