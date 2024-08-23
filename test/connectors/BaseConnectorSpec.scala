@@ -23,12 +23,16 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 
 class BaseConnectorSpec
     extends AnyFreeSpec
@@ -45,8 +49,13 @@ class BaseConnectorSpec
       super.enforceAuthHeaderCarrier(extraHeaders)
   }
 
+  val mockHttpClient: HttpClientV2            = mock[HttpClientV2]
+  implicit override lazy val app: Application = new GuiceApplicationBuilder().overrides(bind[HttpClientV2].toInstance(mockHttpClient)).build()
+
   "BaseConnector" - {
+
     "enforceAuthHeaderCarrier must enforce auth" in {
+
       val harness = new Harness()
 
       implicit val hc            = HeaderCarrier()
