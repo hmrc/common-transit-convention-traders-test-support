@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2_1.connectors
+package test.v2_1.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -31,9 +31,10 @@ import play.api.http.Status.ACCEPTED
 import play.api.http.Status.BAD_REQUEST
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import test.utils.WiremockSuite
-import v2_1.generators.ItGenerators
+import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
+import v2_1.connectors.InboundRouterConnector
 import v2_1.models.CorrelationId
 import v2_1.models.MessageType
 import v2_1.models.XMLMessage

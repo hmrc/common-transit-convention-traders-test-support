@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2_1.connectors
+package test.v2_1.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
@@ -27,7 +27,6 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import play.api.http.HeaderNames
 import play.api.http.Status.NOT_FOUND
@@ -37,7 +36,7 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import test.utils.WiremockSuite
-import v2_1.generators.ItGenerators
+import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.UpstreamErrorResponse

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v2_1.generators
+package test.v2_1.generators
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
