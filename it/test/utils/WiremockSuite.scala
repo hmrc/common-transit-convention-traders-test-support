@@ -23,10 +23,13 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Suite
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Application
-import play.api.inject.{Injector, bind}
+import play.api.inject.Binding
+import play.api.inject.Injector
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.guice.GuiceableModule
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.play.bootstrap.http.HttpClientV2Provider
 
 import scala.:+
 
@@ -37,7 +40,6 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
 
   protected def portConfigKey: String
 
-  private val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
   protected lazy val app: Application =
     new GuiceApplicationBuilder()
       .configure(configure: _*)
@@ -45,7 +47,7 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
         "metrics.jvm" -> false,
         portConfigKey -> server.port().toString
       )
-      .overrides(bindings :+ bind[HttpClientV2].toInstance(mockHttpClient) :_*)
+      .overrides(bind[HttpClientV2].toProvider[HttpClientV2Provider])
       .build()
 
   protected lazy val injector: Injector = app.injector
