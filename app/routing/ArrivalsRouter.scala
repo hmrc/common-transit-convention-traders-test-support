@@ -26,14 +26,17 @@ import play.api.mvc.Action
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
 import play.api.mvc.PathBindable
-import v2.controllers.V2TestMessagesController
+import v2.controllers.{V2TestMessagesController => V2TransitionalTestMessagesController}
 import v2.controllers.stream.StreamingParsers
-import v2.models.Bindings
+import v2.models.{Bindings => TransitionalBindings}
+import v2_1.controllers.V2TestMessagesController
+import v2_1.models.Bindings
 
 class ArrivalsRouter @Inject() (
   val controllerComponents: ControllerComponents,
   v1Arrivals: V1ArrivalTestMessagesController,
-  v2Arrivals: V2TestMessagesController
+  v2Arrivals: V2TransitionalTestMessagesController,
+  arrivals: V2TestMessagesController
 )(implicit val materializer: Materializer)
     extends BaseController
     with StreamingParsers
@@ -42,10 +45,17 @@ class ArrivalsRouter @Inject() (
   def injectEISResponse(arrivalId: String): Action[Source[ByteString, _]] = route {
     case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
       (for {
-        convertedArrivalId <- Bindings.movementIdBinding.bind("arrivalId", arrivalId)
+        convertedArrivalId <- TransitionalBindings.movementIdBinding.bind("arrivalId", arrivalId)
       } yield convertedArrivalId).fold(
         bindingFailureAction(_),
         convertedArrivalId => v2Arrivals.sendArrivalsResponse(convertedArrivalId)
+      )
+    case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
+      (for {
+        convertedArrivalId <- Bindings.movementIdBinding.bind("arrivalId", arrivalId)
+      } yield convertedArrivalId).fold(
+        bindingFailureAction(_),
+        convertedArrivalId => arrivals.sendArrivalsResponse(convertedArrivalId)
       )
     case _ =>
       (for {

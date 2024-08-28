@@ -65,6 +65,7 @@ class VersionedRoutingSpec
       with Logging {
 
     def testWithContent: Action[Source[ByteString, _]] = route {
+      case Some("application/vnd.hmrc.2.1+json") => contentActionThree
       case Some("application/vnd.hmrc.2.0+json") => contentActionTwo
       case Some(x) if x != MimeTypes.TEXT        => contentActionOne
     }
@@ -79,7 +80,13 @@ class VersionedRoutingSpec
         Future.successful(Ok("Two"))
     }
 
+    def contentActionThree: Action[NodeSeq] = Action.async(parse.xml) {
+      _ =>
+        Future.successful(Ok("Three"))
+    }
+
     def testWithoutContent: Action[Source[ByteString, _]] = route {
+      case Some("application/vnd.hmrc.2.1+json") => actionThree
       case Some("application/vnd.hmrc.2.0+json") => actionTwo
       case Some(x) if x != MimeTypes.TEXT        => actionOne
     }
@@ -97,6 +104,14 @@ class VersionedRoutingSpec
         request.headers.get(CONTENT_TYPE) match {
           case Some(x) => UnsupportedMediaType(s"Content type was set: $x")
           case None    => Ok("Two")
+        }
+    }
+
+    def actionThree: Action[AnyContent] = Action {
+      request =>
+        request.headers.get(CONTENT_TYPE) match {
+          case Some(x) => UnsupportedMediaType(s"Content type was set: $x")
+          case None    => Ok("Three")
         }
     }
   }
@@ -212,6 +227,35 @@ class VersionedRoutingSpec
 
         val result = sut.testWithContent()(request)
         contentAsString(result) mustBe "Two"
+
+      }
+    }
+
+    "with accept header set to application/vnd.hmrc.2.1+json (version three)" - {
+
+      val departureHeaders = FakeHeaders(Seq(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.1+json", HeaderNames.CONTENT_TYPE -> "application/xml"))
+
+      "must call correct action without body" in {
+
+        val cc  = stubControllerComponents()
+        val sut = new Harness(cc)
+
+        val request = FakeRequest(HttpVerbs.GET, "/", departureHeaders, AnyContentAsEmpty)
+
+        val result = sut.testWithoutContent()(request)
+        contentAsString(result) mustBe "Three"
+
+      }
+
+      "must call correct action with body" in {
+
+        val cc  = stubControllerComponents()
+        val sut = new Harness(cc)
+
+        val request = FakeRequest(HttpVerbs.POST, "/", departureHeaders, generateSource("<test>test</test>"))
+
+        val result = sut.testWithContent()(request)
+        contentAsString(result) mustBe "Three"
 
       }
     }
