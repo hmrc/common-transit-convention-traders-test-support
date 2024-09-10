@@ -19,6 +19,14 @@
         "access": {
           "type": "PUBLIC"
         }
+      },
+      {
+        "version": "2.1",
+        "status": "BETA",
+        "endpointsEnabled": true,
+        "access": {
+          "type": "PUBLIC"
+        }
       }
     ]
   }

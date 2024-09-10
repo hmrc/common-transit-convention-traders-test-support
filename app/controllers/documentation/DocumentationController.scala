@@ -28,7 +28,7 @@ import javax.inject.Inject
 class DocumentationController @Inject() (appConfig: AppConfig, assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
 
   lazy val definitionAction: Action[AnyContent] =
-    if (appConfig.enableVersionOne) assets.at("/public/api", "definition_with_v1.json")
+    if (appConfig.enableVersionOne) assets.at("/public/api", "multi-version-definitions.json")
     else assets.at("/public/api", "definition.json")
 
   def definition(): Action[AnyContent] =
