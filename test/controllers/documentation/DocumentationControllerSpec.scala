@@ -60,12 +60,12 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
     "when getting the definition file, get the one for both v1 and v2" in {
       when(appConfig.enableVersionOne).thenReturn(true)
       when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
-      when(assets.at(any(), eqTo("definition_with_v1.json"), any())).thenReturn(v1definitionAction)
+      when(assets.at(any(), eqTo("multi-version-definitions.json"), any())).thenReturn(v1definitionAction)
 
       sut.definition() mustBe v1definitionAction
 
       verify(assets, times(0)).at(any(), eqTo("definition.json"), any())
-      verify(assets, times(1)).at(any(), eqTo("definition_with_v1.json"), any())
+      verify(assets, times(1)).at(any(), eqTo("multi-version-definitions.json"), any())
     }
 
     "when getting a version one raml asset, accept it" in {
@@ -97,12 +97,12 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
     "when getting the definition file, get the one for only v2" in {
       when(appConfig.enableVersionOne).thenReturn(false)
       when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
-      when(assets.at(any(), eqTo("definition_with_v1.json"), any())).thenReturn(v1definitionAction)
+      when(assets.at(any(), eqTo("multi-version-definitions.json"), any())).thenReturn(v1definitionAction)
 
       sut.definition() mustBe v2definitionAction
 
       verify(assets, times(1)).at(any(), eqTo("definition.json"), any())
-      verify(assets, times(0)).at(any(), eqTo("definition_with_v1.json"), any())
+      verify(assets, times(0)).at(any(), eqTo("multi-version-definitions.json"), any())
     }
 
     "when getting a version one raml asset, reject it with Not Found" in {
