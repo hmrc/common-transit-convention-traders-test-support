@@ -31,6 +31,6 @@ object Bindings {
     override def unbind(key: String, value: T): String = unbindFn(value)
   }
 
-  implicit val movementIdBinding = hexBinding[MovementId](MovementId.apply, _.value)
+  implicit val movementIdBinding: PathBindable[MovementId] = hexBinding[MovementId](MovementId.apply, _.value)
 
 }

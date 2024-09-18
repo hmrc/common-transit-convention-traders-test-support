@@ -22,15 +22,16 @@ import models.ArrivalId
 import models.ChannelType
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.Utils
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class ArrivalConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class ArrivalConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector {
 
   def get(arrivalId: ArrivalId, channelType: ChannelType)(implicit
     requestHeader: RequestHeader,
@@ -39,6 +40,9 @@ class ArrivalConnector @Inject() (http: HttpClient, appConfig: AppConfig) extend
   ): Future[HttpResponse] = {
     val url = s"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId.index.toString)}"
 
-    http.GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
+    http
+      .get(url"$url")(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .setHeader(responseHeaders(channelType): _*)
+      .execute[HttpResponse](CustomHttpReader, ec)
   }
 }

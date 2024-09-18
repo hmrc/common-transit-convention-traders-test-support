@@ -37,7 +37,7 @@ trait ErrorTranslator {
     def convert(input: E): PresentationError
   }
 
-  implicit val persistenceErrorConverter = new Converter[PersistenceError] {
+  implicit val persistenceErrorConverter: Converter[PersistenceError] = new Converter[PersistenceError] {
 
     def convert(persistenceError: PersistenceError): PresentationError = persistenceError match {
       case PersistenceError.MovementNotFound(movementType, movementId) =>
@@ -47,7 +47,7 @@ trait ErrorTranslator {
     }
   }
 
-  implicit val messageGenerationErrorConverter = new Converter[MessageGenerationError] {
+  implicit val messageGenerationErrorConverter: Converter[MessageGenerationError] = new Converter[MessageGenerationError] {
 
     override def convert(input: MessageGenerationError): PresentationError = input match {
       case MessageGenerationError.MessageTypeNotSupported(messageType) =>
@@ -55,7 +55,7 @@ trait ErrorTranslator {
     }
   }
 
-  implicit val routerErrorConverter = new Converter[RouterError] {
+  implicit val routerErrorConverter: Converter[RouterError] = new Converter[RouterError] {
 
     override def convert(input: RouterError): PresentationError = input match {
       case RouterError.MovementNotFound(_) => PresentationError.internalServiceError(cause = None)

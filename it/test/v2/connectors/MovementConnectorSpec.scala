@@ -38,8 +38,8 @@ import play.api.test.FakeRequest
 import test.utils.WiremockSuite
 import test.v2.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.http.client.HttpClientV2
 import v2.connectors.MovementConnector
 import v2.models.EORINumber
 import v2.models.Message
@@ -62,7 +62,7 @@ class MovementConnectorSpec
     with ScalaFutures
     with OptionValues {
 
-  lazy val httpClient = app.injector.instanceOf[HttpClient]
+  lazy val httpClient = app.injector.instanceOf[HttpClientV2]
   lazy val appConfig  = app.injector.instanceOf[AppConfig]
 
   val token = Gen.alphaNumStr.sample.get
