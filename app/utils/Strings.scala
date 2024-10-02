@@ -24,6 +24,8 @@ object Strings {
 
   def between1And9: Int = Gen.choose(1, 9).sample.getOrElse(1)
 
+  def between1And99999: Int = Gen.choose(1, 99999).sample.getOrElse(1)
+
   def alphanumeric(length: Int): String =
     Random.alphanumeric take length mkString
 
