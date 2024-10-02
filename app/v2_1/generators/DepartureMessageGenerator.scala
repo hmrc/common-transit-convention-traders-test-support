@@ -18,21 +18,7 @@ package v2_1.generators
 
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
-import utils.Strings
-import utils.Strings.alpha
-import utils.Strings.alphanumeric
-import utils.Strings.alphanumericCapital
-import utils.Strings.country
-import utils.Strings.decimalNumber
-import utils.Strings.declarationGoodsItemNumber
-import utils.Strings.grn
-import utils.Strings.mrn
-import utils.Strings.num
-import utils.Strings.numeric
-import utils.Strings.numericNonZeroStart
-import utils.Strings.referenceNumber
-import utils.Strings.zeroOrOne
-import v2_1.models.MessageType
+import utils.Strings._
 import v2_1.models.MessageType.AmendmentAcceptance
 import v2_1.models.MessageType.ControlDecisionNotification
 import v2_1.models.MessageType.Discrepancies
@@ -46,6 +32,7 @@ import v2_1.models.MessageType.RecoveryNotification
 import v2_1.models.MessageType.RejectionFromOfficeOfDeparture
 import v2_1.models.MessageType.ReleaseForTransit
 import v2_1.models.MessageType.WriteOffNotification
+import v2_1.models.MessageType
 import v2_1.models.XMLMessage
 
 import java.time.Clock
@@ -255,39 +242,24 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
           </Address>
         </HolderOfTheTransitProcedure>
         <Guarantee>
-          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
           <guaranteeType>{alphanumericCapital(1)}</guaranteeType>
-          <GuaranteeReference>
-            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
-            <GRN>{grn()}</GRN>
-            <accessCode>****</accessCode>
-            <amountToBeCovered>10</amountToBeCovered>
-            <currency>GBP</currency>
-          </GuaranteeReference>
         </Guarantee>
         <Consignment>
           <containerIndicator>{zeroOrOne()}</containerIndicator>
           <grossMass>{decimalNumber(16, 6)}</grossMass>
-          <DepartureTransportMeans>
-            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
-          </DepartureTransportMeans>
-          <ActiveBorderTransportMeans>
-            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
-          </ActiveBorderTransportMeans>
           <HouseConsignment>
-            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <countryOfDestination>{country()}</countryOfDestination>
             <grossMass>{decimalNumber(16, 6)}</grossMass>
             <ConsignmentItem>
-              <goodsItemNumber>{numeric(5)}</goodsItemNumber>
+              <goodsItemNumber>{between1And99999}</goodsItemNumber>
               <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
-                <CommodityCode>
-                  <harmonizedSystemSubHeadingCode>{Strings.alphanumeric(6)}</harmonizedSystemSubHeadingCode>
-                </CommodityCode>
               </Commodity>
               <Packaging>
-                <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
                 <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
               </Packaging>
             </ConsignmentItem>
@@ -369,11 +341,11 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
           </ContactPerson>
         </HolderOfTheTransitProcedure>
         <TypeOfControls>
-          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
           <type>{alphanumeric(1, 3)}</type>
         </TypeOfControls>
         <RequestedDocument>
-          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
           <documentType>{alphanumeric(4)}</documentType>
         </RequestedDocument>
       </ncts:CC060C>
@@ -425,7 +397,6 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
-          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(1, 70)}</name>
         </Guarantor>
@@ -512,10 +483,10 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
         </HolderOfTheTransitProcedure>
         <!--1 to 99 repetitions:-->
         <GuaranteeReference>
-          <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
           <GRN>{grn()}</GRN>
           <InvalidGuaranteeReason>
-            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
             <code>{alphanumeric(1, 3)}</code>
             <!--Optional:-->
             <text>{alphanumeric(1, 512)}</text>
@@ -549,7 +520,7 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
           <!--Optional:-->
           <TIRHolderIdentificationNumber>{alphanumeric(8, 17)}</TIRHolderIdentificationNumber>
           <!--Optional:-->
-          <name>{Strings.alphanumeric(8, 70)}</name>
+          <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
           <Address>
             <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
@@ -561,7 +532,6 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
-          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
@@ -611,7 +581,6 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
-          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
@@ -649,7 +618,7 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
         <Consignment>
           <!--1 to 9 repetitions:-->
           <Incident>
-            <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
             <code>{numeric(1)}</code>
             <text>{alphanumeric(20, 512)}</text>
             <!--Optional:-->
@@ -679,19 +648,19 @@ class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators 
             </Location>
             <!--0 to 9999 repetitions:-->
             <TransportEquipment>
-              <sequenceNumber>{numeric(1, 5)}</sequenceNumber>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
               <!--Optional:-->
               <containerIdentificationNumber>{alphanumeric(8, 17)}</containerIdentificationNumber>
               <!--Optional:-->
               <numberOfSeals>{numericNonZeroStart(1, 4)}</numberOfSeals>
               <!--0 to 99 repetitions:-->
               <Seal>
-                <sequenceNumber>{numeric(1, 4)}</sequenceNumber>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
                 <identifier>{alphanumeric(5, 20)}</identifier>
               </Seal>
               <!--0 to 9999 repetitions:-->
               <GoodsReference>
-                <sequenceNumber>{numeric(1, 4)}</sequenceNumber>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
                 <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
               </GoodsReference>
             </TransportEquipment>

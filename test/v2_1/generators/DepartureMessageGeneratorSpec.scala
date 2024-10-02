@@ -129,7 +129,7 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
 
   private def validate(xsdRoot: String, xml: XMLMessage): Unit = {
     val schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-    val schemaUrl     = getClass.getResource(s"/xsd/phase5/${xsdRoot.toLowerCase}.xsd")
+    val schemaUrl     = getClass.getResource(s"/xsd/phase5final/${xsdRoot.toLowerCase}.xsd")
     val schema        = schemaFactory.newSchema(schemaUrl)
     val validator     = schema.newValidator()
     validator.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
