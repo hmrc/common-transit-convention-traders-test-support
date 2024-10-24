@@ -100,8 +100,7 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
 
   private def generateIE043Message(correlationId: String): XMLMessage =
     XMLMessage(
-      <ncts:CC043C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">
-        <messageSender>{alphanumeric(1, 35)}</messageSender>
+      <ncts:CC043C xmlns:ncts="http://ncts.dgtaxud.ec" PhaseID="NCTS5.0">    <messageSender>{alphanumeric(1, 35)}</messageSender>
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
         <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
@@ -298,7 +297,7 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
               </TransportMeans>
             </Transhipment>
           </Incident>
-          <!--1 to 1999 repetitions:-->
+          <!--0 to 99 repetitions:-->
           <HouseConsignment>
             <sequenceNumber>{between1And99999}</sequenceNumber>
             <countryOfDestination>{country()}</countryOfDestination>
@@ -465,7 +464,671 @@ class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators wi
                 <text>{alphanumeric(2, 512)}</text>
               </AdditionalInformation>
             </ConsignmentItem>
-          </HouseConsignment>
+          </HouseConsignment>        <HouseConsignment>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
+          <countryOfDestination>{country()}</countryOfDestination>
+          <grossMass>9876.54321</grossMass>
+          <!--Optional:-->
+          <securityIndicatorFromExportDeclaration>{numeric(1)}</securityIndicatorFromExportDeclaration>
+          <!--Optional:-->
+          <Consignor>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(4, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignor>
+          <!--Optional:-->
+          <Consignee>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(2, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignee>
+          <!--0 to 999 repetitions:-->
+          <DepartureTransportMeans>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <typeOfIdentification>{numeric(2)}</typeOfIdentification>
+            <identificationNumber>{alphanumeric(1, 35)}</identificationNumber>
+            <nationality>{alpha(2).toUpperCase}</nationality>
+          </DepartureTransportMeans>
+          <!--0 to 99 repetitions:-->
+          <PreviousDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(4, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </PreviousDocument>
+          <!--0 to 99 repetitions:-->
+          <SupportingDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </SupportingDocument>
+          <!--0 to 99 repetitions:-->
+          <TransportDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </TransportDocument>
+          <!--0 to 99 repetitions:-->
+          <AdditionalReference>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <!--Optional:-->
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </AdditionalReference>
+          <!--0 to 99 repetitions:-->
+          <AdditionalInformation>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <code>{alphanumeric(5)}</code>
+            <!--Optional:-->
+            <text>{alphanumeric(1, 70)}</text>
+          </AdditionalInformation>
+          <!--1 to 999 repetitions:-->
+          <ConsignmentItem>
+            <goodsItemNumber>{between1And99999}</goodsItemNumber>
+            <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
+            <!--Optional:-->
+            <declarationType>{alphanumeric(1, 5)}</declarationType>
+            <!--Optional:-->
+            <countryOfDestination>{alpha(2).toUpperCase}</countryOfDestination>
+            <!--Optional:-->
+            <Consignee>
+              <!--Optional:-->
+              <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+              <!--Optional:-->
+              <name>{alphanumeric(1, 70)}</name>
+              <!--Optional:-->
+              <Address>
+                <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
+                <!--Optional:-->
+                <postcode>{alphanumeric(6, 17)}</postcode>
+                <city>{alphanumeric(3, 35)}</city>
+                <country>{alpha(2).toUpperCase}</country>
+              </Address>
+            </Consignee>
+            <Commodity>
+              <descriptionOfGoods>{alphanumeric(3, 512)}</descriptionOfGoods>
+              <!--Optional:-->
+              <cusCode>{alphanumeric(9)}</cusCode>
+              <!--Optional:-->
+              <CommodityCode>
+                <harmonizedSystemSubHeadingCode>{alphanumeric(6)}</harmonizedSystemSubHeadingCode>
+                <!--Optional:-->
+                <combinedNomenclatureCode>{alphanumeric(2)}</combinedNomenclatureCode>
+              </CommodityCode>
+              <!--0 to 99 repetitions:-->
+              <DangerousGoods>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
+                <UNNumber>{numeric(4)}</UNNumber>
+              </DangerousGoods>
+            </Commodity>
+            <!--1 to 99 repetitions:-->
+            <Packaging>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
+              <!--Optional:-->
+              <numberOfPackages>{numericNonZeroStart(1, 8)}</numberOfPackages>
+              <!--Optional:-->
+              <shippingMarks>{numeric(2, 512)}</shippingMarks>
+            </Packaging>
+            <!--0 to 99 repetitions:-->
+            <PreviousDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <goodsItemNumber>{between1And99999}</goodsItemNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+            </PreviousDocument>
+            <!--0 to 99 repetitions:-->
+            <SupportingDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(2, 35)}</complementOfInformation>
+            </SupportingDocument>
+            <!--0 to 99 repetitions:-->
+            <TransportDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </TransportDocument>
+            <!--0 to 99 repetitions:-->
+            <AdditionalReference>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <!--Optional:-->
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </AdditionalReference>
+            <!--0 to 99 repetitions:-->
+            <AdditionalInformation>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <code>{alphanumeric(5)}</code>
+              <!--Optional:-->
+              <text>{alphanumeric(2, 512)}</text>
+            </AdditionalInformation>
+          </ConsignmentItem>
+        </HouseConsignment>        <HouseConsignment>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
+          <countryOfDestination>{country()}</countryOfDestination>
+          <grossMass>9876.54321</grossMass>
+          <!--Optional:-->
+          <securityIndicatorFromExportDeclaration>{numeric(1)}</securityIndicatorFromExportDeclaration>
+          <!--Optional:-->
+          <Consignor>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(4, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignor>
+          <!--Optional:-->
+          <Consignee>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(2, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignee>
+          <!--0 to 999 repetitions:-->
+          <DepartureTransportMeans>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <typeOfIdentification>{numeric(2)}</typeOfIdentification>
+            <identificationNumber>{alphanumeric(1, 35)}</identificationNumber>
+            <nationality>{alpha(2).toUpperCase}</nationality>
+          </DepartureTransportMeans>
+          <!--0 to 99 repetitions:-->
+          <PreviousDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(4, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </PreviousDocument>
+          <!--0 to 99 repetitions:-->
+          <SupportingDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </SupportingDocument>
+          <!--0 to 99 repetitions:-->
+          <TransportDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </TransportDocument>
+          <!--0 to 99 repetitions:-->
+          <AdditionalReference>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <!--Optional:-->
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </AdditionalReference>
+          <!--0 to 99 repetitions:-->
+          <AdditionalInformation>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <code>{alphanumeric(5)}</code>
+            <!--Optional:-->
+            <text>{alphanumeric(1, 70)}</text>
+          </AdditionalInformation>
+          <!--1 to 999 repetitions:-->
+          <ConsignmentItem>
+            <goodsItemNumber>{between1And99999}</goodsItemNumber>
+            <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
+            <!--Optional:-->
+            <declarationType>{alphanumeric(1, 5)}</declarationType>
+            <!--Optional:-->
+            <countryOfDestination>{alpha(2).toUpperCase}</countryOfDestination>
+            <!--Optional:-->
+            <Consignee>
+              <!--Optional:-->
+              <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+              <!--Optional:-->
+              <name>{alphanumeric(1, 70)}</name>
+              <!--Optional:-->
+              <Address>
+                <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
+                <!--Optional:-->
+                <postcode>{alphanumeric(6, 17)}</postcode>
+                <city>{alphanumeric(3, 35)}</city>
+                <country>{alpha(2).toUpperCase}</country>
+              </Address>
+            </Consignee>
+            <Commodity>
+              <descriptionOfGoods>{alphanumeric(3, 512)}</descriptionOfGoods>
+              <!--Optional:-->
+              <cusCode>{alphanumeric(9)}</cusCode>
+              <!--Optional:-->
+              <CommodityCode>
+                <harmonizedSystemSubHeadingCode>{alphanumeric(6)}</harmonizedSystemSubHeadingCode>
+                <!--Optional:-->
+                <combinedNomenclatureCode>{alphanumeric(2)}</combinedNomenclatureCode>
+              </CommodityCode>
+              <!--0 to 99 repetitions:-->
+              <DangerousGoods>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
+                <UNNumber>{numeric(4)}</UNNumber>
+              </DangerousGoods>
+            </Commodity>
+            <!--1 to 99 repetitions:-->
+            <Packaging>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
+              <!--Optional:-->
+              <numberOfPackages>{numericNonZeroStart(1, 8)}</numberOfPackages>
+              <!--Optional:-->
+              <shippingMarks>{numeric(2, 512)}</shippingMarks>
+            </Packaging>
+            <!--0 to 99 repetitions:-->
+            <PreviousDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <goodsItemNumber>{between1And99999}</goodsItemNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+            </PreviousDocument>
+            <!--0 to 99 repetitions:-->
+            <SupportingDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(2, 35)}</complementOfInformation>
+            </SupportingDocument>
+            <!--0 to 99 repetitions:-->
+            <TransportDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </TransportDocument>
+            <!--0 to 99 repetitions:-->
+            <AdditionalReference>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <!--Optional:-->
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </AdditionalReference>
+            <!--0 to 99 repetitions:-->
+            <AdditionalInformation>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <code>{alphanumeric(5)}</code>
+              <!--Optional:-->
+              <text>{alphanumeric(2, 512)}</text>
+            </AdditionalInformation>
+          </ConsignmentItem>
+        </HouseConsignment>        <HouseConsignment>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
+          <countryOfDestination>{country()}</countryOfDestination>
+          <grossMass>9876.54321</grossMass>
+          <!--Optional:-->
+          <securityIndicatorFromExportDeclaration>{numeric(1)}</securityIndicatorFromExportDeclaration>
+          <!--Optional:-->
+          <Consignor>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(4, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignor>
+          <!--Optional:-->
+          <Consignee>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(2, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignee>
+          <!--0 to 999 repetitions:-->
+          <DepartureTransportMeans>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <typeOfIdentification>{numeric(2)}</typeOfIdentification>
+            <identificationNumber>{alphanumeric(1, 35)}</identificationNumber>
+            <nationality>{alpha(2).toUpperCase}</nationality>
+          </DepartureTransportMeans>
+          <!--0 to 99 repetitions:-->
+          <PreviousDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(4, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </PreviousDocument>
+          <!--0 to 99 repetitions:-->
+          <SupportingDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </SupportingDocument>
+          <!--0 to 99 repetitions:-->
+          <TransportDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </TransportDocument>
+          <!--0 to 99 repetitions:-->
+          <AdditionalReference>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <!--Optional:-->
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </AdditionalReference>
+          <!--0 to 99 repetitions:-->
+          <AdditionalInformation>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <code>{alphanumeric(5)}</code>
+            <!--Optional:-->
+            <text>{alphanumeric(1, 70)}</text>
+          </AdditionalInformation>
+          <!--1 to 999 repetitions:-->
+          <ConsignmentItem>
+            <goodsItemNumber>{between1And99999}</goodsItemNumber>
+            <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
+            <!--Optional:-->
+            <declarationType>{alphanumeric(1, 5)}</declarationType>
+            <!--Optional:-->
+            <countryOfDestination>{alpha(2).toUpperCase}</countryOfDestination>
+            <!--Optional:-->
+            <Consignee>
+              <!--Optional:-->
+              <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+              <!--Optional:-->
+              <name>{alphanumeric(1, 70)}</name>
+              <!--Optional:-->
+              <Address>
+                <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
+                <!--Optional:-->
+                <postcode>{alphanumeric(6, 17)}</postcode>
+                <city>{alphanumeric(3, 35)}</city>
+                <country>{alpha(2).toUpperCase}</country>
+              </Address>
+            </Consignee>
+            <Commodity>
+              <descriptionOfGoods>{alphanumeric(3, 512)}</descriptionOfGoods>
+              <!--Optional:-->
+              <cusCode>{alphanumeric(9)}</cusCode>
+              <!--Optional:-->
+              <CommodityCode>
+                <harmonizedSystemSubHeadingCode>{alphanumeric(6)}</harmonizedSystemSubHeadingCode>
+                <!--Optional:-->
+                <combinedNomenclatureCode>{alphanumeric(2)}</combinedNomenclatureCode>
+              </CommodityCode>
+              <!--0 to 99 repetitions:-->
+              <DangerousGoods>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
+                <UNNumber>{numeric(4)}</UNNumber>
+              </DangerousGoods>
+            </Commodity>
+            <!--1 to 99 repetitions:-->
+            <Packaging>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
+              <!--Optional:-->
+              <numberOfPackages>{numericNonZeroStart(1, 8)}</numberOfPackages>
+              <!--Optional:-->
+              <shippingMarks>{numeric(2, 512)}</shippingMarks>
+            </Packaging>
+            <!--0 to 99 repetitions:-->
+            <PreviousDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <goodsItemNumber>{between1And99999}</goodsItemNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+            </PreviousDocument>
+            <!--0 to 99 repetitions:-->
+            <SupportingDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(2, 35)}</complementOfInformation>
+            </SupportingDocument>
+            <!--0 to 99 repetitions:-->
+            <TransportDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </TransportDocument>
+            <!--0 to 99 repetitions:-->
+            <AdditionalReference>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <!--Optional:-->
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </AdditionalReference>
+            <!--0 to 99 repetitions:-->
+            <AdditionalInformation>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <code>{alphanumeric(5)}</code>
+              <!--Optional:-->
+              <text>{alphanumeric(2, 512)}</text>
+            </AdditionalInformation>
+          </ConsignmentItem>
+        </HouseConsignment>        <HouseConsignment>
+          <sequenceNumber>{between1And99999}</sequenceNumber>
+          <countryOfDestination>{country()}</countryOfDestination>
+          <grossMass>9876.54321</grossMass>
+          <!--Optional:-->
+          <securityIndicatorFromExportDeclaration>{numeric(1)}</securityIndicatorFromExportDeclaration>
+          <!--Optional:-->
+          <Consignor>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(4, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignor>
+          <!--Optional:-->
+          <Consignee>
+            <!--Optional:-->
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <!--Optional:-->
+            <name>{alphanumeric(2, 70)}</name>
+            <!--Optional:-->
+            <Address>
+              <streetAndNumber>{alphanumeric(8, 70)}</streetAndNumber>
+              <!--Optional:-->
+              <postcode>{alphanumeric(3, 17)}</postcode>
+              <city>{alphanumeric(3, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </Consignee>
+          <!--0 to 999 repetitions:-->
+          <DepartureTransportMeans>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <typeOfIdentification>{numeric(2)}</typeOfIdentification>
+            <identificationNumber>{alphanumeric(1, 35)}</identificationNumber>
+            <nationality>{alpha(2).toUpperCase}</nationality>
+          </DepartureTransportMeans>
+          <!--0 to 99 repetitions:-->
+          <PreviousDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(4, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </PreviousDocument>
+          <!--0 to 99 repetitions:-->
+          <SupportingDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+            <!--Optional:-->
+            <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+          </SupportingDocument>
+          <!--0 to 99 repetitions:-->
+          <TransportDocument>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </TransportDocument>
+          <!--0 to 99 repetitions:-->
+          <AdditionalReference>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <type>{alphanumeric(4)}</type>
+            <!--Optional:-->
+            <referenceNumber>{alphanumeric(1, 70)}</referenceNumber>
+          </AdditionalReference>
+          <!--0 to 99 repetitions:-->
+          <AdditionalInformation>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <code>{alphanumeric(5)}</code>
+            <!--Optional:-->
+            <text>{alphanumeric(1, 70)}</text>
+          </AdditionalInformation>
+          <!--1 to 999 repetitions:-->
+          <ConsignmentItem>
+            <goodsItemNumber>{between1And99999}</goodsItemNumber>
+            <declarationGoodsItemNumber>{generateDeclarationGoodsNumber()}</declarationGoodsItemNumber>
+            <!--Optional:-->
+            <declarationType>{alphanumeric(1, 5)}</declarationType>
+            <!--Optional:-->
+            <countryOfDestination>{alpha(2).toUpperCase}</countryOfDestination>
+            <!--Optional:-->
+            <Consignee>
+              <!--Optional:-->
+              <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+              <!--Optional:-->
+              <name>{alphanumeric(1, 70)}</name>
+              <!--Optional:-->
+              <Address>
+                <streetAndNumber>{alphanumeric(2, 70)}</streetAndNumber>
+                <!--Optional:-->
+                <postcode>{alphanumeric(6, 17)}</postcode>
+                <city>{alphanumeric(3, 35)}</city>
+                <country>{alpha(2).toUpperCase}</country>
+              </Address>
+            </Consignee>
+            <Commodity>
+              <descriptionOfGoods>{alphanumeric(3, 512)}</descriptionOfGoods>
+              <!--Optional:-->
+              <cusCode>{alphanumeric(9)}</cusCode>
+              <!--Optional:-->
+              <CommodityCode>
+                <harmonizedSystemSubHeadingCode>{alphanumeric(6)}</harmonizedSystemSubHeadingCode>
+                <!--Optional:-->
+                <combinedNomenclatureCode>{alphanumeric(2)}</combinedNomenclatureCode>
+              </CommodityCode>
+              <!--0 to 99 repetitions:-->
+              <DangerousGoods>
+                <sequenceNumber>{between1And99999}</sequenceNumber>
+                <UNNumber>{numeric(4)}</UNNumber>
+              </DangerousGoods>
+            </Commodity>
+            <!--1 to 99 repetitions:-->
+            <Packaging>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <typeOfPackages>{alphanumeric(2)}</typeOfPackages>
+              <!--Optional:-->
+              <numberOfPackages>{numericNonZeroStart(1, 8)}</numberOfPackages>
+              <!--Optional:-->
+              <shippingMarks>{numeric(2, 512)}</shippingMarks>
+            </Packaging>
+            <!--0 to 99 repetitions:-->
+            <PreviousDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <goodsItemNumber>{between1And99999}</goodsItemNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(1, 35)}</complementOfInformation>
+            </PreviousDocument>
+            <!--0 to 99 repetitions:-->
+            <SupportingDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+              <!--Optional:-->
+              <complementOfInformation>{alphanumeric(2, 35)}</complementOfInformation>
+            </SupportingDocument>
+            <!--0 to 99 repetitions:-->
+            <TransportDocument>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </TransportDocument>
+            <!--0 to 99 repetitions:-->
+            <AdditionalReference>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <type>{alphanumeric(4)}</type>
+              <!--Optional:-->
+              <referenceNumber>{alphanumeric(2, 70)}</referenceNumber>
+            </AdditionalReference>
+            <!--0 to 99 repetitions:-->
+            <AdditionalInformation>
+              <sequenceNumber>{between1And99999}</sequenceNumber>
+              <code>{alphanumeric(5)}</code>
+              <!--Optional:-->
+              <text>{alphanumeric(2, 512)}</text>
+            </AdditionalInformation>
+          </ConsignmentItem>
+        </HouseConsignment>
         </Consignment>
       </ncts:CC043C>
     )
