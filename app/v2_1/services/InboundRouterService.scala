@@ -52,7 +52,8 @@ class InboundRouterServiceImpl @Inject() (inboundRouterConnector: InboundRouterC
   def post(messageType: MessageType, message: XMLMessage, correlationId: CorrelationId)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): EitherT[Future, RouterError, MessageId] =
+  ): EitherT[Future, RouterError, MessageId] = {
+    println("correlationId = " + correlationId)
     EitherT(
       inboundRouterConnector
         .post(messageType, message.wrapped, correlationId)
@@ -72,5 +73,6 @@ class InboundRouterServiceImpl @Inject() (inboundRouterConnector: InboundRouterC
           case NonFatal(thr)                             => Left(RouterError.Unexpected(Some(thr)))
         }
     )
+  }
 
 }

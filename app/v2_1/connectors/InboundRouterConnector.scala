@@ -47,6 +47,10 @@ class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) 
 
     val url = s"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
-    http.POSTString(url, message.value.mkString, requestHeaders)(CustomHttpReader, newHeaders, ec)
+    val body = message.value.mkString
+    println("URL = " + url)
+    println("BODY = " + body)
+    http.POSTString(url, body, requestHeaders)(CustomHttpReader, newHeaders, ec)
+
   }
 }
