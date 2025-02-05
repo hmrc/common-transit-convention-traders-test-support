@@ -16,10 +16,7 @@
 
 package models
 
-sealed trait MessageType extends IeMetadata {
-  def code: String
-  def rootNode: String
-}
+sealed trait MessageType extends IeMetadata
 
 object MessageType extends Enumerable.Implicits {
 
@@ -78,6 +75,6 @@ object MessageType extends Enumerable.Implicits {
     Enumerable(
       values.map(
         v => v.code -> v
-      ): _*
+      )*
     )
 }

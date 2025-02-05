@@ -18,27 +18,32 @@ package connectors
 
 import config.AppConfig
 import config.Constants
-import connectors.util.CustomHttpReader
 import models.MessageType
+import play.api.libs.ws.DefaultBodyWritables
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
-
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class InboundRouterConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector with DefaultBodyWritables {
 
   def post(messageType: MessageType, message: String, itemId: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val xMessageRecipient = mdtpString.format(messageType.source, itemId, Constants.MessageCorrelationId)
 
     val newHeaders = hc
       .copy()
-      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType.code): _*)
+      .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType.code)*)
+      .withExtraHeaders(requestHeaders*)
 
-    val url = appConfig.transitMovementsTraderRouterUrl + routerRoute
+    val url = url"${appConfig.transitMovementsTraderRouterUrl} + $routerRoute"
 
-    http.POSTString(url, message, requestHeaders)(CustomHttpReader, newHeaders, ec)
+    http
+      .post(url)(newHeaders)
+      .withBody(message)
+      .execute[HttpResponse]
   }
 }

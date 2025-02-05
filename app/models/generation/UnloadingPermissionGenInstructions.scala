@@ -39,5 +39,5 @@ object UnloadingPermissionGenInstructions {
         (__ \ "message" \ "productCount").readWithDefault[Int](1) and
         (__ \ "message" \ "specialMentionsCount").readWithDefault[Int](1) and
         (__ \ "message" \ "sealsCount").readWithDefault[Int](1)
-    )(UnloadingPermissionGenInstructions.apply _)
+    )(UnloadingPermissionGenInstructions.apply)
 }

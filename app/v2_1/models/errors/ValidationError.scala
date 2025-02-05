@@ -17,7 +17,6 @@
 package v2_1.models.errors
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.functional.syntax.unlift
 import play.api.libs.json.OWrites
 import play.api.libs.json.Reads
 import play.api.libs.json.__
@@ -32,13 +31,15 @@ object JsonValidationError {
     (
       (__ \ "schemaPath").read[String] and
         (__ \ "message").read[String]
-    )(JsonValidationError.apply _)
+    )(JsonValidationError.apply)
 
   implicit val jsonValidationErrorWrites: OWrites[JsonValidationError] =
     (
       (__ \ "schemaPath").write[String] and
         (__ \ "message").write[String]
-    )(unlift(JsonValidationError.unapply))
+    )(
+      value => (value.schemaPath, value.message)
+    )
 }
 
 case class XmlValidationError(lineNumber: Int, columnNumber: Int, message: String)
@@ -50,12 +51,14 @@ object XmlValidationError {
       (__ \ "lineNumber").read[Int] and
         (__ \ "columnNumber").read[Int] and
         (__ \ "message").read[String]
-    )(XmlValidationError.apply _)
+    )(XmlValidationError.apply)
 
   implicit val schemaValidationErrorWrites: OWrites[XmlValidationError] =
     (
       (__ \ "lineNumber").write[Int] and
         (__ \ "columnNumber").write[Int] and
         (__ \ "message").write[String]
-    )(unlift(XmlValidationError.unapply))
+    )(
+      value => (value.lineNumber, value.columnNumber, value.message)
+    )
 }
