@@ -33,7 +33,7 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import test.utils.WiremockSuite
 import test.v2.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
 import v2.connectors.InboundRouterConnector
 import v2.models.CorrelationId
 import v2.models.MessageType
@@ -50,7 +50,7 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
 
   "post" - {
 
-    lazy val httpClient = app.injector.instanceOf[HttpClient]
+    lazy val httpClient = app.injector.instanceOf[HttpClientV2]
     lazy val appConfig  = app.injector.instanceOf[AppConfig]
 
     def targetUrl(correlationId: CorrelationId) =

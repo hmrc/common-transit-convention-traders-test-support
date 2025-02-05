@@ -19,18 +19,19 @@ package v2.connectors
 import config.AppConfig
 import connectors.util.CustomHttpReader
 import uk.gov.hmrc.http.Authorization
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
 import v2.models.CorrelationId
 import v2.models.MessageType
 import v2.models.WrappedXMLMessage
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class InboundRouterConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector {
 
   lazy val auth: Option[Authorization] =
     if (appConfig.bearerTokenEnabled) Some(Authorization(s"Bearer ${appConfig.bearerTokenToken}"))
@@ -47,6 +48,11 @@ class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) 
 
     val url = s"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
-    http.POSTString(url, message.value.mkString, requestHeaders)(CustomHttpReader, newHeaders, ec)
+    http
+      .post(url"$url")(newHeaders)
+      .setHeader(responseHeaders: _*)
+      .withBody(message.value.mkString)
+      .execute[HttpResponse](CustomHttpReader, ec)
+
   }
 }

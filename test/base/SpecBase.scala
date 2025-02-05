@@ -22,10 +22,12 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 
 trait SpecBase extends AnyFreeSpec with Matchers with MockitoSugar with ScalaFutures with OptionValues with ScalaCheckDrivenPropertyChecks {
 
@@ -33,9 +35,13 @@ trait SpecBase extends AnyFreeSpec with Matchers with MockitoSugar with ScalaFut
 
   def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
-  protected def baseApplicationBuilder: GuiceApplicationBuilder =
+  protected def baseApplicationBuilder: GuiceApplicationBuilder = {
+    val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+
     new GuiceApplicationBuilder()
       .configure(
         "metrics.jvm" -> false
       )
+      .overrides(bind[HttpClientV2].toInstance(mockHttpClient))
+  }
 }

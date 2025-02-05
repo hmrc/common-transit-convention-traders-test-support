@@ -25,6 +25,7 @@ import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.HeaderNames
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.JsString
 import play.api.libs.json.JsValue
@@ -35,6 +36,7 @@ import play.api.mvc.DefaultActionBuilder
 import play.api.test.Helpers._
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -49,7 +51,10 @@ class ValidateArrivalMessageTypeActionSpec
     with MockitoSugar
     with BeforeAndAfterEach {
 
+  val mockHttpClient: HttpClientV2 = mock[HttpClientV2]
+
   override lazy val app = GuiceApplicationBuilder()
+    .overrides(bind[HttpClientV2].toInstance(mockHttpClient))
     .build()
 
   override def beforeEach(): Unit =
