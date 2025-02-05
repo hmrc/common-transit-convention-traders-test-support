@@ -42,7 +42,7 @@ class ArrivalsRouter @Inject() (
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(arrivalId: String): Action[Source[ByteString, _]] = route {
+  def injectEISResponse(arrivalId: String): Action[Source[ByteString, ?]] = route {
     case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
       (for {
         convertedArrivalId <- TransitionalBindings.movementIdBinding.bind("arrivalId", arrivalId)

@@ -5,13 +5,13 @@ import uk.gov.hmrc.DefaultBuildSettings
 val appName = "common-transit-convention-traders-test-support"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "3.4.3"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(inConfig(Test)(ScalafmtPlugin.scalafmtConfigSettings))
-  .settings(inConfig(Test)(testSettings): _*)
+  .settings(inConfig(Test)(testSettings)*)
   .settings(Compile / unmanagedResourceDirectories += baseDirectory.value / "resources")
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
@@ -22,7 +22,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(ScoverageSettings())
   .settings(inThisBuild(buildSettings))
   .settings(PlayKeys.playDefaultPort := 9497)
-  .settings(scoverageSettings: _*)
+  .settings(scoverageSettings*)
   .settings(
     RoutesKeys.routesImport ++= Seq(
       "models._"

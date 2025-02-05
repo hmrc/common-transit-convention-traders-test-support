@@ -65,8 +65,7 @@ class ValidateArrivalMessageTypeActionSpec
     def post: Action[JsValue] =
       (DefaultActionBuilder.apply(cc.parsers.anyContent) andThen channelAction andThen messageRequestAction andThen validateArrivalMessageTypeAction)
         .async(cc.parsers.json) {
-          _: MessageRequest[JsValue] =>
-            Future.successful(Ok(JsString("test")))
+          _ => Future.successful(Ok(JsString("test")))
         }
   }
 

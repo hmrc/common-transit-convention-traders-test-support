@@ -22,28 +22,27 @@ import models.ChannelType
 import models.domain.MovementMessage
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.Utils
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class DepartureMessageConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class DepartureMessageConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector {
 
   def get(departureId: String, messageId: String, channelType: ChannelType)(implicit
     request: RequestHeader,
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[HttpResponse, MovementMessage]] = {
-    val url = s"${appConfig.traderAtDeparturesUrl}$departureRoute${Utils.urlEncode(departureId)}/messages/${Utils.urlEncode(messageId)}"
+    val url = url"${appConfig.traderAtDeparturesUrl}$departureRoute${Utils.urlEncode(departureId)}/messages/${Utils.urlEncode(messageId)}"
 
     http
-      .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
-      .map {
-        response =>
-          extractIfSuccessful[MovementMessage](response)
-      }
+      .get(url)(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .execute[HttpResponse](using CustomHttpReader, implicitly)
+      .map(extractIfSuccessful[MovementMessage])
   }
 }

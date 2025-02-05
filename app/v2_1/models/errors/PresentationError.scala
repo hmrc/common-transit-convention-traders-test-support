@@ -85,14 +85,14 @@ object PresentationError extends CommonFormats {
     (
       (__ \ MessageFieldName).read[String] and
         (__ \ CodeFieldName).read[ErrorCode]
-    )(StandardError.apply _)
+    )(StandardError.apply)
 
   implicit val jsonSchemaErrorFormat: OFormat[JsonSchemaValidationError] =
     (
       (__ \ MessageFieldName).format[String] and
         (__ \ CodeFieldName).format[ErrorCode] and
         (__ \ "validationErrors").format[NonEmptyList[JsonValidationError]]
-    )(JsonSchemaValidationError.apply, unlift(JsonSchemaValidationError.unapply))
+    )(JsonSchemaValidationError.apply, value => (value.message, value.code, value.validationErrors))
 
   implicit val baseErrorWrites: OWrites[PresentationError] = OWrites {
     case bindingError: BindingError                           => Json.writes[BindingError].writes(bindingError)

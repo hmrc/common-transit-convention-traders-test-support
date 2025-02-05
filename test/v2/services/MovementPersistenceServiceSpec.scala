@@ -18,9 +18,10 @@ package v2.services
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.{eq => eqTo}
+import org.mockito.ArgumentMatchers.eq as eqTo
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import v2.base.TestActorSystem.system.dispatcher
@@ -36,7 +37,7 @@ import scala.concurrent.Future
 
 class MovementPersistenceServiceSpec extends SpecBase with ModelGenerators {
 
-  implicit val requestHeader = FakeRequest()
+  implicit val requestHeader: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   "DepartureService" - {
 

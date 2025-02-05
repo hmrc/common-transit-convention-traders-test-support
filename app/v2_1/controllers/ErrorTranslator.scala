@@ -37,29 +37,20 @@ trait ErrorTranslator {
     def convert(input: E): PresentationError
   }
 
-  implicit val persistenceErrorConverter = new Converter[PersistenceError] {
-
-    def convert(persistenceError: PersistenceError): PresentationError = persistenceError match {
-      case PersistenceError.MovementNotFound(movementType, movementId) =>
-        PresentationError.notFoundError(s"${movementType.toString} with ID ${movementId.value} was not found")
-      case PersistenceError.MessageNotFound(_, _, _) => PresentationError.internalServiceError(cause = None)
-      case err: PersistenceError.Unexpected          => PresentationError.internalServiceError(cause = err.thr)
-    }
+  implicit val persistenceErrorConverter: Converter[PersistenceError] = {
+    case PersistenceError.MovementNotFound(movementType, movementId) =>
+      PresentationError.notFoundError(s"${movementType.toString} with ID ${movementId.value} was not found")
+    case PersistenceError.MessageNotFound(_, _, _) => PresentationError.internalServiceError(cause = None)
+    case err: PersistenceError.Unexpected          => PresentationError.internalServiceError(cause = err.thr)
   }
 
-  implicit val messageGenerationErrorConverter = new Converter[MessageGenerationError] {
-
-    override def convert(input: MessageGenerationError): PresentationError = input match {
-      case MessageGenerationError.MessageTypeNotSupported(messageType) =>
-        PresentationError.notImplementedError(s"Message type ${messageType.code} is not supported for this movement type")
-    }
+  implicit val messageGenerationErrorConverter: Converter[MessageGenerationError] = {
+    case MessageGenerationError.MessageTypeNotSupported(messageType) =>
+      PresentationError.notImplementedError(s"Message type ${messageType.code} is not supported for this movement type")
   }
 
-  implicit val routerErrorConverter = new Converter[RouterError] {
-
-    override def convert(input: RouterError): PresentationError = input match {
-      case RouterError.MovementNotFound(_) => PresentationError.internalServiceError(cause = None)
-      case err: RouterError.Unexpected     => PresentationError.internalServiceError(cause = err.thr)
-    }
+  implicit val routerErrorConverter: Converter[RouterError] = {
+    case RouterError.MovementNotFound(_) => PresentationError.internalServiceError(cause = None)
+    case err: RouterError.Unexpected     => PresentationError.internalServiceError(cause = err.thr)
   }
 }

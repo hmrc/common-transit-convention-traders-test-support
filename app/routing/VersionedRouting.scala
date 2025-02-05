@@ -38,11 +38,11 @@ object VersionedRouting {
 }
 
 trait VersionedRouting {
-  self: BaseController with StreamingParsers =>
+  self: BaseController & StreamingParsers =>
 
-  def route(routes: PartialFunction[Option[String], Action[_]])(implicit materializer: Materializer): Action[Source[ByteString, _]] =
+  def route(routes: PartialFunction[Option[String], Action[?]])(implicit materializer: Materializer): Action[Source[ByteString, ?]] =
     Action.async(streamFromMemory) {
-      (request: Request[Source[ByteString, _]]) =>
+      (request: Request[Source[ByteString, ?]]) =>
         routes
           .lift(request.headers.get(HeaderNames.ACCEPT))
           .map {
@@ -79,7 +79,7 @@ trait VersionedRouting {
 
   // This simulates what Play will do if a binding fails, with the addition of the "code" field
   // that we use elsewhere.
-  def bindingFailureAction(message: String)(implicit materializer: Materializer): Action[Source[ByteString, _]] =
+  def bindingFailureAction(message: String)(implicit materializer: Materializer): Action[Source[ByteString, ?]] =
     Action.async(streamFromMemory) {
       implicit request =>
         request.body.runWith(Sink.ignore)

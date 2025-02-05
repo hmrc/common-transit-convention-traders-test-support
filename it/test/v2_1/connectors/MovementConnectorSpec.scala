@@ -40,6 +40,7 @@ import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.http.client.HttpClientV2
 import v2_1.connectors.MovementConnector
 import v2_1.models.EORINumber
 import v2_1.models.Message
@@ -62,7 +63,7 @@ class MovementConnectorSpec
     with ScalaFutures
     with OptionValues {
 
-  lazy val httpClient = app.injector.instanceOf[HttpClient]
+  lazy val httpClient = app.injector.instanceOf[HttpClientV2]
   lazy val appConfig  = app.injector.instanceOf[AppConfig]
 
   val token = Gen.alphaNumStr.sample.get
