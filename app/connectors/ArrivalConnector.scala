@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.StringContextOps
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.Utils
 
+import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -38,10 +39,10 @@ class ArrivalConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) exte
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] = {
-    val url = url"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId.index.toString)}"
+    val destination = s"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId.index.toString)}"
 
     http
-      .get(url)(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .get(url"$destination")(enforceAuthHeaderCarrier(responseHeaders(channelType)))
       .execute[HttpResponse](using CustomHttpReader, ec)
   }
 }

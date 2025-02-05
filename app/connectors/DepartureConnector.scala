@@ -41,10 +41,10 @@ class DepartureConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) ex
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[HttpResponse, DepartureWithMessages]] = {
-    val url = url"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
+    val destination = s"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
 
     http
-      .get(url)(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .get(url"$destination")(enforceAuthHeaderCarrier(responseHeaders(channelType)))
       .execute[HttpResponse](using CustomHttpReader, implicitly)
       .map(extractIfSuccessful[DepartureWithMessages])
   }
@@ -54,12 +54,12 @@ class DepartureConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) ex
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] = {
-    val url                             = url"${appConfig.traderAtDeparturesUrl}$departureRoute"
+    val destination                     = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
     val channelHeader: (String, String) = ("Channel", channelType.toString)
     val headers: Seq[(String, String)]  = requestHeaders :+ channelHeader
 
     http
-      .post(url)(enforceAuthHeaderCarrier(headers))
+      .post(url"$destination")(enforceAuthHeaderCarrier(headers))
       .withBody(requestData.toString)
       .execute[HttpResponse](using CustomHttpReader, implicitly)
   }

@@ -38,10 +38,10 @@ class ArrivalMessageConnector @Inject() (http: HttpClientV2, appConfig: AppConfi
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[HttpResponse, MovementMessage]] = {
-    val url = url"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId)}/messages/${Utils.urlEncode(messageId)}"
+    val destination = s"${appConfig.traderAtDestinationUrl}$arrivalGetRoute${Utils.urlEncode(arrivalId)}/messages/${Utils.urlEncode(messageId)}"
 
     http
-      .get(url)(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .get(url"$destination")(enforceAuthHeaderCarrier(responseHeaders(channelType)))
       .execute[HttpResponse](using CustomHttpReader, implicitly)
       .map {
         response =>

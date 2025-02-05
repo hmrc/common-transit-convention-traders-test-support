@@ -41,10 +41,10 @@ class InboundRouterConnector @Inject() (http: HttpClientV2, appConfig: AppConfig
       .withExtraHeaders(Seq("X-Message-Recipient" -> xMessageRecipient, "X-Message-Type" -> messageType.code)*)
       .withExtraHeaders(requestHeaders*)
 
-    val url = url"${appConfig.transitMovementsTraderRouterUrl} + $routerRoute"
+    val destination = s"${appConfig.transitMovementsTraderRouterUrl}$routerRoute"
 
     http
-      .post(url)(newHeaders)
+      .post(url"$destination")(newHeaders)
       .withBody(message)
       .execute[HttpResponse](using CustomHttpReader, implicitly)
   }
