@@ -18,6 +18,7 @@ package v2_1.controllers
 
 import base.SpecBase
 import cats.data.EitherT
+import config.Constants
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.{eq => eqTo}
@@ -58,6 +59,8 @@ import scala.xml.NodeSeq
 
 class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with TestActorSystem {
 
+  val defaultMessageId: MessageId = MessageId(Constants.DefaultTriggerId)
+
   val exampleRequest: JsValue = Json.parse(
     """{
         |     "message": {
@@ -86,7 +89,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
               .getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any())
           ).thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(movement))))
 
-          when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), any[CorrelationId])(any(), any()))
+          when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), eqTo(CorrelationId(movement._id, defaultMessageId)))(any(), any()))
             .thenReturn(EitherT[Future, RouterError, MessageId](Future.successful(Right(message.id))))
 
           when(
@@ -113,7 +116,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, defaultMessageId)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
 
@@ -151,7 +154,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, defaultMessageId)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
           status(result) mustEqual NOT_FOUND
@@ -186,7 +189,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, defaultMessageId)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
           status(result) mustEqual NOT_IMPLEMENTED
@@ -228,7 +231,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, defaultMessageId)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
           status(result) mustEqual INTERNAL_SERVER_ERROR

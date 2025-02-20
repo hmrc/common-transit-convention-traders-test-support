@@ -16,10 +16,12 @@
 
 package routing
 
+import cats.implicits.catsSyntaxOptionId
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.util.ByteString
 import com.google.inject.Inject
+import config.Constants
 import controllers.V1DepartureTestMessagesController
 import models.DepartureId
 import play.api.mvc.Action
@@ -42,28 +44,35 @@ class DeparturesRouter @Inject() (
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(departureId: String): Action[Source[ByteString, _]] = route {
-    case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
-      (for {
-        convertedDepartureId <- TransitionalBindings.movementIdBinding.bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
-        bindingFailureAction(_),
-        convertedDepartureId => v2Departures.sendDepartureResponse(convertedDepartureId)
-      )
-    case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
-      (for {
-        convertedDepartureId <- Bindings.movementIdBinding.bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
-        bindingFailureAction(_),
-        convertedDepartureId => departures.sendDepartureResponse(convertedDepartureId)
-      )
-    case _ =>
-      (for {
-        convertedDepartureId <- implicitly[PathBindable[DepartureId]].bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
-        bindingFailureAction(_),
-        convertedDepartureId => v1Departures.injectEISResponse(convertedDepartureId)
-      )
+  def injectEISResponseWithTriggerId(departureId: String, messageId: String): Action[Source[ByteString, _]] = routing(departureId, messageId.some)
+  def injectEISResponse(departureId: String): Action[Source[ByteString, _]]                                 = routing(departureId, None)
 
-  }
+  private def routing(departureId: String, messageId: Option[String]): Action[Source[ByteString, _]] =
+    route {
+      case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
+        (for {
+          convertedDepartureId <- TransitionalBindings.movementIdBinding.bind("departureId", departureId)
+        } yield convertedDepartureId).fold(
+          bindingFailureAction(_),
+          convertedDepartureId => v2Departures.sendDepartureResponse(convertedDepartureId)
+        )
+      case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
+        (for {
+          convertedDepartureId <- Bindings.movementIdBinding.bind("departureId", departureId)
+          convertedMessageId   <- Bindings.messageIdBinding.bind("messageId", messageId.getOrElse(Constants.DefaultTriggerId))
+        } yield (convertedDepartureId, convertedMessageId)).fold(
+          bindingFailureAction(_),
+          {
+            case (departureId, messageId) => departures.sendDepartureResponse(departureId, messageId)
+          }
+        )
+      case _ =>
+        (for {
+          convertedDepartureId <- implicitly[PathBindable[DepartureId]].bind("departureId", departureId)
+        } yield convertedDepartureId).fold(
+          bindingFailureAction(_),
+          convertedDepartureId => v1Departures.injectEISResponse(convertedDepartureId)
+        )
+
+    }
 }

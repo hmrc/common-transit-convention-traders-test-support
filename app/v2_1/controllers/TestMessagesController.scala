@@ -44,9 +44,9 @@ import scala.concurrent.ExecutionContext
 
 @ImplementedBy(classOf[TestMessagesController])
 trait V2TestMessagesController {
-  def sendDepartureResponse(departureId: MovementId): Action[JsValue]
+  def sendDepartureResponse(departureId: MovementId, messageId: MessageId): Action[JsValue]
 
-  def sendArrivalsResponse(departureId: MovementId): Action[JsValue]
+  def sendArrivalsResponse(departureId: MovementId, messageId: MessageId): Action[JsValue]
 }
 
 class TestMessagesController @Inject() (
@@ -63,13 +63,13 @@ class TestMessagesController @Inject() (
     with ErrorTranslator
     with V2TestMessagesController {
 
-  override def sendDepartureResponse(movementId: MovementId): Action[JsValue] =
-    injectEISResponse(MovementType.Departure, movementId)
+  override def sendDepartureResponse(movementId: MovementId, messageId: MessageId): Action[JsValue] =
+    injectEISResponse(MovementType.Departure, movementId, messageId)
 
-  override def sendArrivalsResponse(movementId: MovementId): Action[JsValue] =
-    injectEISResponse(MovementType.Arrival, movementId)
+  override def sendArrivalsResponse(movementId: MovementId, messageId: MessageId): Action[JsValue] =
+    injectEISResponse(MovementType.Arrival, movementId, messageId)
 
-  def injectEISResponse(movementType: MovementType, movementId: MovementId): Action[JsValue] =
+  def injectEISResponse(movementType: MovementType, movementId: MovementId, messageId: MessageId): Action[JsValue] =
     (authAction andThen messageRequestAction andThen validateDepartureMessageTypeActionProvider(movementType))
       .async(parse.json) {
         implicit request: MessageRequest[JsValue] =>
@@ -83,7 +83,7 @@ class TestMessagesController @Inject() (
 
             // Send generated message to transit-movements-router
             messageId <- inboundRouterService
-              .post(request.messageType, message, CorrelationId(movementId, MessageId(Constants.DefaultTriggerId)))
+              .post(request.messageType, message, CorrelationId(movementId, messageId))
               .asPresentation
 
             // Check for matching departure message from transit-movements

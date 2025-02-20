@@ -19,20 +19,20 @@ package v2.models
 import utils.CallOps.CallOps
 
 sealed abstract class MovementType(val name: String, val urlFragment: String) extends Product with Serializable {
-  def generateBaseUrl(movementId: MovementId): String
+  def generateBaseUrl(movementId: MovementId, maybeMessageId: Option[MessageId] = None): String
 }
 
 object MovementType {
 
   case object Arrival extends MovementType("arrival", "arrivals") {
 
-    override def generateBaseUrl(movementId: MovementId) =
+    override def generateBaseUrl(movementId: MovementId, maybeMessageId: Option[MessageId] = None) =
       routing.routes.DeparturesRouter.injectEISResponse(movementId.value).urlWithContext
   }
 
   case object Departure extends MovementType("departure", "departures") {
 
-    override def generateBaseUrl(movementId: MovementId) =
+    override def generateBaseUrl(movementId: MovementId, maybeMessageId: Option[MessageId] = None) =
       routing.routes.ArrivalsRouter.injectEISResponse(movementId.value).urlWithContext
   }
 
