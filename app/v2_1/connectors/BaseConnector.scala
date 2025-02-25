@@ -44,7 +44,7 @@ class BaseConnector extends HttpErrorFunctions {
   )(implicit requestHeader: RequestHeader, headerCarrier: HeaderCarrier): HeaderCarrier =
     headerCarrier
       .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
-      .withExtraHeaders(extraHeaders: _*)
+      .withExtraHeaders(extraHeaders*)
 
   implicit class HttpResponseHelpers(response: HttpResponse) {
 

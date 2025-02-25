@@ -64,7 +64,7 @@ class VersionedRoutingSpec
       with StreamingParsers
       with Logging {
 
-    def testWithContent: Action[Source[ByteString, _]] = route {
+    def testWithContent: Action[Source[ByteString, ?]] = route {
       case Some("application/vnd.hmrc.2.1+json") => contentActionThree
       case Some("application/vnd.hmrc.2.0+json") => contentActionTwo
       case Some(x) if x != MimeTypes.TEXT        => contentActionOne
@@ -85,7 +85,7 @@ class VersionedRoutingSpec
         Future.successful(Ok("Three"))
     }
 
-    def testWithoutContent: Action[Source[ByteString, _]] = route {
+    def testWithoutContent: Action[Source[ByteString, ?]] = route {
       case Some("application/vnd.hmrc.2.1+json") => actionThree
       case Some("application/vnd.hmrc.2.0+json") => actionTwo
       case Some(x) if x != MimeTypes.TEXT        => actionOne

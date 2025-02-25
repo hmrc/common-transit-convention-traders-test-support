@@ -42,7 +42,7 @@ class DeparturesRouter @Inject() (
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(departureId: String): Action[Source[ByteString, _]] = route {
+  def injectEISResponse(departureId: String): Action[Source[ByteString, ?]] = route {
     case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
       (for {
         convertedDepartureId <- TransitionalBindings.movementIdBinding.bind("departureId", departureId)

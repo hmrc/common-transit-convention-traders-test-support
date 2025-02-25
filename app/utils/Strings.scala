@@ -94,7 +94,7 @@ object Strings {
   }
 
   def mrn(): String =
-    //pattern value="([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
+    // pattern value="([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
     Seq[String](
       "2",
       Gen.choose(4, 9).sample.getOrElse(4).toString,
@@ -105,7 +105,7 @@ object Strings {
     ).mkString.toUpperCase
 
   def grn(): String =
-    //[0-9]{2}[A-Z]{2}[A-Z0-9]{12}[0-9]([A-Z][0-9]{6})?
+    // [0-9]{2}[A-Z]{2}[A-Z0-9]{12}[0-9]([A-Z][0-9]{6})?
     Seq[String](
       numeric(2),
       alpha(2),

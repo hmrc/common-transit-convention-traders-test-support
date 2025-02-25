@@ -47,10 +47,7 @@ class ValidateMessageTypeActionSpec extends AnyFreeSpec with Matchers with Optio
         "must execute the block when passed in a valid departure message type" in {
           val result = validateMessageType.invokeBlock(
             createRequest(messageType),
-            {
-              _: MessageRequest[AnyContent] =>
-                Future.successful(Created)
-            }
+            _ => Future.successful(Created)
           )
           status(result) mustEqual CREATED
         }
@@ -60,10 +57,7 @@ class ValidateMessageTypeActionSpec extends AnyFreeSpec with Matchers with Optio
 
           val result = validateMessageType.invokeBlock(
             createRequest(invalidMessageType),
-            {
-              _: MessageRequest[AnyContent] =>
-                Future.successful(Created)
-            }
+            _ => Future.successful(Created)
           )
           status(result) mustEqual NOT_IMPLEMENTED
         }
@@ -78,10 +72,7 @@ class ValidateMessageTypeActionSpec extends AnyFreeSpec with Matchers with Optio
         "must execute the block when passed in a valid arrival message type" in {
           val result = validateMessageType.invokeBlock(
             createRequest(messageType),
-            {
-              _: MessageRequest[AnyContent] =>
-                Future.successful(Created)
-            }
+            _ => Future.successful(Created)
           )
           status(result) mustEqual CREATED
         }
@@ -91,10 +82,7 @@ class ValidateMessageTypeActionSpec extends AnyFreeSpec with Matchers with Optio
 
           val result = validateMessageType.invokeBlock(
             createRequest(invalidMessageType),
-            {
-              _: MessageRequest[AnyContent] =>
-                Future.successful(Created)
-            }
+            _ => Future.successful(Created)
           )
           status(result) mustEqual NOT_IMPLEMENTED
         }

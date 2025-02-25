@@ -21,31 +21,32 @@ import connectors.util.CustomHttpReader
 import models.ChannelType
 import models.DepartureId
 import models.DepartureWithMessages
+import play.api.libs.ws.DefaultBodyWritables
 import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class DepartureConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class DepartureConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector with DefaultBodyWritables {
 
   def getMessages(departureId: DepartureId, channelType: ChannelType)(implicit
     requestHeader: RequestHeader,
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Either[HttpResponse, DepartureWithMessages]] = {
-    val url = s"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
+    val destination = s"${appConfig.traderAtDeparturesUrl}$departureRoute${departureId.index.toString}/messages"
 
     http
-      .GET[HttpResponse](url, queryParams = Seq(), responseHeaders(channelType))(CustomHttpReader, enforceAuthHeaderCarrier(responseHeaders(channelType)), ec)
-      .map {
-        response =>
-          extractIfSuccessful[DepartureWithMessages](response)
-      }
+      .get(url"$destination")(enforceAuthHeaderCarrier(responseHeaders(channelType)))
+      .execute[HttpResponse](using CustomHttpReader, implicitly)
+      .map(extractIfSuccessful[DepartureWithMessages])
   }
 
   def createDeclarationMessage(requestData: NodeSeq, channelType: ChannelType)(implicit
@@ -53,11 +54,14 @@ class DepartureConnector @Inject() (http: HttpClient, appConfig: AppConfig) exte
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] = {
-    val url                             = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
+    val destination                     = s"${appConfig.traderAtDeparturesUrl}$departureRoute"
     val channelHeader: (String, String) = ("Channel", channelType.toString)
     val headers: Seq[(String, String)]  = requestHeaders :+ channelHeader
 
-    http.POSTString[HttpResponse](url, requestData.toString, headers)(CustomHttpReader, enforceAuthHeaderCarrier(Seq.empty), ec)
+    http
+      .post(url"$destination")(enforceAuthHeaderCarrier(headers))
+      .withBody(requestData.toString)
+      .execute[HttpResponse](using CustomHttpReader, implicitly)
   }
 
 }

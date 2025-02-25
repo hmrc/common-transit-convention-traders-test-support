@@ -7,9 +7,9 @@ This mircoservice is in [Beta](https://www.gov.uk/help/beta). The signature may 
 
 
 ### Prerequisites   
-- Scala 2.13.12
+- Scala 3.4.3
 - Java 21
-- sbt 1.9.7
+- sbt 1.10.1
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ### Development Setup
@@ -17,13 +17,13 @@ This mircoservice is in [Beta](https://www.gov.uk/help/beta). The signature may 
 Run from the console using: `sbt run`
 
 ## Highlighted SBT Tasks
-Task | Description | Command
-:-------|:------------|:-----
-test | Runs the standard unit tests | ```$ sbt test```
-it/test  | Runs the integration tests | ```$ sbt it/test ```
-dependencyCheck | Runs dependency-check against the current project. It aggregates dependencies and generates a report | ```$ sbt dependencyCheck```
-dependencyUpdates |  Shows a list of project dependencies that can be updated | ```$ sbt dependencyUpdates```
-dependencyUpdatesReport | Writes a list of project dependencies to a file | ```$ sbt dependencyUpdatesReport```
+ Task                    | Description                                                                                          | Command                             
+:------------------------|:-----------------------------------------------------------------------------------------------------|:------------------------------------
+ test                    | Runs the standard unit tests                                                                         | ```$ sbt test```                    
+ it/test                 | Runs the integration tests                                                                           | ```$ sbt it/test ```                
+ dependencyCheck         | Runs dependency-check against the current project. It aggregates dependencies and generates a report | ```$ sbt dependencyCheck```         
+ dependencyUpdates       | Shows a list of project dependencies that can be updated                                             | ```$ sbt dependencyUpdates```       
+ dependencyUpdatesReport | Writes a list of project dependencies to a file                                                      | ```$ sbt dependencyUpdatesReport``` 
 
 ### CTC Traders API related pages
 

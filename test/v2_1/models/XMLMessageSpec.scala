@@ -26,7 +26,7 @@ class XMLMessageSpec extends AnyFreeSpec with Matchers {
 
   "XMLMessage#wrapped" - {
     "should get a wrapped message" in {
-      val node     = """<ncts:message xmlns:ncts="http://ncts.dgtaxud.ec"><test>1</test><test2>2</test2></ncts:message>"""
+      val node = """<ncts:message xmlns:ncts="http://ncts.dgtaxud.ec"><test>1</test><test2>2</test2></ncts:message>"""
       val expected = <n1:TraderChannelResponse xmlns:txd="http://ncts.dgtaxud.ec"
                                                xmlns:n1="http://www.hmrc.gov.uk/eis/ncts5/v1"
                                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,14 +35,14 @@ class XMLMessageSpec extends AnyFreeSpec with Matchers {
           <test>1</test> <test2>2</test2>
         </txd:message>
       </n1:TraderChannelResponse>
-      val sut      = XMLMessage(XML.loadString(node))
-      val result   = sut.wrapped
+      val sut    = XMLMessage(XML.loadString(node))
+      val result = sut.wrapped
 
       trim(result.value.head) mustBe trim(expected)
     }
 
     "should get a wrapped message if a node is blank" in {
-      val node     = """<ncts:message xmlns:ncts="http://ncts.dgtaxud.ec"><test></test><test2>2</test2></ncts:message>"""
+      val node = """<ncts:message xmlns:ncts="http://ncts.dgtaxud.ec"><test></test><test2>2</test2></ncts:message>"""
       val expected = <n1:TraderChannelResponse xmlns:txd="http://ncts.dgtaxud.ec"
                                                xmlns:n1="http://www.hmrc.gov.uk/eis/ncts5/v1"
                                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -51,8 +51,8 @@ class XMLMessageSpec extends AnyFreeSpec with Matchers {
           <test></test> <test2>2</test2>
         </txd:message>
       </n1:TraderChannelResponse>
-      val sut      = XMLMessage(XML.loadString(node))
-      val result   = sut.wrapped
+      val sut    = XMLMessage(XML.loadString(node))
+      val result = sut.wrapped
 
       trim(result.value.head) mustBe trim(expected)
     }

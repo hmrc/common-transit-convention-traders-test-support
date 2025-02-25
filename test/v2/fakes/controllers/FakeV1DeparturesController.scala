@@ -32,12 +32,12 @@ class FakeV1DeparturesController extends BaseController with V1DepartureTestMess
   override val controllerComponents = stubControllerComponents()
 
   override def injectEISResponse(departureId: DepartureId): Action[JsValue] = Action(parse.json) {
-    _: Request[JsValue] =>
+    _ =>
       Accepted(Json.obj("version" -> 1))
   }
 
   override def submitDepartureDeclaration: Action[NodeSeq] = Action(parse.xml) {
-    _: Request[NodeSeq] =>
+    _ =>
       Accepted(Json.obj("version" -> 1))
   }
 

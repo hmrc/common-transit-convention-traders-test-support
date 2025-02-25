@@ -93,7 +93,7 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
       whenReady(either.value) {
         _.left.map(
           response =>
-            response.leftSideValue match {
+            response.leftSide match {
               case RouterError.Unexpected(Some(thr)) => thr.getMessage mustBe "X-Message-Id header missing from router response"
               case _                                 => fail("Expected a different error")
             }
