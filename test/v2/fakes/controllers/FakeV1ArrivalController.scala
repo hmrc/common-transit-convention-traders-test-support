@@ -30,7 +30,7 @@ class FakeV1ArrivalController extends BaseController with V1ArrivalTestMessagesC
   override val controllerComponents = stubControllerComponents()
 
   override def injectEISResponse(arrivalId: ArrivalId): Action[JsValue] = Action(parse.json) {
-    _: Request[JsValue] =>
+    _ =>
       Accepted(Json.obj("version" -> 1))
   }
 

@@ -73,6 +73,7 @@ class ArrivalConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite 
     "must return HttpResponse with a bad request if there is a bad request" in {
       val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector            = app.injector.instanceOf[ArrivalConnector]
+
       server.stubFor(
         get(urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1"))
           .willReturn(aResponse().withStatus(BAD_REQUEST))

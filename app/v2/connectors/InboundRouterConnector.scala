@@ -17,20 +17,22 @@
 package v2.connectors
 
 import config.AppConfig
-import connectors.util.CustomHttpReader
+import play.api.libs.ws.DefaultBodyWritables
 import uk.gov.hmrc.http.Authorization
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
 import v2.models.CorrelationId
 import v2.models.MessageType
 import v2.models.WrappedXMLMessage
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class InboundRouterConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector with DefaultBodyWritables {
 
   lazy val auth: Option[Authorization] =
     if (appConfig.bearerTokenEnabled) Some(Authorization(s"Bearer ${appConfig.bearerTokenToken}"))
@@ -43,10 +45,13 @@ class InboundRouterConnector @Inject() (http: HttpClient, appConfig: AppConfig) 
   ): Future[HttpResponse] = {
     val newHeaders = hc
       .copy(authorization = auth)
-      .withExtraHeaders(Seq("X-Message-Type" -> messageType.code): _*)
+      .withExtraHeaders(Seq("X-Message-Type" -> messageType.code)*)
 
-    val url = s"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
+    val url = url"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
-    http.POSTString(url, message.value.mkString, requestHeaders)(CustomHttpReader, newHeaders, ec)
+    http
+      .post(url)(newHeaders)
+      .withBody(message.value.mkString)
+      .execute[HttpResponse]
   }
 }

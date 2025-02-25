@@ -52,7 +52,7 @@ class AuthAction @Inject() (
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
     authorised(Enrolment(NewEnrolmentKey) or Enrolment(LegacyEnrolmentKey)).retrieve(Retrievals.authorisedEnrolments) {
-      enrolments: Enrolments =>
+      enrolments =>
         val legacyEnrolmentId = getEnrolmentIdentifier(
           enrolments,
           LegacyEnrolmentKey,

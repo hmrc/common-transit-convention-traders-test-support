@@ -45,7 +45,7 @@ class ArrivalsRouter @Inject() (
     with VersionedRouting {
 
   def injectEISResponseWithTriggerId(arrivalId: String, messageId: String): Action[Source[ByteString, _]] = routing(arrivalId, messageId.some)
-  def injectEISResponse(arrivalId: String): Action[Source[ByteString, _]]                                 = routing(arrivalId = arrivalId, messageId = None)
+  def injectEISResponse(arrivalId: String): Action[Source[ByteString, ?]]                                 = routing(arrivalId = arrivalId, messageId = None)
 
   private def routing(arrivalId: String, messageId: Option[String]) =
     route {

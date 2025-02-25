@@ -50,9 +50,8 @@ class BaseConnectorSpec
       val harness = new Harness()
 
       implicit val hc            = HeaderCarrier()
-      implicit val requestHeader = FakeRequest().withHeaders(HeaderNames.AUTHORIZATION -> "a5sesqerTyi135/")
-
-      val result: HeaderCarrier = harness.enforceAuth(Seq.empty)
+      implicit val requestHeader = FakeRequest().withHeaders(Seq((HeaderNames.AUTHORIZATION, "a5sesqerTyi135/"))*)
+      val result: HeaderCarrier  = harness.enforceAuth(Seq.empty)
 
       result.authorization mustBe Some(Authorization("a5sesqerTyi135/"))
     }

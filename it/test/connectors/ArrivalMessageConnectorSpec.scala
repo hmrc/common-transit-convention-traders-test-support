@@ -49,7 +49,7 @@ class ArrivalMessageConnectorSpec
     "must return MovementMessage when message is found" in {
       val channel: ChannelType = Gen.oneOf(ChannelType.values).sample.get
       val connector            = app.injector.instanceOf[ArrivalMessageConnector]
-      val movement             = MovementMessage("/transit-movements-trader-at-destination/movements/arrivals/1/messages/1", LocalDateTime.now, "abc", <test>default</test>)
+      val movement = MovementMessage("/transit-movements-trader-at-destination/movements/arrivals/1/messages/1", LocalDateTime.now, "abc", <test>default</test>)
       server.stubFor(
         get(
           urlEqualTo("/transit-movements-trader-at-destination/movements/arrivals/1/messages/1")

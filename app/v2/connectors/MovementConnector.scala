@@ -19,6 +19,9 @@ package v2.connectors
 import config.AppConfig
 import connectors.util.CustomHttpReader
 import play.api.http.Status.OK
+import play.api.libs.ws.DefaultBodyWritables
+import sttp.model.HeaderNames
+import sttp.model.Uri.UriContext
 import v2.models.MovementId
 import v2.models.Movement
 import v2.models.EORINumber
@@ -26,24 +29,28 @@ import v2.models.Message
 import v2.models.MessageId
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.Utils
 import v2.models.MovementType
 import v2.models.formats.CommonFormats.movementFormat
 import v2.models.formats.CommonFormats.messageFormat
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
-class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) extends BaseConnector {
+class MovementConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector with DefaultBodyWritables {
 
   def getMovement(movementType: MovementType, eori: EORINumber, movementId: MovementId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Movement] = {
-    val url = constructMovementUri(movementType, eori, movementId)
+    val url                  = constructMovementUri(movementType, eori, movementId)
+    val updatedHeaderCarrier = hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken)))
 
     http
-      .GET[HttpResponse](url, queryParams = Seq())(CustomHttpReader, hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))), ec)
+      .get(url)(updatedHeaderCarrier)
+      .execute[HttpResponse]
       .flatMap {
         response =>
           response.status match {
@@ -58,14 +65,12 @@ class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) exten
     ec: ExecutionContext
   ): Future[Message] = {
 
-    val uri = constructMessageUri(movementType, eori, movementId, messageId)
+    val uri                  = constructMessageUri(movementType, eori, movementId, messageId)
+    val updatedHeaderCarrier = hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken)))
 
     http
-      .GET[HttpResponse](uri, queryParams = Seq(), responseHeaders)(
-        CustomHttpReader,
-        hc.copy(authorization = Some(Authorization(appConfig.internalAuthToken))),
-        ec
-      )
+      .get(uri)(updatedHeaderCarrier)
+      .execute[HttpResponse]
       .flatMap {
         response =>
           response.status match {
@@ -76,12 +81,12 @@ class MovementConnector @Inject() (http: HttpClient, appConfig: AppConfig) exten
   }
 
   private def constructBaseUri(movementType: MovementType, eori: EORINumber) =
-    s"${appConfig.transitMovementsUrl}/transit-movements/traders/${eori.value}/movements/${movementType.urlFragment}"
+    url"${appConfig.transitMovementsUrl}/transit-movements/traders/${eori.value}/movements/${movementType.urlFragment}"
 
   private def constructMovementUri(movementType: MovementType, eori: EORINumber, movementId: MovementId) =
-    s"${constructBaseUri(movementType, eori)}/${Utils.urlEncode(movementId.value)}"
+    url"${constructBaseUri(movementType, eori)}/${Utils.urlEncode(movementId.value)}"
 
   private def constructMessageUri(movementType: MovementType, eori: EORINumber, movementId: MovementId, messageId: MessageId) =
-    s"${constructMovementUri(movementType, eori, movementId)}/messages/${Utils.urlEncode(messageId.value)}"
+    url"${constructMovementUri(movementType, eori, movementId)}/messages/${Utils.urlEncode(messageId.value)}"
 
 }
