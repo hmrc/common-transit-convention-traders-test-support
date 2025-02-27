@@ -22,7 +22,6 @@ import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.util.ByteString
 import com.google.inject.Inject
 import config.Constants
-import controllers.V1DepartureTestMessagesController
 import models.DepartureId
 import play.api.mvc.Action
 import play.api.mvc.BaseController
@@ -36,7 +35,6 @@ import v2_1.models.Bindings
 
 class DeparturesRouter @Inject() (
   val controllerComponents: ControllerComponents,
-  v1Departures: V1DepartureTestMessagesController,
   v2Departures: V2TransitionalTestMessagesController,
   departures: V2TestMessagesController
 )(implicit val materializer: Materializer)
@@ -44,10 +42,10 @@ class DeparturesRouter @Inject() (
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponseWithTriggerId(departureId: String, messageId: String): Action[Source[ByteString, _]] = routing(departureId, messageId.some)
+  def injectEISResponseWithTriggerId(departureId: String, messageId: String): Action[Source[ByteString, ?]] = routing(departureId, messageId.some)
   def injectEISResponse(departureId: String): Action[Source[ByteString, ?]]                                 = routing(departureId, None)
 
-  private def routing(departureId: String, messageId: Option[String]): Action[Source[ByteString, _]] =
+  private def routing(departureId: String, messageId: Option[String]): Action[Source[ByteString, ?]] =
     route {
       case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
         (for {
@@ -66,13 +64,5 @@ class DeparturesRouter @Inject() (
             case (departureId, messageId) => departures.sendDepartureResponse(departureId, messageId)
           }
         )
-      case _ =>
-        (for {
-          convertedDepartureId <- implicitly[PathBindable[DepartureId]].bind("departureId", departureId)
-        } yield convertedDepartureId).fold(
-          bindingFailureAction(_),
-          convertedDepartureId => v1Departures.injectEISResponse(convertedDepartureId)
-        )
-
     }
 }

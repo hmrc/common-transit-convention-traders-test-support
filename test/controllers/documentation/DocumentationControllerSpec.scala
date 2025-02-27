@@ -53,49 +53,11 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
     reset(assets)
   }
 
-  "when version one is enabled" - {
+  "when" - {
 
     val sut = new DocumentationController(appConfig, assets, stubControllerComponents())
 
-    "when getting the definition file, get the one for both v1 and v2" in {
-      when(appConfig.enableVersionOne).thenReturn(true)
-      when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
-      when(assets.at(any(), eqTo("multi-version-definitions.json"), any())).thenReturn(v1definitionAction)
-
-      sut.definition() mustBe v1definitionAction
-
-      verify(assets, times(0)).at(any(), eqTo("definition.json"), any())
-      verify(assets, times(1)).at(any(), eqTo("multi-version-definitions.json"), any())
-    }
-
-    "when getting a version one raml asset, accept it" in {
-
-      when(appConfig.enableVersionOne).thenReturn(true)
-      when(assets.at(any(), any(), any())).thenReturn(resultAction)
-
-      val result = sut.raml("1.0", "a")
-      result mustBe resultAction
-      verify(assets, times(1)).at(any(), any(), any())
-    }
-
-    "when getting a version two raml asset, accept it" in {
-
-      when(appConfig.enableVersionOne).thenReturn(true)
-      when(assets.at(any(), any(), any())).thenReturn(resultAction)
-
-      val result = sut.raml("2.0", "a")
-      result mustBe resultAction
-      verify(assets, times(1)).at(any(), any(), any())
-    }
-
-  }
-
-  "when version one is disabled" - {
-
-    val sut = new DocumentationController(appConfig, assets, stubControllerComponents())
-
-    "when getting the definition file, get the one for only v2" in {
-      when(appConfig.enableVersionOne).thenReturn(false)
+    "getting the definition file, get the one for only v2" in {
       when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
       when(assets.at(any(), eqTo("multi-version-definitions.json"), any())).thenReturn(v1definitionAction)
 
@@ -105,20 +67,7 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
       verify(assets, times(0)).at(any(), eqTo("multi-version-definitions.json"), any())
     }
 
-    "when getting a version one raml asset, reject it with Not Found" in {
-
-      when(appConfig.enableVersionOne).thenReturn(false)
-      when(assets.at(any(), any(), any())).thenReturn(resultAction)
-
-      val result = sut.raml("1.0", "a")
-      result must not be resultAction
-      verify(assets, times(0)).at(any(), any(), any())
-      status(result.apply(FakeRequest())) mustBe NOT_FOUND
-    }
-
-    "when getting a version two raml asset, accept it" in {
-
-      when(appConfig.enableVersionOne).thenReturn(false)
+    "getting a version two raml asset, accept it" in {
       when(assets.at(any(), any(), any())).thenReturn(resultAction)
 
       val result = sut.raml("2.0", "a")

@@ -17,14 +17,8 @@
 package config
 
 object Constants {
-  val MessageCorrelationId = 1
-
-  val Context = "/customs/transits"
 
   val MessageIdHeaderKey: String = "X-Message-Id"
-
-  val LegacyEnrolmentKey: String   = "HMCE-NCTS-ORG"
-  val LegacyEnrolmentIdKey: String = "VATRegNoTURN"
 
   val NewEnrolmentKey: String   = "HMRC-CTC-ORG"
   val NewEnrolmentIdKey: String = "EORINumber"

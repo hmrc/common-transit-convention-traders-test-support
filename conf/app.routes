@@ -1,7 +1,2 @@
-POST         /movements/arrivals/:arrivalId/messages                 routing.ArrivalsRouter.injectEISResponse(arrivalId: String)
-POST         /movements/departures/:departureId/messages             routing.DeparturesRouter.injectEISResponse(departureId: String)
-
 POST         /movements/arrivals/:arrivalId/messages/:messageId      routing.ArrivalsRouter.injectEISResponseWithTriggerId(arrivalId: String, messageId: String)
 POST         /movements/departures/:departureId/messages/:messageId  routing.DeparturesRouter.injectEISResponseWithTriggerId(departureId: String, messageId: String)
-
-POST         /movements/departures                                   controllers.DepartureTestMessagesController.submitDepartureDeclaration

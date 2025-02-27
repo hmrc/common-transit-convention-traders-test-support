@@ -16,6 +16,7 @@
 
 package routing
 
+import config.Constants
 import org.apache.pekko.util.Timeout
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -33,7 +34,6 @@ import play.api.test.Helpers.contentAsJson
 import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import v2.base.TestActorSystem
-import v2.fakes.controllers.FakeV1ArrivalController
 import v2.fakes.controllers.FakeV2TestMessagesController
 import v2.fakes.controllers.FakeV2_1TestMessagesController
 
@@ -45,7 +45,6 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
 
   val sut = new ArrivalsRouter(
     stubControllerComponents(),
-    new FakeV1ArrivalController,
     new FakeV2TestMessagesController,
     new FakeV2_1TestMessagesController
   )
@@ -63,11 +62,11 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
         val request =
           FakeRequest(
             method = "POST",
-            uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
+            uri = routes.DeparturesRouter.injectEISResponseWithTriggerId("1234567890abcdef", Constants.DefaultTriggerId).url,
             body = Json.obj("a" -> "1"),
             headers = departureHeaders
           )
-        val result = call(sut.injectEISResponse("1234567890abcdef"), request)
+        val result = call(sut.injectEISResponseWithTriggerId("1234567890abcdef", Constants.DefaultTriggerId), request)
 
         status(result) mustBe ACCEPTED
         contentAsJson(result) mustBe Json.obj("version" -> 2) // ensure we get the unique value to verify we called the fake action
@@ -76,8 +75,13 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
       "must return bad request if an incorrect departure ID is provided" in {
 
         val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
+          FakeRequest(
+            method = "POST",
+            uri = routes.DeparturesRouter.injectEISResponseWithTriggerId("a", Constants.DefaultTriggerId).url,
+            body = Json.obj("a" -> "1"),
+            headers = departureHeaders
+          )
+        val result = call(sut.injectEISResponseWithTriggerId("1", Constants.DefaultTriggerId), request)
 
         status(result) mustBe BAD_REQUEST
       }
@@ -95,11 +99,11 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
         val request =
           FakeRequest(
             method = "POST",
-            uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
+            uri = routes.DeparturesRouter.injectEISResponseWithTriggerId("1234567890abcdef", Constants.DefaultTriggerId).url,
             body = Json.obj("a" -> "1"),
             headers = departureHeaders
           )
-        val result = call(sut.injectEISResponse("1234567890abcdef"), request)
+        val result = call(sut.injectEISResponseWithTriggerId("1234567890abcdef", Constants.DefaultTriggerId), request)
 
         status(result) mustBe ACCEPTED
         contentAsJson(result) mustBe Json.obj("version" -> 2.1) // ensure we get the unique value to verify we called the fake action
@@ -108,31 +112,17 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
       "must return bad request if an incorrect departure ID is provided" in {
 
         val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
+          FakeRequest(
+            method = "POST",
+            uri = routes.DeparturesRouter.injectEISResponseWithTriggerId("a", Constants.DefaultTriggerId).url,
+            body = Json.obj("a" -> "1"),
+            headers = departureHeaders
+          )
+        val result = call(sut.injectEISResponseWithTriggerId("1", Constants.DefaultTriggerId), request)
 
         status(result) mustBe BAD_REQUEST
       }
 
     }
-
-    "with accept header set to application/vnd.hmrc.1.0+json (version one)" - {
-
-      val departureHeaders = FakeHeaders(
-        Seq(HeaderNames.ACCEPT -> "application/vnd.hmrc.1.0+json", HeaderNames.CONTENT_TYPE -> "application/json")
-      )
-
-      "must route to the v1 controller and return Accepted when successful" in {
-
-        val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("1").url, body = Json.obj("v" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
-
-        status(result) mustBe ACCEPTED
-        contentAsJson(result) mustBe Json.obj("version" -> 1) // ensure we get the unique value to verify we called the fake action
-      }
-
-    }
-
   }
 }
