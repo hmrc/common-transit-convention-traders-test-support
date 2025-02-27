@@ -16,11 +16,12 @@
 
 package routing
 
+import cats.implicits.catsSyntaxOptionId
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.util.ByteString
 import com.google.inject.Inject
-import controllers.V1ArrivalTestMessagesController
+import config.Constants
 import models.ArrivalId
 import play.api.mvc.Action
 import play.api.mvc.BaseController
@@ -34,7 +35,6 @@ import v2_1.models.Bindings
 
 class ArrivalsRouter @Inject() (
   val controllerComponents: ControllerComponents,
-  v1Arrivals: V1ArrivalTestMessagesController,
   v2Arrivals: V2TransitionalTestMessagesController,
   arrivals: V2TestMessagesController
 )(implicit val materializer: Materializer)
@@ -42,28 +42,24 @@ class ArrivalsRouter @Inject() (
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(arrivalId: String): Action[Source[ByteString, ?]] = route {
-    case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
-      (for {
-        convertedArrivalId <- TransitionalBindings.movementIdBinding.bind("arrivalId", arrivalId)
-      } yield convertedArrivalId).fold(
-        bindingFailureAction(_),
-        convertedArrivalId => v2Arrivals.sendArrivalsResponse(convertedArrivalId)
-      )
-    case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
-      (for {
-        convertedArrivalId <- Bindings.movementIdBinding.bind("arrivalId", arrivalId)
-      } yield convertedArrivalId).fold(
-        bindingFailureAction(_),
-        convertedArrivalId => arrivals.sendArrivalsResponse(convertedArrivalId)
-      )
-    case _ =>
-      (for {
-        convertedArrivalId <- implicitly[PathBindable[ArrivalId]].bind("arrivalId", arrivalId)
-      } yield convertedArrivalId).fold(
-        bindingFailureAction(_),
-        convertedArrivalId => v1Arrivals.injectEISResponse(convertedArrivalId)
-      )
-
-  }
+  def injectEISResponseWithTriggerId(arrivalId: String, messageId: String): Action[Source[ByteString, ?]] =
+    route {
+      case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
+        (for {
+          convertedArrivalId <- TransitionalBindings.movementIdBinding.bind("arrivalId", arrivalId)
+        } yield convertedArrivalId).fold(
+          bindingFailureAction(_),
+          convertedArrivalId => v2Arrivals.sendArrivalsResponse(convertedArrivalId)
+        )
+      case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
+        (for {
+          convertedArrivalId <- Bindings.movementIdBinding.bind("arrivalId", arrivalId)
+          convertedMessageId <- Bindings.messageIdBinding.bind("messageId", messageId)
+        } yield (convertedArrivalId, convertedMessageId)).fold(
+          bindingFailureAction(_),
+          {
+            case (arrivalId, messageId) => arrivals.sendArrivalsResponse(arrivalId, messageId)
+          }
+        )
+    }
 }

@@ -23,25 +23,14 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
-  val authBaseUrl: String = servicesConfig.baseUrl("auth")
-
-  val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
-  val graphiteHost: String     = config.get[String]("microservice.metrics.graphite.host")
-
-  val traderAtDestinationUrl = servicesConfig.baseUrl("transit-movements-trader-at-destination")
-
-  val traderAtDeparturesUrl = servicesConfig.baseUrl("transits-movements-trader-at-departure")
-
-  val transitMovementsTraderRouterUrl = servicesConfig.baseUrl("transit-movements-trader-router")
 
   lazy val enrolmentKey: String = config.get[String]("security.enrolmentKey")
 
-  val enableVersionOne: Boolean = config.get[Boolean]("enableVersionOne")
-  val transitMovementsUrl       = servicesConfig.baseUrl("transit-movements")
-  val transitMovementsRouterUrl = servicesConfig.baseUrl("transit-movements-router")
+  val transitMovementsUrl: String       = servicesConfig.baseUrl("transit-movements")
+  val transitMovementsRouterUrl: String = servicesConfig.baseUrl("transit-movements-router")
 
-  lazy val bearerTokenEnabled = config.get[Boolean]("microservice.services.transit-movements-router.bearerToken.enabled")
-  lazy val bearerTokenToken   = config.get[String]("microservice.services.transit-movements-router.bearerToken.token")
+  lazy val bearerTokenEnabled: Boolean = config.get[Boolean]("microservice.services.transit-movements-router.bearerToken.enabled")
+  lazy val bearerTokenToken: String    = config.get[String]("microservice.services.transit-movements-router.bearerToken.token")
 
-  lazy val internalAuthToken = config.get[String]("internal-auth.token")
+  lazy val internalAuthToken: String = config.get[String]("internal-auth.token")
 }

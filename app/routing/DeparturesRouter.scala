@@ -16,11 +16,12 @@
 
 package routing
 
+import cats.implicits.catsSyntaxOptionId
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.util.ByteString
 import com.google.inject.Inject
-import controllers.V1DepartureTestMessagesController
+import config.Constants
 import models.DepartureId
 import play.api.mvc.Action
 import play.api.mvc.BaseController
@@ -34,7 +35,6 @@ import v2_1.models.Bindings
 
 class DeparturesRouter @Inject() (
   val controllerComponents: ControllerComponents,
-  v1Departures: V1DepartureTestMessagesController,
   v2Departures: V2TransitionalTestMessagesController,
   departures: V2TestMessagesController
 )(implicit val materializer: Materializer)
@@ -42,28 +42,27 @@ class DeparturesRouter @Inject() (
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(departureId: String): Action[Source[ByteString, ?]] = route {
-    case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
-      (for {
-        convertedDepartureId <- TransitionalBindings.movementIdBinding.bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
-        bindingFailureAction(_),
-        convertedDepartureId => v2Departures.sendDepartureResponse(convertedDepartureId)
-      )
-    case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
-      (for {
-        convertedDepartureId <- Bindings.movementIdBinding.bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
-        bindingFailureAction(_),
-        convertedDepartureId => departures.sendDepartureResponse(convertedDepartureId)
-      )
-    case _ =>
-      (for {
-        convertedDepartureId <- implicitly[PathBindable[DepartureId]].bind("departureId", departureId)
-      } yield convertedDepartureId).fold(
-        bindingFailureAction(_),
-        convertedDepartureId => v1Departures.injectEISResponse(convertedDepartureId)
-      )
+  def injectEISResponseWithTriggerId(departureId: String, messageId: String): Action[Source[ByteString, ?]] = routing(departureId, messageId.some)
+  def injectEISResponse(departureId: String): Action[Source[ByteString, ?]]                                 = routing(departureId, None)
 
-  }
+  private def routing(departureId: String, messageId: Option[String]): Action[Source[ByteString, ?]] =
+    route {
+      case Some(VersionedRouting.VERSION_2_ACCEPT_HEADER_VALUE) =>
+        (for {
+          convertedDepartureId <- TransitionalBindings.movementIdBinding.bind("departureId", departureId)
+        } yield convertedDepartureId).fold(
+          bindingFailureAction(_),
+          convertedDepartureId => v2Departures.sendDepartureResponse(convertedDepartureId)
+        )
+      case Some(VersionedRouting.VERSION_2_1_ACCEPT_HEADER_VALUE) =>
+        (for {
+          convertedDepartureId <- Bindings.movementIdBinding.bind("departureId", departureId)
+          convertedMessageId   <- Bindings.messageIdBinding.bind("messageId", messageId.getOrElse(Constants.DefaultTriggerId))
+        } yield (convertedDepartureId, convertedMessageId)).fold(
+          bindingFailureAction(_),
+          {
+            case (departureId, messageId) => departures.sendDepartureResponse(departureId, messageId)
+          }
+        )
+    }
 }

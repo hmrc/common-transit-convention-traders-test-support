@@ -16,6 +16,7 @@
 
 package v2_1.models
 
+import com.rabbitmq.client.impl.AMQImpl.Exchange.Unbind
 import play.api.mvc.PathBindable
 
 object Bindings {
@@ -32,5 +33,6 @@ object Bindings {
   }
 
   implicit val movementIdBinding: PathBindable[MovementId] = hexBinding[MovementId](MovementId.apply, _.value)
+  implicit val messageIdBinding: PathBindable[MessageId]   = hexBinding[MessageId](MessageId.apply, _.value)
 
 }
