@@ -16,8 +16,6 @@
 
 package v2_1.models
 
-import utils.CallOps.CallOps
-
 sealed abstract class MovementType(val name: String, val urlFragment: String) extends Product with Serializable
 
 object MovementType {

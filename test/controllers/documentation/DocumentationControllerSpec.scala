@@ -55,7 +55,7 @@ class DocumentationControllerSpec extends AnyFreeSpec with Matchers with OptionV
 
   "when" - {
 
-    val sut = new DocumentationController(appConfig, assets, stubControllerComponents())
+    val sut = new DocumentationController(assets, stubControllerComponents())
 
     "getting the definition file, get the one for only v2" in {
       when(assets.at(any(), eqTo("definition.json"), any())).thenReturn(v2definitionAction)
