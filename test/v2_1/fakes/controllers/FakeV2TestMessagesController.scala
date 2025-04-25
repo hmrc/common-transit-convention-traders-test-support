@@ -36,12 +36,12 @@ class FakeV2TestMessagesController @Inject() ()(implicit val materializer: Mater
 
   def sendDepartureResponse(departureId: MovementId): Action[JsValue] = Action(parse.json) {
     _ =>
-      Accepted(Json.obj("version" -> 2))
+      Accepted(Json.obj("version" -> 2.1))
   }
 
   def sendArrivalsResponse(departureId: MovementId): Action[JsValue] = Action(parse.json) {
     _ =>
-      Accepted(Json.obj("version" -> 2))
+      Accepted(Json.obj("version" -> 2.1))
   }
 
 }

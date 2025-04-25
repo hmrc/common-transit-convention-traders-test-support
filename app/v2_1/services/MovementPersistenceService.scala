@@ -25,13 +25,8 @@ import play.api.mvc.RequestHeader
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import v2_1.connectors.MovementConnector
+import v2_1.models.*
 import v2_1.models.errors.PersistenceError
-import v2_1.models.MovementId
-import v2_1.models.Movement
-import v2_1.models.EORINumber
-import v2_1.models.Message
-import v2_1.models.MessageId
-import v2_1.models.MovementType
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

@@ -16,13 +16,13 @@
 
 package v2_1.fakes.controllers.actions
 
-import controllers.actions.AuthRequest
 import play.api.mvc.AnyContent
 import play.api.mvc.BodyParser
 import play.api.mvc.Request
 import play.api.mvc.Result
 import play.api.test.Helpers.stubBodyParser
 import v2_1.controllers.actions.AuthAction
+import v2_1.controllers.actions.AuthRequest
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

@@ -33,7 +33,6 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import test.utils.WiremockSuite
 import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.client.HttpClientV2
 import v2_1.connectors.InboundRouterConnector
 import v2_1.models.CorrelationId

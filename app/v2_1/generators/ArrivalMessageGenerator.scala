@@ -17,20 +17,17 @@
 package v2_1.generators
 
 import com.google.inject.ImplementedBy
-import com.google.inject.Inject
-import utils.Strings._
 import v2_1.models.MessageType.GoodsReleaseNotification
 import v2_1.models.MessageType.RejectionFromOfficeOfDestination
 import v2_1.models.MessageType.UnloadingPermission
 import v2_1.models.MessageType
 import v2_1.models.XMLMessage
-
-import java.time.Clock
+import v2_1.utils.Strings.*
 
 @ImplementedBy(classOf[ArrivalMessageGeneratorImpl])
 trait ArrivalMessageGenerator extends MessageGenerator
 
-class ArrivalMessageGeneratorImpl @Inject() (clock: Clock) extends Generators with ArrivalMessageGenerator {
+class ArrivalMessageGeneratorImpl extends Generators with ArrivalMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
     case GoodsReleaseNotification         => generateIE025Message(correlationId)

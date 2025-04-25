@@ -32,10 +32,8 @@ import play.api.test.Helpers.call
 import play.api.test.Helpers.contentAsJson
 import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
-import v2.base.TestActorSystem
-import v2.fakes.controllers.FakeV1ArrivalController
-import v2.fakes.controllers.FakeV2TestMessagesController
-import v2.fakes.controllers.FakeV2_1TestMessagesController
+import v2_1.base.TestActorSystem
+import v2_1.fakes.controllers.FakeV2TestMessagesController
 
 import scala.concurrent.duration.DurationInt
 
@@ -45,45 +43,10 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
 
   val sut = new ArrivalsRouter(
     stubControllerComponents(),
-    new FakeV1ArrivalController,
-    new FakeV2TestMessagesController,
-    new FakeV2_1TestMessagesController
+    new FakeV2TestMessagesController()
   )
 
   "when requesting an EIS response" - {
-    // Version 2
-    "with accept header set to application/vnd.hmrc.2.0+json (version two transitional)" - {
-
-      val departureHeaders = FakeHeaders(
-        Seq(HeaderNames.ACCEPT -> "application/vnd.hmrc.2.0+json", HeaderNames.CONTENT_TYPE -> "application/json")
-      )
-
-      "must route to the v2 controller and return Accepted when successful" in {
-
-        val request =
-          FakeRequest(
-            method = "POST",
-            uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
-            body = Json.obj("a" -> "1"),
-            headers = departureHeaders
-          )
-        val result = call(sut.injectEISResponse("1234567890abcdef"), request)
-
-        status(result) mustBe ACCEPTED
-        contentAsJson(result) mustBe Json.obj("version" -> 2) // ensure we get the unique value to verify we called the fake action
-      }
-
-      "must return bad request if an incorrect departure ID is provided" in {
-
-        val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
-
-        status(result) mustBe BAD_REQUEST
-      }
-
-    }
-
     "with accept header set to application/vnd.hmrc.2.1+json (version two)" - {
 
       val departureHeaders = FakeHeaders(
@@ -115,24 +78,5 @@ class ArrivalsRouterSpec extends AnyFreeSpec with Matchers with OptionValues wit
       }
 
     }
-
-    "with accept header set to application/vnd.hmrc.1.0+json (version one)" - {
-
-      val departureHeaders = FakeHeaders(
-        Seq(HeaderNames.ACCEPT -> "application/vnd.hmrc.1.0+json", HeaderNames.CONTENT_TYPE -> "application/json")
-      )
-
-      "must route to the v1 controller and return Accepted when successful" in {
-
-        val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("1").url, body = Json.obj("v" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
-
-        status(result) mustBe ACCEPTED
-        contentAsJson(result) mustBe Json.obj("version" -> 1) // ensure we get the unique value to verify we called the fake action
-      }
-
-    }
-
   }
 }

@@ -16,9 +16,9 @@
 
 package v2_1.models.request
 
-import v2_1.models.MessageType
 import play.api.mvc.Request
 import play.api.mvc.WrappedRequest
 import v2_1.models.EORINumber
+import v2_1.models.MessageType
 
 case class MessageRequest[A](request: Request[A], eori: EORINumber, messageType: MessageType) extends WrappedRequest[A](request)

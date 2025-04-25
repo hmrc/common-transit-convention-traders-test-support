@@ -18,15 +18,15 @@ package v2_1.connectors
 
 import config.AppConfig
 import play.api.libs.ws.DefaultBodyWritables
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.client.HttpClientV2
 import v2_1.models.CorrelationId
 import v2_1.models.MessageType
 import v2_1.models.WrappedXMLMessage
-import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

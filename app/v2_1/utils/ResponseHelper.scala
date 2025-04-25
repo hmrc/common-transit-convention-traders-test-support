@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package v2_1.utils
 
-object Constants {
+import play.api.http.Status
+import play.api.mvc.Result
+import play.api.mvc.Results
+import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpResponse
 
-  val Context = "/customs/transits"
+trait ResponseHelper extends Results with Status with HttpErrorFunctions {
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val NewEnrolmentKey: String    = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String  = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+  def handleNon2xx(response: HttpResponse): Result =
+    response.status match {
+      case s if is4xx(s) => if (response.body != null) Status(response.status)(response.body) else Status(response.status)
+      case _             => Status(response.status)
+    }
 }

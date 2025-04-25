@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package v2_1.utils
 
-object Constants {
+import config.Constants
+import play.api.mvc.Call
 
-  val Context = "/customs/transits"
+object CallOps {
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val NewEnrolmentKey: String    = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String  = "EORINumber"
+  implicit class CallOps(c: Call) {
 
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+    def urlWithContext: String =
+      Constants.Context + c.url
+  }
 }

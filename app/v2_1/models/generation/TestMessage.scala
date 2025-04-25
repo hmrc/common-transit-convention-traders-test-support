@@ -18,8 +18,8 @@ package v2_1.models.generation
 
 import v2_1.models.MessageType
 //import v2_1.models.MessageType.{ArrivalNegativeAcknowledgement, XMLSubmissionNegativeAcknowledgement}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 case class TestMessage(messageType: MessageType)
 

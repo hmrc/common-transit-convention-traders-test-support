@@ -25,13 +25,13 @@ import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.Utils
 import v2_1.connectors.InboundRouterConnector
 import v2_1.models.CorrelationId
 import v2_1.models.MessageId
 import v2_1.models.MessageType
 import v2_1.models.XMLMessage
 import v2_1.models.errors.RouterError
+import v2_1.utils.Utils
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
