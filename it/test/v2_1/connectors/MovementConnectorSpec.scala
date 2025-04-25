@@ -52,10 +52,10 @@ class MovementConnectorSpec
     with ScalaFutures
     with OptionValues {
 
-  lazy val httpClient = app.injector.instanceOf[HttpClientV2]
-  lazy val appConfig  = app.injector.instanceOf[AppConfig]
+  lazy val httpClient: HttpClientV2 = app.injector.instanceOf[HttpClientV2]
+  lazy val appConfig: AppConfig     = app.injector.instanceOf[AppConfig]
 
-  val token = Gen.alphaNumStr.sample.get
+  val token: String = Gen.alphaNumStr.sample.get
 
   override val configure: Seq[(String, Any)] = Seq(
     "internal-auth.token" -> token
