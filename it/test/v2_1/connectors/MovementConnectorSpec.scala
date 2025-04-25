@@ -32,11 +32,12 @@ import play.api.http.HeaderNames
 import play.api.http.Status.NOT_FOUND
 import play.api.http.Status.OK
 import play.api.libs.json.Json
-import test.utils.WiremockSuite
 import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.HttpClientV2
+import utils.GuiceWiremockSuite
+import utils.WiremockSuite
 import v2_1.connectors.MovementConnector
 import v2_1.models.*
 
@@ -47,17 +48,18 @@ class MovementConnectorSpec
     extends AnyFreeSpec
     with Matchers
     with WiremockSuite
+    with GuiceWiremockSuite
     with ItGenerators
     with ScalaCheckDrivenPropertyChecks
     with ScalaFutures
     with OptionValues {
 
-  lazy val httpClient: HttpClientV2 = app.injector.instanceOf[HttpClientV2]
-  lazy val appConfig: AppConfig     = app.injector.instanceOf[AppConfig]
+  lazy val httpClient: HttpClientV2 = mockApp.injector.instanceOf[HttpClientV2]
+  lazy val appConfig: AppConfig     = mockApp.injector.instanceOf[AppConfig]
 
   val token: String = Gen.alphaNumStr.sample.get
 
-  override val configure: Seq[(String, Any)] = Seq(
+  override val configurationOverride: Seq[(String, Any)] = Seq(
     "internal-auth.token" -> token
   )
 
@@ -219,5 +221,5 @@ class MovementConnectorSpec
 
   }
 
-  override protected def portConfigKey: String = "microservice.services.transit-movements.port"
+  override protected def portConfigKey: Seq[String] = Seq("microservice.services.transit-movements.port")
 }

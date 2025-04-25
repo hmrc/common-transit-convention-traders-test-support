@@ -28,10 +28,11 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import play.api.http.Status.ACCEPTED
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import test.utils.WiremockSuite
 import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
+import utils.GuiceWiremockSuite
+import utils.WiremockSuite
 import v2_1.connectors.InboundRouterConnector
 import v2_1.models.CorrelationId
 import v2_1.models.MessageType
@@ -39,17 +40,24 @@ import v2_1.models.XMLMessage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite with ItGenerators with ScalaCheckDrivenPropertyChecks with ScalaFutures {
+class InboundRouterConnectorSpec
+    extends AnyFreeSpec
+    with Matchers
+    with WiremockSuite
+    with GuiceWiremockSuite
+    with ItGenerators
+    with ScalaCheckDrivenPropertyChecks
+    with ScalaFutures {
 
-  override val configure: Seq[(String, Any)] = Seq(
+  override val configurationOverride: Seq[(String, Any)] = Seq(
     "microservice.services.transit-movements-router.bearerToken.enabled" -> true,
     "microservice.services.transit-movements-router.bearerToken.token"   -> "bearertokengb"
   )
 
   "post" - {
 
-    lazy val httpClient = app.injector.instanceOf[HttpClientV2]
-    lazy val appConfig  = app.injector.instanceOf[AppConfig]
+    lazy val httpClient = mockApp.injector.instanceOf[HttpClientV2]
+    lazy val appConfig  = mockApp.injector.instanceOf[AppConfig]
 
     "a successful injection returns a 202" in forAll(arbitraryCorrelationId.arbitrary, arbitrary[MessageType]) {
       (correlationId, messageType) =>
@@ -78,8 +86,6 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
 
   }
 
-  override protected def portConfigKey: String = "microservice.services.transit-movements-router.port"
-
   private def targetUrl(correlationId: CorrelationId) =
     s"/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
@@ -90,4 +96,6 @@ class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with Wiremock
       ).withHeader("X-Message-Type", equalTo(messageType.code))
         .willReturn(aResponse().withStatus(responseStatus))
     )
+
+  override protected def portConfigKey: Seq[String] = Seq("microservice.services.transit-movements-router.port")
 }
