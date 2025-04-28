@@ -45,16 +45,10 @@ trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
     super.beforeAll()
   }
 
-  override def beforeEach(): Unit = {
-    server.resetAll()
-    super.beforeEach()
-  }
-
   override def afterAll(): Unit = {
     super.afterAll()
     server.stop()
   }
-
 }
 
 trait GuiceWiremockSuite extends WiremockSuite with GuiceFakeApplicationFactory {

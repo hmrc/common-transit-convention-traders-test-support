@@ -54,6 +54,9 @@ class InboundRouterConnectorSpec
     "microservice.services.transit-movements-router.bearerToken.token"   -> "bearertokengb"
   )
 
+  implicit override val patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = scala.concurrent.duration.DurationInt(2).seconds, interval = scala.concurrent.duration.DurationInt(500).millis)
+
   "post" - {
 
     lazy val httpClient = mockApp.injector.instanceOf[HttpClientV2]
