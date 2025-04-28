@@ -17,24 +17,18 @@
 package v2_1.connectors
 
 import config.AppConfig
-import connectors.util.CustomHttpReader
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import play.api.http.Status.OK
 import play.api.libs.ws.DefaultBodyWritables
-import v2_1.models.EORINumber
-import v2_1.models.Message
-import v2_1.models.MessageId
-import v2_1.models.Movement
-import v2_1.models.MovementId
-import v2_1.models.MovementType
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.StringContextOps
 import uk.gov.hmrc.http.client.HttpClientV2
-import utils.Utils
-import v2_1.models.formats.CommonFormats.movementFormat
+import v2_1.models.*
 import v2_1.models.formats.CommonFormats.messageFormat
+import v2_1.models.formats.CommonFormats.movementFormat
+import v2_1.utils.Utils
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

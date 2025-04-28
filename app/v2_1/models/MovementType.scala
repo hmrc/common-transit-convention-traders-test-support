@@ -16,7 +16,7 @@
 
 package v2_1.models
 
-import utils.CallOps.CallOps
+import v2_1.utils.CallOps.CallOps
 
 sealed abstract class MovementType(val name: String, val urlFragment: String) extends Product with Serializable {
   def generateBaseUrl(movementId: MovementId): String

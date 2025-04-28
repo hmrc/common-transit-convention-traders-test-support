@@ -16,7 +16,6 @@
 
 package v2_1.controllers.actions
 
-import controllers.actions.AuthRequest
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.concurrent.ScalaFutures

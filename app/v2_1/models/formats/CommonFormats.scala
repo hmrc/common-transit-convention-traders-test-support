@@ -20,10 +20,10 @@ import cats.data.NonEmptyList
 import play.api.libs.functional.syntax.toInvariantFunctorOps
 import play.api.libs.json.Format
 import play.api.libs.json.Json
-import v2_1.models.Movement
 import v2_1.models.EORINumber
 import v2_1.models.Message
 import v2_1.models.MessageId
+import v2_1.models.Movement
 
 object CommonFormats extends CommonFormats
 

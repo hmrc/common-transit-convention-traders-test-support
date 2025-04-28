@@ -27,14 +27,13 @@ import v2_1.models.MovementId
 import v2_1.models.XMLMessage
 
 import java.io.StringReader
-import java.time.Clock
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 
 class ArrivalMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
   "A generator" - {
-    val generator = new ArrivalMessageGeneratorImpl(Clock.systemUTC())
+    val generator = new ArrivalMessageGeneratorImpl
     val arrivalId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
     "when a goods release notification is requested" - {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,51 +14,80 @@
  * limitations under the License.
  */
 
-package test.utils
+package utils
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Suite
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.scalatestplus.play.guice.GuiceFakeApplicationFactory
 import play.api.Application
-import play.api.inject
 import play.api.inject.Injector
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.guice.GuiceableModule
-import uk.gov.hmrc.http.client.HttpClientV2
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+
+import java.time.Clock
 
 trait WiremockSuite extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
 
-  protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
+  protected val wiremockConfig: WireMockConfiguration =
+    wireMockConfig().dynamicPort().notifier(new ConsoleNotifier(false))
 
-  protected def portConfigKey: String
-
-  protected lazy val app: Application =
-    new GuiceApplicationBuilder()
-      .configure(configure*)
-      .configure(
-        "metrics.jvm" -> false,
-        portConfigKey -> server.port().toString
-      )
-      .overrides(bindings*)
-      .build()
-
-  protected lazy val injector: Injector = app.injector
-
-  protected def configure: Seq[(String, Any)] = Seq.empty
-
-  protected def bindings: Seq[GuiceableModule] = Seq.empty
+  protected val server: WireMockServer = new WireMockServer(wiremockConfig)
 
   override def beforeAll(): Unit = {
     server.start()
     super.beforeAll()
   }
 
+  override def afterAll(): Unit = {
+    super.afterAll()
+    server.stop()
+  }
+}
+
+trait GuiceWiremockSuite extends WiremockSuite with GuiceFakeApplicationFactory {
+  this: Suite =>
+
+  protected def portConfigKey: Seq[String]
+
+  lazy val applicationBuilder: GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .configure(
+        portConfigKey.map {
+          key =>
+            key -> server.port.toString
+        }*
+      )
+      .configure(configurationOverride*)
+      .overrides(bindings*)
+
+  val configurationOverride: Seq[(String, Any)] = Seq.empty
+
+  lazy val mockApp: Application = applicationBuilder.build()
+
+  override def fakeApplication(): Application = mockApp
+
+  protected lazy val injector: Injector = fakeApplication().injector
+
+  protected def bindings: Seq[GuiceableModule] = Seq(
+    bind[Clock].toInstance(Clock.systemUTC())
+  )
+
+  override def beforeAll(): Unit = {
+    server.start()
+    fakeApplication()
+    super.beforeAll()
+  }
+
   override def beforeEach(): Unit = {
     server.resetAll()
+    fakeApplication()
     super.beforeEach()
   }
 

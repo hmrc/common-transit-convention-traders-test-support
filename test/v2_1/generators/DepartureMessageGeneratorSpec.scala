@@ -20,7 +20,6 @@ import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import v2_1.models.MovementId
 import v2_1.models.MessageType.AmendmentAcceptance
 import v2_1.models.MessageType.ControlDecisionNotification
 import v2_1.models.MessageType.Discrepancies
@@ -34,17 +33,17 @@ import v2_1.models.MessageType.RecoveryNotification
 import v2_1.models.MessageType.RejectionFromOfficeOfDeparture
 import v2_1.models.MessageType.ReleaseForTransit
 import v2_1.models.MessageType.WriteOffNotification
+import v2_1.models.MovementId
 import v2_1.models.XMLMessage
 
 import java.io.StringReader
-import java.time.Clock
 import javax.xml.XMLConstants
 import javax.xml.transform.stream.StreamSource
 import javax.xml.validation.SchemaFactory
 
 class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with OptionValues {
   "A generator" - {
-    val generator   = new DepartureMessageGeneratorImpl(Clock.systemUTC())
+    val generator   = new DepartureMessageGeneratorImpl
     val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
     "when an amendment acceptance is requested" - {

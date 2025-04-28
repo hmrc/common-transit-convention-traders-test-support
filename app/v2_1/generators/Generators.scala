@@ -16,7 +16,7 @@
 
 package v2_1.generators
 
-import utils.Strings
+import v2_1.utils.Strings
 
 import java.time.Clock
 import java.time.ZoneOffset

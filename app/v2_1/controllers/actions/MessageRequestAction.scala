@@ -18,9 +18,6 @@ package v2_1.controllers.actions
 
 import com.google.inject.ImplementedBy
 import com.google.inject.Inject
-import controllers.actions.AuthRequest
-import v2_1.models.generation.TestMessage
-import v2_1.models.request.MessageRequest
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
 import play.api.libs.json.JsValue
@@ -30,6 +27,8 @@ import play.api.mvc.Result
 import play.api.mvc.Results.BadRequest
 import v2_1.models.EORINumber
 import v2_1.models.errors.PresentationError
+import v2_1.models.generation.TestMessage
+import v2_1.models.request.MessageRequest
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

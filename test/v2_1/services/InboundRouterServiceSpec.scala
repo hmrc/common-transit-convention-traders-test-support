@@ -42,7 +42,7 @@ import scala.concurrent.ExecutionContext.Implicits._
 
 class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
 
-  val departureWithoutMessages = Movement(
+  val departureWithoutMessages: Movement = Movement(
     MovementId("1"),
     EORINumber("GB121212"),
     EORINumber("GB343434"),
@@ -70,7 +70,7 @@ class InboundRouterServiceSpec extends SpecBase with ModelGenerators {
       val either = inboundRouterService.post(MessageType.PositiveAcknowledgement, XMLMessage(<msg></msg>), correlationId)
 
       whenReady(either.value) {
-        _.right.map(
+        _.map(
           response => response.value mustBe "3"
         )
       }

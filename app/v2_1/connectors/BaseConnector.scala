@@ -20,9 +20,6 @@ import play.api.http.HeaderNames
 import play.api.http.MimeTypes
 import play.api.libs.json.JsResult
 import play.api.libs.json.Reads
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.http.Authorization
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpErrorFunctions
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.UpstreamErrorResponse
@@ -31,20 +28,8 @@ import scala.concurrent.Future
 
 class BaseConnector extends HttpErrorFunctions {
 
-  protected lazy val requestHeaders: Seq[(String, String)] =
-    Seq((HeaderNames.CONTENT_TYPE, MimeTypes.XML))
-
   lazy val responseHeaders: Seq[(String, String)] =
     Seq((HeaderNames.CONTENT_TYPE, MimeTypes.JSON))
-
-  protected val departureRoute = "/transit-movements/movements/departures/"
-
-  protected def enforceAuthHeaderCarrier(
-    extraHeaders: Seq[(String, String)]
-  )(implicit requestHeader: RequestHeader, headerCarrier: HeaderCarrier): HeaderCarrier =
-    headerCarrier
-      .copy(authorization = Some(Authorization(requestHeader.headers.get(HeaderNames.AUTHORIZATION).getOrElse(""))))
-      .withExtraHeaders(extraHeaders*)
 
   implicit class HttpResponseHelpers(response: HttpResponse) {
 

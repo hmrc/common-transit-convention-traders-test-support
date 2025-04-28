@@ -66,7 +66,7 @@ trait ItGenerators {
       } yield EORINumber(s"$country$number")
     }
 
-  implicit val arbitaryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = Arbitrary {
+  implicit val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = Arbitrary {
     for {
       countryCode <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
       randomString <- Gen

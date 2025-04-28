@@ -43,8 +43,8 @@ import play.api.test.Helpers.contentAsString
 import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import v2.base.TestActorSystem
-import v2.controllers.stream.StreamingParsers
+import v2_1.base.TestActorSystem
+import v2_1.controllers.stream.StreamingParsers
 
 import java.nio.charset.StandardCharsets
 import scala.concurrent.Future

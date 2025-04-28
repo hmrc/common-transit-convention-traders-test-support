@@ -17,8 +17,6 @@
 package v2_1.generators
 
 import com.google.inject.ImplementedBy
-import com.google.inject.Inject
-import utils.Strings._
 import v2_1.models.MessageType.AmendmentAcceptance
 import v2_1.models.MessageType.ControlDecisionNotification
 import v2_1.models.MessageType.Discrepancies
@@ -34,13 +32,12 @@ import v2_1.models.MessageType.ReleaseForTransit
 import v2_1.models.MessageType.WriteOffNotification
 import v2_1.models.MessageType
 import v2_1.models.XMLMessage
-
-import java.time.Clock
+import v2_1.utils.Strings.*
 
 @ImplementedBy(classOf[DepartureMessageGeneratorImpl])
 trait DepartureMessageGenerator extends MessageGenerator
 
-class DepartureMessageGeneratorImpl @Inject() (clock: Clock) extends Generators with DepartureMessageGenerator {
+class DepartureMessageGeneratorImpl extends Generators with DepartureMessageGenerator {
 
   override protected def generateWithCorrelationId(correlationId: String): PartialFunction[MessageType, XMLMessage] = {
     case AmendmentAcceptance               => generateIE004Message(correlationId)

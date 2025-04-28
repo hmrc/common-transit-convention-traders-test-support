@@ -16,11 +16,7 @@
 
 package v2_1.models
 
-import play.api.libs.json.JsError
-import play.api.libs.json.JsString
-import play.api.libs.json.JsSuccess
-import play.api.libs.json.Reads
-import play.api.libs.json.Writes
+import play.api.libs.json.*
 
 abstract class MessageType(val code: String, val rootNode: String) extends Product with Serializable
 

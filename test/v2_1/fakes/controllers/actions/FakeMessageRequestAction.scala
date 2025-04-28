@@ -16,8 +16,8 @@
 
 package v2_1.fakes.controllers.actions
 
-import controllers.actions.AuthRequest
 import play.api.mvc.Result
+import v2_1.controllers.actions.AuthRequest
 import v2_1.controllers.actions.MessageRequestAction
 import v2_1.models.EORINumber
 import v2_1.models.MessageType

@@ -17,12 +17,12 @@
 package v2_1.controllers.actions
 
 import play.api.libs.json.Json
-import v2_1.models.MessageType
-import v2_1.models.request.MessageRequest
 import play.api.mvc.ActionRefiner
 import play.api.mvc.Result
 import play.api.mvc.Results.NotImplemented
+import v2_1.models.MessageType
 import v2_1.models.errors.PresentationError
+import v2_1.models.request.MessageRequest
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

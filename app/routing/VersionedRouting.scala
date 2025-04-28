@@ -26,16 +26,9 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.BaseController
 import play.api.mvc.Request
-import v2.controllers.stream.StreamingParsers
-import v2.models.errors.PresentationError
+import v2_1.controllers.stream.StreamingParsers
+import v2_1.models.errors.PresentationError
 import scala.concurrent.Future
-
-object VersionedRouting {
-
-  val VERSION_2_ACCEPT_HEADER_VALUE   = "application/vnd.hmrc.2.0+json"
-  val VERSION_2_1_ACCEPT_HEADER_VALUE = "application/vnd.hmrc.2.1+json"
-
-}
 
 trait VersionedRouting {
   self: BaseController & StreamingParsers =>

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package v2_1.connectors
 
-object Constants {
+import play.api.http.Status
+import uk.gov.hmrc.http.HttpErrorFunctions
+import uk.gov.hmrc.http.HttpReads
+import uk.gov.hmrc.http.HttpResponse
 
-  val Context = "/customs/transits"
+object CustomHttpReader extends HttpReads[HttpResponse] with HttpErrorFunctions with Status {
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val NewEnrolmentKey: String    = "HMRC-CTC-ORG"
-  val NewEnrolmentIdKey: String  = "EORINumber"
-
-  val DefaultTriggerId: String = List.fill(16)("0").mkString
+  override def read(method: String, url: String, response: HttpResponse): HttpResponse =
+    response.status match {
+      case LOCKED => recode(INTERNAL_SERVER_ERROR, response)
+      case _      => response
+    }
+  def recode(newCode: Int, response: HttpResponse) = HttpResponse(newCode, response.body, response.headers)
 }

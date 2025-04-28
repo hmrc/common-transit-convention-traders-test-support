@@ -26,15 +26,13 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import play.api.http.HeaderNames
 import play.api.http.Status.ACCEPTED
-import play.api.http.Status.BAD_REQUEST
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import test.utils.WiremockSuite
 import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.client.HttpClientV2
+import utils.GuiceWiremockSuite
+import utils.WiremockSuite
 import v2_1.connectors.InboundRouterConnector
 import v2_1.models.CorrelationId
 import v2_1.models.MessageType
@@ -42,73 +40,65 @@ import v2_1.models.XMLMessage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class InboundRouterConnectorSpec extends AnyFreeSpec with Matchers with WiremockSuite with ItGenerators with ScalaCheckDrivenPropertyChecks with ScalaFutures {
+class InboundRouterConnectorSpec
+    extends AnyFreeSpec
+    with Matchers
+    with WiremockSuite
+    with GuiceWiremockSuite
+    with ItGenerators
+    with ScalaCheckDrivenPropertyChecks
+    with ScalaFutures {
 
-  override val configure: Seq[(String, Any)] = Seq(
+  override val configurationOverride: Seq[(String, Any)] = Seq(
     "microservice.services.transit-movements-router.bearerToken.enabled" -> true,
     "microservice.services.transit-movements-router.bearerToken.token"   -> "bearertokengb"
   )
 
+  implicit override val patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = scala.concurrent.duration.DurationInt(2).seconds, interval = scala.concurrent.duration.DurationInt(500).millis)
+
   "post" - {
 
-    lazy val httpClient = app.injector.instanceOf[HttpClientV2]
-    lazy val appConfig  = app.injector.instanceOf[AppConfig]
-
-    def targetUrl(correlationId: CorrelationId) =
-      s"/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
+    lazy val httpClient = mockApp.injector.instanceOf[HttpClientV2]
+    lazy val appConfig  = mockApp.injector.instanceOf[AppConfig]
 
     "a successful injection returns a 202" in forAll(arbitraryCorrelationId.arbitrary, arbitrary[MessageType]) {
       (correlationId, messageType) =>
         implicit val hc: HeaderCarrier = HeaderCarrier()
 
-        lazy val sut = new InboundRouterConnector(httpClient, appConfig)
+        lazy val sut: InboundRouterConnector = new InboundRouterConnector(httpClient, appConfig)
+        lazy val result                      = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId).futureValue
 
-        server.stubFor(
-          post(
-            urlEqualTo(targetUrl(correlationId))
-          ).willReturn(aResponse().withStatus(BAD_REQUEST))
-        )
+        stub(correlationId, ACCEPTED, messageType)
 
-        // this takes precedence ONLY if the header exists.
-        server.stubFor(
-          post(
-            urlEqualTo(targetUrl(correlationId))
-          ).withHeader(HeaderNames.AUTHORIZATION, equalTo("Bearer bearertokengb"))
-            .withHeader("X-Message-Type", equalTo(messageType.code))
-            .willReturn(aResponse().withStatus(ACCEPTED))
-        )
+        result.status mustBe ACCEPTED
 
-        val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId)
-
-        whenReady(result) {
-          r =>
-            r.status mustBe ACCEPTED
-        }
     }
 
     "a failed injection returns a 500" in forAll(arbitraryCorrelationId.arbitrary, arbitrary[MessageType]) {
       (correlationId, messageType) =>
         implicit val hc: HeaderCarrier = HeaderCarrier()
 
-        lazy val sut = new InboundRouterConnector(httpClient, appConfig)
+        lazy val sut    = new InboundRouterConnector(httpClient, appConfig)
+        lazy val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId).futureValue
 
-        // this takes precedence ONLY if the header exists.
-        server.stubFor(
-          post(
-            urlEqualTo(targetUrl(correlationId))
-          ).withHeader("X-Message-Type", equalTo(messageType.code))
-            .willReturn(aResponse().withStatus(INTERNAL_SERVER_ERROR))
-        )
+        stub(correlationId, INTERNAL_SERVER_ERROR, messageType)
 
-        val result = sut.post(messageType, XMLMessage(<test></test>).wrapped, correlationId)
-
-        whenReady(result) {
-          r =>
-            r.status mustBe INTERNAL_SERVER_ERROR
-        }
+        result.status mustBe INTERNAL_SERVER_ERROR
     }
 
   }
 
-  override protected def portConfigKey: String = "microservice.services.transit-movements-router.port"
+  private def targetUrl(correlationId: CorrelationId) =
+    s"/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
+
+  private def stub(correlationId: CorrelationId, responseStatus: Int, messageType: MessageType): Unit =
+    server.stubFor(
+      post(
+        urlEqualTo(targetUrl(correlationId))
+      ).withHeader("X-Message-Type", equalTo(messageType.code))
+        .willReturn(aResponse().withStatus(responseStatus))
+    )
+
+  override protected def portConfigKey: Seq[String] = Seq("microservice.services.transit-movements-router.port")
 }

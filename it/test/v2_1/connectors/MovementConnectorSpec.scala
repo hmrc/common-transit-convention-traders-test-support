@@ -32,24 +32,14 @@ import play.api.http.HeaderNames
 import play.api.http.Status.NOT_FOUND
 import play.api.http.Status.OK
 import play.api.libs.json.Json
-import play.api.mvc.AnyContent
-import play.api.mvc.Request
-import play.api.test.FakeRequest
-import test.utils.WiremockSuite
 import test.v2_1.generators.ItGenerators
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.HttpClientV2
+import utils.GuiceWiremockSuite
+import utils.WiremockSuite
 import v2_1.connectors.MovementConnector
-import v2_1.models.EORINumber
-import v2_1.models.Message
-import v2_1.models.MessageId
-import v2_1.models.MessageType
-import v2_1.models.Movement
-import v2_1.models.MovementId
-import v2_1.models.MovementReferenceNumber
-import v2_1.models.MovementType
+import v2_1.models.*
 
 import java.time.OffsetDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -58,17 +48,18 @@ class MovementConnectorSpec
     extends AnyFreeSpec
     with Matchers
     with WiremockSuite
+    with GuiceWiremockSuite
     with ItGenerators
     with ScalaCheckDrivenPropertyChecks
     with ScalaFutures
     with OptionValues {
 
-  lazy val httpClient = app.injector.instanceOf[HttpClientV2]
-  lazy val appConfig  = app.injector.instanceOf[AppConfig]
+  lazy val httpClient: HttpClientV2 = mockApp.injector.instanceOf[HttpClientV2]
+  lazy val appConfig: AppConfig     = mockApp.injector.instanceOf[AppConfig]
 
-  val token = Gen.alphaNumStr.sample.get
+  val token: String = Gen.alphaNumStr.sample.get
 
-  override val configure: Seq[(String, Any)] = Seq(
+  override val configurationOverride: Seq[(String, Any)] = Seq(
     "internal-auth.token" -> token
   )
 
@@ -85,8 +76,7 @@ class MovementConnectorSpec
       arbitrary[OffsetDateTime]
     ) {
       (movementType, eori, movementId, maybeMrn, offsetDateTime) =>
-        implicit val hc: HeaderCarrier            = HeaderCarrier()
-        implicit val request: Request[AnyContent] = FakeRequest("GET", "/")
+        implicit val hc: HeaderCarrier = HeaderCarrier()
 
         server.stubFor(
           get(
@@ -129,9 +119,7 @@ class MovementConnectorSpec
       arbitrary[MovementId]
     ) {
       (movementType, eori, movementId) =>
-        implicit val hc: HeaderCarrier            = HeaderCarrier()
-        implicit val request: Request[AnyContent] = FakeRequest("GET", "/")
-
+        implicit val hc: HeaderCarrier = HeaderCarrier()
         server.stubFor(
           get(
             urlEqualTo(getMovementUri(movementType, eori, movementId))
@@ -233,5 +221,5 @@ class MovementConnectorSpec
 
   }
 
-  override protected def portConfigKey: String = "microservice.services.transit-movements.port"
+  override protected def portConfigKey: Seq[String] = Seq("microservice.services.transit-movements.port")
 }
