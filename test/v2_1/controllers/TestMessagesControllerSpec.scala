@@ -20,10 +20,11 @@ import base.SpecBase
 import cats.data.EitherT
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.ArgumentMatchers.{eq => eqTo}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.Mockito.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.must.Matchers.mustEqual
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.HeaderNames
 import play.api.http.MimeTypes
@@ -44,7 +45,7 @@ import v2_1.fakes.controllers.actions.FakeAuthAction
 import v2_1.fakes.controllers.actions.FakeMessageRequestAction
 import v2_1.fakes.controllers.actions.FakeValidateMessageTypeActionProvider
 import v2_1.generators.ModelGenerators
-import v2_1.models._
+import v2_1.models.*
 import v2_1.models.errors.MessageGenerationError
 import v2_1.models.errors.PersistenceError
 import v2_1.models.errors.RouterError
@@ -56,7 +57,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.xml.NodeSeq
 
-class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with TestActorSystem {
+class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with BeforeAndAfterEach with TestActorSystem {
 
   val exampleRequest: JsValue = Json.parse(
     """{
@@ -66,7 +67,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
         | }""".stripMargin
   )
 
-  "V2TestMessagesController" - {
+  "TestMessagesController" - {
     "POST" - {
       "must send a test message to the persistence backend and return Created if successful" in forAll(
         arbitrary[MovementType],
@@ -102,7 +103,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
             _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
           )
 
-          val sut = new TestMessagesController(
+          val sut = new TestMessagesControllerImpl(
             stubControllerComponents(),
             FakeAuthAction,
             mockMovementPersistenceService,
@@ -113,7 +114,61 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, None)(
+              FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
+            )
+
+          status(result) mustEqual CREATED
+      }
+
+      "must send a test message to the persistence backend with a specified messageId and return Created if successful" in forAll(
+        arbitrary[MovementType],
+        arbitrary[Movement],
+        arbitrary[Message]
+      ) {
+        (movementType, movement, message) =>
+          val mockMovementPersistenceService = mock[MovementPersistenceService]
+          val mockInboundRouterService       = mock[InboundRouterService]
+          val mockMessageGenerationService   = mock[MessageGenerationService]
+
+          val validateAction         = new ValidateMessageTypeAction(Seq(message.messageType))
+          val validateActionProvider = FakeValidateMessageTypeActionProvider(validateAction)
+
+          val expectedCorrelationId = CorrelationId(movement._id, MessageId("messageId"))
+
+          when(
+            mockMovementPersistenceService
+              .getMovement(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any())
+          ).thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(movement))))
+
+          when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), eqTo(expectedCorrelationId))(any(), any()))
+            .thenReturn(EitherT[Future, RouterError, MessageId](Future.successful(Right(message.id))))
+
+          when(
+            mockMovementPersistenceService
+              .getMessage(any[MovementType], any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId], any[String].asInstanceOf[MessageId])(
+                any(),
+                any(),
+                any()
+              )
+          ).thenReturn(EitherT[Future, PersistenceError, Message](Future.successful(Right(message))))
+
+          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()))(any())).thenAnswer(
+            _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
+          )
+
+          val sut = new TestMessagesControllerImpl(
+            stubControllerComponents(),
+            FakeAuthAction,
+            mockMovementPersistenceService,
+            mockInboundRouterService,
+            FakeMessageRequestAction(message.messageType),
+            validateActionProvider,
+            mockMessageGenerationService
+          )
+
+          val result =
+            sut.injectEISResponse(movementType, movement._id, Some("messageId"))(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
 
@@ -140,7 +195,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
             _ => EitherT.leftT[Future, PersistenceError](PersistenceError.MovementNotFound(movementType, movement._id))
           )
 
-          val sut = new TestMessagesController(
+          val sut = new TestMessagesControllerImpl(
             stubControllerComponents(),
             FakeAuthAction,
             mockMovementPersistenceService,
@@ -151,7 +206,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, None)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
           status(result) mustEqual NOT_FOUND
@@ -175,7 +230,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
             _ => EitherT.leftT[Future, MessageGenerationError](MessageGenerationError.MessageTypeNotSupported(messageType))
           )
 
-          val sut = new TestMessagesController(
+          val sut = new TestMessagesControllerImpl(
             stubControllerComponents(),
             FakeAuthAction,
             mockMovementPersistenceService,
@@ -186,7 +241,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, None)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
           status(result) mustEqual NOT_IMPLEMENTED
@@ -217,7 +272,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), any[CorrelationId])(any(), any()))
             .thenReturn(EitherT[Future, RouterError, MessageId](Future.successful(Left(RouterError.Unexpected()))))
 
-          val sut = new TestMessagesController(
+          val sut = new TestMessagesControllerImpl(
             stubControllerComponents(),
             FakeAuthAction,
             mockMovementPersistenceService,
@@ -228,7 +283,7 @@ class V2TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyCheck
           )
 
           val result =
-            sut.injectEISResponse(movementType, movement._id)(
+            sut.injectEISResponse(movementType, movement._id, None)(
               FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
             )
           status(result) mustEqual INTERNAL_SERVER_ERROR

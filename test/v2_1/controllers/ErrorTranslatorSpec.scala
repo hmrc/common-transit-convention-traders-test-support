@@ -131,7 +131,7 @@ class ErrorTranslatorSpec extends SpecBase with ModelGenerators {
     "an MessageNotFound Error returns an internal service error without an exception" in forAll(arbitrary[MovementId]) {
       movementId =>
         val input  = RouterError.MovementNotFound(movementId)
-        val output = PresentationError.internalServiceError(cause = None)
+        val output = PresentationError.notFoundError("movement not found")
 
         Harness.routerErrorConverter.convert(input) mustBe output
     }

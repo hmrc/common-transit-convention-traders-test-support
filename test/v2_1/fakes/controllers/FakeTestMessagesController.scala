@@ -22,26 +22,26 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.BaseController
+import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
-import v2_1.controllers.V2TestMessagesController
+import v2_1.controllers.TestMessagesController
 import v2_1.controllers.stream.StreamingParsers
 import v2_1.models.MovementId
 
-class FakeV2TestMessagesController @Inject() ()(implicit val materializer: Materializer)
+class FakeTestMessagesController @Inject() ()(implicit val materializer: Materializer)
     extends BaseController
-    with V2TestMessagesController
+    with TestMessagesController
     with StreamingParsers {
 
-  override val controllerComponents = stubControllerComponents()
+  override val controllerComponents: ControllerComponents = stubControllerComponents()
 
-  def sendDepartureResponse(departureId: MovementId): Action[JsValue] = Action(parse.json) {
+  override def sendDepartureResponse(departureId: MovementId, messageId: Option[String]): Action[JsValue] = Action(parse.json) {
     _ =>
       Accepted(Json.obj("version" -> 2.1))
   }
 
-  def sendArrivalsResponse(departureId: MovementId): Action[JsValue] = Action(parse.json) {
+  override def sendArrivalsResponse(departureId: MovementId, messageId: Option[String]): Action[JsValue] = Action(parse.json) {
     _ =>
       Accepted(Json.obj("version" -> 2.1))
   }
-
 }

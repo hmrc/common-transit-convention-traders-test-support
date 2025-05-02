@@ -25,12 +25,9 @@ import javax.inject.Inject
 
 class DocumentationController @Inject() (assets: Assets, cc: ControllerComponents) extends BackendController(cc) {
 
-  private lazy val definitionAction: Action[AnyContent] = assets.at("/public/api", "definition.json")
-
   def definition(): Action[AnyContent] =
-    definitionAction
+    assets.at("/public/api", "definition.json")
 
   def raml(version: String, file: String): Action[AnyContent] =
     assets.at(s"/public/api/conf/$version", file)
-
 }

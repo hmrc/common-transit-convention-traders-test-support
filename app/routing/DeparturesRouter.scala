@@ -23,25 +23,25 @@ import com.google.inject.Inject
 import play.api.mvc.Action
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
-import v2_1.controllers.V2TestMessagesController
+import v2_1.controllers.TestMessagesController
 import v2_1.controllers.stream.StreamingParsers
 import v2_1.models.Bindings
 
 class DeparturesRouter @Inject() (
   val controllerComponents: ControllerComponents,
-  departures: V2TestMessagesController
+  departures: TestMessagesController
 )(implicit val materializer: Materializer)
     extends BaseController
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(departureId: String): Action[Source[ByteString, ?]] = route {
+  def injectEISResponse(departureId: String, messageId: Option[String]): Action[Source[ByteString, ?]] = route {
     _ =>
       (for {
         convertedDepartureId <- Bindings.movementIdBinding.bind("departureId", departureId)
       } yield convertedDepartureId).fold(
         bindingFailureAction(_),
-        convertedDepartureId => departures.sendDepartureResponse(convertedDepartureId)
+        convertedDepartureId => departures.sendDepartureResponse(convertedDepartureId, messageId)
       )
   }
 }

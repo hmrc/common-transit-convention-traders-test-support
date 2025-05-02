@@ -1,2 +1,2 @@
-POST         /movements/arrivals/:arrivalId/messages                 routing.ArrivalsRouter.injectEISResponse(arrivalId: String)
-POST         /movements/departures/:departureId/messages             routing.DeparturesRouter.injectEISResponse(departureId: String)
+POST         /movements/arrivals/:arrivalId/messages                 routing.ArrivalsRouter.injectEISResponse(arrivalId: String, messageId: Option[String])
+POST         /movements/departures/:departureId/messages             routing.DeparturesRouter.injectEISResponse(departureId: String, messageId: Option[String])
