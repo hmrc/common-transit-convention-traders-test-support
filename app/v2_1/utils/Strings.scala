@@ -35,7 +35,7 @@ object Strings {
     Random.alphanumeric take length mkString
   }
 
-  def zeroOrOne() = Gen.oneOf(0, 1).sample.getOrElse(0).toString
+  def zeroOrOne(): String = Gen.oneOf(0, 1).sample.getOrElse(0).toString
 
   def numeric(length: Int): String =
     Random.alphanumeric.filter(_.isDigit).take(length).mkString
@@ -51,16 +51,16 @@ object Strings {
     first + rest
   }
 
-  def alpha(maxLen: Int, minLen: Int = 1) =
+  def alpha(maxLen: Int, minLen: Int = 1): String =
     (for {
       len <- Gen.choose(minLen, maxLen)
       str <- Gen.stringOfN(len, Gen.alphaChar)
     } yield str).sample.get
 
-  def num(len: Int) =
+  def num(len: Int): String =
     Gen.stringOfN(len, Gen.numChar).sample.get
 
-  def alphanumericCapital(maxLen: Int, minLen: Int = 1) =
+  def alphanumericCapital(maxLen: Int, minLen: Int = 1): String =
     (for {
       len <- Gen.choose(minLen, maxLen)
       str <- Gen.stringOfN(len, Gen.alphaChar)
@@ -75,27 +75,7 @@ object Strings {
   def decimalNumber(totalDigits: Int, fractionDigits: Int) =
     s"${num1(totalDigits - fractionDigits)}.${num(fractionDigits)}"
 
-  def decimalMax12(): String =
-    Seq.fill(11)(between1And9).mkString
-
-  def numeric8(): String = {
-    val first  = Gen.choose(1, 2).sample.getOrElse(1)
-    val second = Gen.choose(0, 9).sample.getOrElse(9)
-
-    Seq(
-      first.toString,
-      second.toString,
-      first.toString,
-      second.toString,
-      "0",
-      between1And9.toString,
-      "0",
-      between1And9.toString
-    ).mkString
-  }
-
   def mrn(): String =
-    // pattern value="([2][4-9]|[3-9][0-9])[A-Z]{2}[A-Z0-9]{12}[J-M][0-9]"
     Seq[String](
       "2",
       Gen.choose(4, 9).sample.getOrElse(4).toString,
@@ -106,7 +86,6 @@ object Strings {
     ).mkString.toUpperCase
 
   def grn(): String =
-    // [0-9]{2}[A-Z]{2}[A-Z0-9]{12}[0-9]([A-Z][0-9]{6})?
     Seq[String](
       numeric(2),
       alpha(2),
@@ -115,14 +94,12 @@ object Strings {
     ).mkString.toUpperCase
 
   def referenceNumber(): String =
-    // [A-Z]{2}[A-Z0-9]{6}
     Seq(alpha(2), alphanumeric(6)).mkString.toUpperCase
 
   def alpha(length: Int): String =
     Random.alphanumeric.filter(_.isLetter).take(length).mkString
 
   def declarationGoodsItemNumber(): String =
-    // [1-9][0-9]{0,2}|[1][0-9]{3}
     Seq(between1And9, between1And9).mkString
 
   def country(): String = {

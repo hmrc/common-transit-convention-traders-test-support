@@ -33,19 +33,18 @@ import v2_1.models.request.MessageRequest
 import v2_1.services.InboundRouterService
 import v2_1.services.MessageGenerationService
 import v2_1.services.MovementPersistenceService
-import v2_1.utils.ResponseHelper
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-@ImplementedBy(classOf[TestMessagesController])
-trait V2TestMessagesController {
-  def sendDepartureResponse(departureId: MovementId): Action[JsValue]
+@ImplementedBy(classOf[TestMessagesControllerImpl])
+trait TestMessagesController {
+  def sendDepartureResponse(departureId: MovementId, messageId: Option[String]): Action[JsValue]
 
-  def sendArrivalsResponse(departureId: MovementId): Action[JsValue]
+  def sendArrivalsResponse(departureId: MovementId, messageId: Option[String]): Action[JsValue]
 }
 
-class TestMessagesController @Inject() (
+class TestMessagesControllerImpl @Inject() (
   cc: ControllerComponents,
   authAction: AuthAction,
   movementPersistenceService: MovementPersistenceService,
@@ -55,34 +54,27 @@ class TestMessagesController @Inject() (
   msgGenService: MessageGenerationService
 )(implicit ec: ExecutionContext)
     extends BackendController(cc)
-    with ResponseHelper
     with ErrorTranslator
-    with V2TestMessagesController {
+    with TestMessagesController {
 
-  override def sendDepartureResponse(movementId: MovementId): Action[JsValue] =
-    injectEISResponse(MovementType.Departure, movementId)
+  override def sendDepartureResponse(movementId: MovementId, messageId: Option[String]): Action[JsValue] =
+    injectEISResponse(MovementType.Departure, movementId, messageId)
 
-  override def sendArrivalsResponse(movementId: MovementId): Action[JsValue] =
-    injectEISResponse(MovementType.Arrival, movementId)
+  override def sendArrivalsResponse(movementId: MovementId, messageId: Option[String]): Action[JsValue] =
+    injectEISResponse(MovementType.Arrival, movementId, messageId)
 
-  def injectEISResponse(movementType: MovementType, movementId: MovementId): Action[JsValue] =
+  def injectEISResponse(movementType: MovementType, movementId: MovementId, messageId: Option[String]): Action[JsValue] =
     (authAction andThen messageRequestAction andThen validateDepartureMessageTypeActionProvider(movementType))
       .async(parse.json) {
         implicit request: MessageRequest[JsValue] =>
           implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
           (for {
-
-            // Get matching departure from transit-movements
             _       <- movementPersistenceService.getMovement(movementType, request.eori, movementId).asPresentation
             message <- msgGenService.generateMessage(request.messageType, movementType, movementId).asPresentation
-
-            // Send generated message to transit-movements-router
             messageId <- inboundRouterService
-              .post(request.messageType, message, CorrelationId(movementId, MessageId(Constants.DefaultTriggerId)))
+              .post(request.messageType, message, CorrelationId(movementId, MessageId(messageId.getOrElse(Constants.DefaultTriggerId))))
               .asPresentation
-
-            // Check for matching departure message from transit-movements
             _ <- movementPersistenceService.getMessage(movementType, request.eori, movementId, messageId).asPresentation
           } yield HateoasResponse(movementType, movementId, request.messageType, message, messageId)).fold(
             presentationError => Status(presentationError.code.statusCode)(Json.toJson(presentationError)),

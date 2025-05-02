@@ -24,8 +24,6 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
 
-  lazy val enrolmentKey: String = config.get[String]("security.enrolmentKey")
-
   val transitMovementsUrl: String       = servicesConfig.baseUrl("transit-movements")
   val transitMovementsRouterUrl: String = servicesConfig.baseUrl("transit-movements-router")
 

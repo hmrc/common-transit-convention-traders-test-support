@@ -26,17 +26,17 @@ object MovementType {
 
   case object Arrival extends MovementType("arrival", "arrivals") {
 
-    override def generateBaseUrl(movementId: MovementId) =
-      routing.routes.DeparturesRouter.injectEISResponse(movementId.value).urlWithContext
+    override def generateBaseUrl(movementId: MovementId): String =
+      routing.routes.DeparturesRouter.injectEISResponse(movementId.value, None).urlWithContext
   }
 
   case object Departure extends MovementType("departure", "departures") {
 
-    override def generateBaseUrl(movementId: MovementId) =
-      routing.routes.ArrivalsRouter.injectEISResponse(movementId.value).urlWithContext
+    override def generateBaseUrl(movementId: MovementId): String =
+      routing.routes.ArrivalsRouter.injectEISResponse(movementId.value, None).urlWithContext
   }
 
   def find(value: String): Option[MovementType] = values.find(_.name == value)
 
-  val values = Seq(Arrival, Departure)
+  val values: Seq[MovementType] = Seq(Arrival, Departure)
 }

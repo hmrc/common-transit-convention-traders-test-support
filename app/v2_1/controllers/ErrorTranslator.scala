@@ -50,7 +50,7 @@ trait ErrorTranslator {
   }
 
   implicit val routerErrorConverter: Converter[RouterError] = {
-    case RouterError.MovementNotFound(_) => PresentationError.internalServiceError(cause = None)
+    case RouterError.MovementNotFound(_) => PresentationError.notFoundError(s"movement not found")
     case err: RouterError.Unexpected     => PresentationError.internalServiceError(cause = err.thr)
   }
 }

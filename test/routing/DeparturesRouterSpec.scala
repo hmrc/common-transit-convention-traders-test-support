@@ -33,7 +33,7 @@ import play.api.test.Helpers.contentAsJson
 import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
 import v2_1.base.TestActorSystem
-import v2_1.fakes.controllers.FakeV2TestMessagesController
+import v2_1.fakes.controllers.FakeTestMessagesController
 
 import scala.concurrent.duration.DurationInt
 
@@ -43,7 +43,7 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
 
   val sut = new DeparturesRouter(
     stubControllerComponents(),
-    new FakeV2TestMessagesController()
+    new FakeTestMessagesController()
   )
 
   "when requesting an EIS response" - {
@@ -58,11 +58,11 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
         val request =
           FakeRequest(
             method = "POST",
-            uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef").url,
+            uri = routes.DeparturesRouter.injectEISResponse("1234567890abcdef", None).url,
             body = Json.obj("a" -> "1"),
             headers = departureHeaders
           )
-        val result = call(sut.injectEISResponse("1234567890abcdef"), request)
+        val result = call(sut.injectEISResponse("1234567890abcdef", None), request)
 
         status(result) mustBe ACCEPTED
         contentAsJson(result) mustBe Json.obj("version" -> 2.1) // ensure we get the unique value to verify we called the fake action
@@ -71,8 +71,8 @@ class DeparturesRouterSpec extends AnyFreeSpec with Matchers with OptionValues w
       "must return bad request if an incorrect departure ID is provided" in {
 
         val request =
-          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a").url, body = Json.obj("a" -> "1"), headers = departureHeaders)
-        val result = call(sut.injectEISResponse("1"), request)
+          FakeRequest(method = "POST", uri = routes.DeparturesRouter.injectEISResponse("a", None).url, body = Json.obj("a" -> "1"), headers = departureHeaders)
+        val result = call(sut.injectEISResponse("1", None), request)
 
         status(result) mustBe BAD_REQUEST
       }

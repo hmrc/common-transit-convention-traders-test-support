@@ -28,6 +28,7 @@ import v2_1.models.CorrelationId
 import v2_1.models.MessageType
 import v2_1.models.WrappedXMLMessage
 
+import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -35,23 +36,25 @@ import scala.concurrent.Future
 class InboundRouterConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) extends BaseConnector with DefaultBodyWritables {
 
   lazy val auth: Option[Authorization] =
-    if (appConfig.bearerTokenEnabled) Some(Authorization(s"Bearer ${appConfig.bearerTokenToken}"))
+    if (appConfig.bearerTokenEnabled)
+      Some(Authorization(s"Bearer ${appConfig.bearerTokenToken}"))
     else None
 
-  // Create a new message with the transit-movements-router service
   def post(messageType: MessageType, message: WrappedXMLMessage, correlationId: CorrelationId)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[HttpResponse] = {
-    val newHeaders = hc
+  ): Future[HttpResponse] =
+    http
+      .post(url(correlationId))(headers(messageType))
+      .withBody(message.value.mkString)
+      .execute[HttpResponse]
+
+  def headers(messageType: MessageType)(implicit hc: HeaderCarrier): HeaderCarrier =
+    hc
       .copy(authorization = auth)
       .withExtraHeaders(Seq("X-Message-Type" -> messageType.code)*)
 
-    val url = url"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
+  def url(correlationId: CorrelationId): URL =
+    url"${appConfig.transitMovementsRouterUrl}/transit-movements-router/movements/${correlationId.toFormattedString}/messages/"
 
-    http
-      .post(url)(newHeaders)
-      .withBody(message.value.mkString)
-      .execute[HttpResponse]
-  }
 }

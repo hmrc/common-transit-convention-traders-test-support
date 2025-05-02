@@ -23,25 +23,25 @@ import org.apache.pekko.util.ByteString
 import play.api.mvc.Action
 import play.api.mvc.BaseController
 import play.api.mvc.ControllerComponents
-import v2_1.controllers.V2TestMessagesController
+import v2_1.controllers.TestMessagesController
 import v2_1.controllers.stream.StreamingParsers
 import v2_1.models.Bindings
 
 class ArrivalsRouter @Inject() (
   val controllerComponents: ControllerComponents,
-  arrivals: V2TestMessagesController
+  arrivals: TestMessagesController
 )(implicit val materializer: Materializer)
     extends BaseController
     with StreamingParsers
     with VersionedRouting {
 
-  def injectEISResponse(arrivalId: String): Action[Source[ByteString, ?]] = route {
+  def injectEISResponse(arrivalId: String, messageId: Option[String]): Action[Source[ByteString, ?]] = route {
     _ =>
       (for {
         convertedArrivalId <- Bindings.movementIdBinding.bind("arrivalId", arrivalId)
       } yield convertedArrivalId).fold(
         bindingFailureAction(_),
-        convertedArrivalId => arrivals.sendArrivalsResponse(convertedArrivalId)
+        convertedArrivalId => arrivals.sendArrivalsResponse(convertedArrivalId, messageId)
       )
   }
 }
