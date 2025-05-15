@@ -54,7 +54,7 @@ lazy val it = project
 lazy val scoverageSettings =
   Seq(
     ScoverageKeys.coverageExcludedPackages := """uk\.gov\.hmrc\.BuildInfo*;.*\.Routes;.*\.RoutesPrefix;.*\.Reverse[^.]*;testonly;config.*""",
-    ScoverageKeys.coverageMinimumStmtTotal := 85.00,
+    ScoverageKeys.coverageMinimumStmtTotal := 90.00,
     ScoverageKeys.coverageExcludedFiles := "<empty>;.*javascript.*;.*Routes.*;",
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
