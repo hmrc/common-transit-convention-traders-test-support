@@ -1,7 +1,7 @@
 /*
  * Copyright 2022 HM Revenue & Customs
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, VersionHeader 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -21,6 +21,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import config.AppConfig
+import connectors.InboundRouterConnector
+import models.{CorrelationId, MessageType, XMLMessage}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
@@ -33,10 +35,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.GuiceWiremockSuite
 import utils.WiremockSuite
-import v2_1.connectors.InboundRouterConnector
-import v2_1.models.CorrelationId
-import v2_1.models.MessageType
-import v2_1.models.XMLMessage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
