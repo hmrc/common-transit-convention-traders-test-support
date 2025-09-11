@@ -1,7 +1,7 @@
 /*
  * Copyright 2022 HM Revenue & Customs
  *
- * Licensed under the Apache License, VersionHeader 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -22,7 +22,14 @@ import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import config.AppConfig
 import connectors.MovementConnector
-import models.{EORINumber, Message, MessageId, MessageType, Movement, MovementId, MovementReferenceNumber, MovementType}
+import models.EORINumber
+import models.Message
+import models.MessageId
+import models.MessageType
+import models.Movement
+import models.MovementId
+import models.MovementReferenceNumber
+import models.MovementType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues

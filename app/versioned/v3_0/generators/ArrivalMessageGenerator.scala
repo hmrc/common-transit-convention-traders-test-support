@@ -16,7 +16,6 @@
 
 package versioned.v3_0.generators
 
-import com.google.inject.ImplementedBy
 import generators.MessageGenerator
 import models.MessageType.GoodsReleaseNotification
 import models.MessageType.RejectionFromOfficeOfDestination

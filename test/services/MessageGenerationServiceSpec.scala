@@ -25,7 +25,6 @@ import models.errors.MessageGenerationError
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import services.MessageGenerationService
 import versioned.v2_1.generators.ArrivalMessageGenerator
 import versioned.v2_1.generators.DepartureMessageGenerator
 import versioned.v2_1.generators.ModelGenerators

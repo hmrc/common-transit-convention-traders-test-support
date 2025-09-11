@@ -16,8 +16,6 @@
 
 package controllers.actions
 
-import controllers.actions.AuthAction
-import controllers.actions.AuthActionImpl
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec

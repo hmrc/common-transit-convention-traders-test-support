@@ -16,15 +16,7 @@
 
 package versioned.v2_1.generators
 
-import models.CorrelationId
-import models.EORINumber
-import models.Message
-import models.MessageId
-import models.MessageType
-import models.Movement
-import models.MovementId
-import models.MovementReferenceNumber
-import models.MovementType
+import models.*
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.hexChar

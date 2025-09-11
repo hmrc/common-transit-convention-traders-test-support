@@ -20,7 +20,6 @@ import com.google.inject.Inject
 import models.EORINumber
 import models.MessageType
 import models.MovementType
-import models.VersionHeader
 import models.errors.PresentationError
 import models.generation.TestMessage
 import models.request.MessageRequest
@@ -48,11 +47,11 @@ class MessageRequestRefiner @Inject() ()(implicit val ec: ExecutionContext) exte
                 Future.successful(Left(BadRequest(Json.toJson(PresentationError.badRequestError(errors.mkString)))))
               case JsSuccess(testMessage, _) =>
                 movementType match {
-                  case MovementType.Arrival if MessageType.arrivalMessages.contains(testMessage) =>
+                  case MovementType.Arrival if MessageType.arrivalMessages.contains(testMessage.messageType) =>
                     Future.successful(
                       Right(MessageRequest(request, EORINumber(request.authenticatedRequest.eori), testMessage.messageType, request.versionedHeader))
                     )
-                  case MovementType.Departure if MessageType.departureMessages.contains(testMessage) =>
+                  case MovementType.Departure if MessageType.departureMessages.contains(testMessage.messageType) =>
                     Future.successful(
                       Right(MessageRequest(request, EORINumber(request.authenticatedRequest.eori), testMessage.messageType, request.versionedHeader))
                     )

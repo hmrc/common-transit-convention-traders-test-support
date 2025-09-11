@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import cats.syntax.all.*
-import controllers.ErrorTranslator
 import models.MessageId
 import models.MessageType
 import models.MovementId
@@ -30,14 +29,14 @@ import models.errors.RouterError
 import org.scalacheck.Arbitrary.arbitrary
 import versioned.v2_1.generators.ModelGenerators
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ErrorTranslatorSpec extends SpecBase with ModelGenerators {
 
   object Harness extends ErrorTranslator
 
-  import Harness._
+  import Harness.*
 
   "ErrorConverter#asPresentation" - {
 

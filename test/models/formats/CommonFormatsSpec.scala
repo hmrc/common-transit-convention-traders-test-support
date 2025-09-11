@@ -17,7 +17,6 @@
 package models.formats
 
 import cats.data.NonEmptyList
-import models.formats.CommonFormats
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.JsArray

@@ -16,7 +16,6 @@
 
 package controllers.actions
 
-import controllers.actions.AuthRequest
 import models.VersionHeader
 import models.errors.PresentationError
 import org.apache.pekko.stream.Materializer
@@ -24,7 +23,6 @@ import org.apache.pekko.stream.scaladsl.Sink
 import org.apache.pekko.stream.scaladsl.Source
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
-import play.api.mvc.Results.NotAcceptable
 import play.api.mvc.Results.Status
 import play.api.mvc.ActionRefiner
 import play.api.mvc.Request
@@ -34,7 +32,6 @@ import play.api.mvc.WrappedRequest
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.util.matching.Regex
 
 final case class ValidatedVersionedRequest[T](
   versionedHeader: VersionHeader,

@@ -16,8 +16,6 @@
 
 package models.errors
 
-import models.errors.PresentationError
-import models.errors.UpstreamServiceError
 import org.scalacheck.Gen
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

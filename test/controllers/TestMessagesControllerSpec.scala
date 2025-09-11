@@ -23,6 +23,8 @@ import controllers.actions.MessageRequestRefiner
 import controllers.actions.ValidateAcceptRefiner
 import fake.actions.FakeAuthAction
 import models.*
+import models.MovementType.Arrival
+import models.MovementType.Departure
 import models.errors.MessageGenerationError
 import models.errors.PersistenceError
 import models.errors.RouterError
@@ -31,6 +33,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq as eqTo
 import org.mockito.Mockito.*
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers.mustEqual
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -44,7 +47,6 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.test.FakeHeaders
 import play.api.test.FakeRequest
-import play.api.test.Helpers.contentAsJson
 import play.api.test.Helpers.defaultAwaitTimeout
 import play.api.test.Helpers.status
 import play.api.test.Helpers.stubControllerComponents
@@ -75,6 +77,16 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
       | }""".stripMargin
   )
 
+  def createMessage(message: Message, movementType: MovementType): Message =
+    movementType match {
+      case MovementType.Arrival =>
+        val messageType = Gen.oneOf(MessageType.arrivalMessages).sample.value
+        message.copy(messageType = messageType)
+      case MovementType.Departure =>
+        val messageType = Gen.oneOf(MessageType.departureMessages).sample.value
+        message.copy(messageType = messageType)
+    }
+
   "TestMessagesController" - {
     "POST" - {
       "must send a test message to the persistence backend and return Created if successful" in forAll(
@@ -82,7 +94,9 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
         arbitrary[Movement],
         arbitrary[Message]
       ) {
-        (movementType, movement, message) =>
+        (movementType, movement, genMessage) =>
+
+          val message                        = createMessage(genMessage, movementType)
           val mockMovementPersistenceService = mock[MovementPersistenceService]
           val mockInboundRouterService       = mock[InboundRouterService]
           val mockMessageGenerationService   = mock[MessageGenerationService]
@@ -130,7 +144,6 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
               )
             )
 
-          contentAsJson(result) mustEqual ""
           status(result) mustEqual CREATED
       }
 
@@ -139,7 +152,8 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
         arbitrary[Movement],
         arbitrary[Message]
       ) {
-        (movementType, movement, message) =>
+        (movementType, movement, genMessage) =>
+          val message                        = createMessage(genMessage, movementType)
           val mockMovementPersistenceService = mock[MovementPersistenceService]
           val mockInboundRouterService       = mock[InboundRouterService]
           val mockMessageGenerationService   = mock[MessageGenerationService]
@@ -182,7 +196,12 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           val result =
             sut.injectEISResponse(movementType, movement._id, Some(MessageId("messageId")))(
-              FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
+              FakeRequest(
+                "POST",
+                "/",
+                FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON, HeaderNames.ACCEPT -> VersionHeader.v2_1.value)),
+                createExampleRequest(message.messageType)
+              )
             )
 
           status(result) mustEqual CREATED
@@ -193,7 +212,8 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
         arbitrary[Movement],
         arbitrary[Message]
       ) {
-        (movementType, movement, message) =>
+        (movementType, movement, genMessage) =>
+          val message                        = createMessage(genMessage, movementType)
           val mockMovementPersistenceService = mock[MovementPersistenceService]
           val mockInboundRouterService       = mock[InboundRouterService]
           val mockMessageGenerationService   = mock[MessageGenerationService]
@@ -220,13 +240,29 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           val result =
             sut.injectEISResponse(movementType, movement._id, None)(
-              FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
+              FakeRequest(
+                "POST",
+                "/",
+                FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON, HeaderNames.ACCEPT -> VersionHeader.v2_1.value)),
+                createExampleRequest(message.messageType)
+              )
             )
           status(result) mustEqual NOT_FOUND
       }
 
-      "must return an error if the message type cannot be found" in forAll(arbitrary[MovementType], arbitrary[Movement], arbitrary[MessageType]) {
-        (movementType, movement, messageType) =>
+      "must return an error if the message type cannot be found" in forAll(
+        arbitrary[MovementType],
+        arbitrary[Movement],
+        arbitrary[MessageType],
+        arbitrary[Message]
+      ) {
+        (movementType, movement, messageType, genMessage) =>
+          val message = {
+            movementType match {
+              case MovementType.Arrival   => createMessage(genMessage, Departure)
+              case MovementType.Departure => createMessage(genMessage, Arrival)
+            }
+          }
           val mockMovementPersistenceService = mock[MovementPersistenceService]
           val mockInboundRouterService       = mock[InboundRouterService]
           val mockMessageGenerationService   = mock[MessageGenerationService]
@@ -255,7 +291,12 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           val result =
             sut.injectEISResponse(movementType, movement._id, None)(
-              FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
+              FakeRequest(
+                "POST",
+                "/",
+                FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON, HeaderNames.ACCEPT -> VersionHeader.v2_1.value)),
+                createExampleRequest(message.messageType)
+              )
             )
           status(result) mustEqual NOT_IMPLEMENTED
       }
@@ -265,7 +306,8 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
         arbitrary[Movement],
         arbitrary[Message]
       ) {
-        (movementType, movement, message) =>
+        (movementType, movement, genMessage) =>
+          val message                        = createMessage(genMessage, movementType)
           val mockMovementPersistenceService = mock[MovementPersistenceService]
           val mockInboundRouterService       = mock[InboundRouterService]
           val mockMessageGenerationService   = mock[MessageGenerationService]
@@ -296,7 +338,12 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           val result =
             sut.injectEISResponse(movementType, movement._id, None)(
-              FakeRequest("POST", "/", FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON)), Json.obj())
+              FakeRequest(
+                "POST",
+                "/",
+                FakeHeaders(Seq(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON, HeaderNames.ACCEPT -> VersionHeader.v2_1.value)),
+                createExampleRequest(message.messageType)
+              )
             )
           status(result) mustEqual INTERNAL_SERVER_ERROR
       }

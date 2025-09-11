@@ -16,12 +16,6 @@
 
 package versioned.v2_1.generators
 
-import models.MovementId
-import models.XMLMessage
-import org.scalacheck.Gen
-import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import models.MessageType.AmendmentAcceptance
 import models.MessageType.ControlDecisionNotification
 import models.MessageType.Discrepancies
@@ -35,6 +29,12 @@ import models.MessageType.RecoveryNotification
 import models.MessageType.RejectionFromOfficeOfDeparture
 import models.MessageType.ReleaseForTransit
 import models.MessageType.WriteOffNotification
+import models.MovementId
+import models.XMLMessage
+import org.scalacheck.Gen
+import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
 import java.io.StringReader
 import javax.xml.XMLConstants

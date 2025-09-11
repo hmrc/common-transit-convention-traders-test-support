@@ -1,7 +1,7 @@
 /*
  * Copyright 2022 HM Revenue & Customs
  *
- * Licensed under the Apache License, VersionHeader 2.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -16,7 +16,13 @@
 
 package test.v2_1.generators
 
-import models.{CorrelationId, EORINumber, MessageId, MessageType, MovementId, MovementReferenceNumber, MovementType}
+import models.CorrelationId
+import models.EORINumber
+import models.MessageId
+import models.MessageType
+import models.MovementId
+import models.MovementReferenceNumber
+import models.MovementType
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.hexChar

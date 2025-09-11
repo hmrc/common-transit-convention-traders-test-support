@@ -17,12 +17,6 @@
 package models
 
 import base.SpecBase
-import models.HateoasResponse
-import models.MessageId
-import models.MessageType
-import models.MovementId
-import models.MovementType
-import models.XMLMessage
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json.Json

@@ -61,15 +61,17 @@ class TestMessagesController @Inject() (
     (authAction andThen validateAcceptRefiner andThen messageRequestAction(movementType)).async(parse.json) {
       implicit request: MessageRequest[JsValue] =>
         implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-        
+        val eori                       = request.eori
+        val messageType                = request.messageType
+
         (for {
-          _       <- movementPersistenceService.getMovement(movementType, request.eori, movementId).asPresentation
-          message <- msgGenService.generateMessage(request.messageType, movementType, movementId).asPresentation
+          _       <- movementPersistenceService.getMovement(movementType, eori, movementId).asPresentation
+          message <- msgGenService.generateMessage(messageType, movementType, movementId).asPresentation
           messageId <- inboundRouterService
-            .post(request.messageType, message, CorrelationId(movementId, messageId.getOrElse(MessageId(Constants.DefaultTriggerId))))
+            .post(messageType, message, CorrelationId(movementId, messageId.getOrElse(MessageId(Constants.DefaultTriggerId))))
             .asPresentation
-          _ <- movementPersistenceService.getMessage(movementType, request.eori, movementId, messageId).asPresentation
-        } yield HateoasResponse(movementType, movementId, request.messageType, message, messageId)).fold(
+          _ <- movementPersistenceService.getMessage(movementType, eori, movementId, messageId).asPresentation
+        } yield HateoasResponse(movementType, movementId, messageType, message, messageId)).fold(
           presentationError => Status(presentationError.code.statusCode)(Json.toJson(presentationError)),
           Created(_)
         )

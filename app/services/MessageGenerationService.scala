@@ -26,8 +26,6 @@ import models.XMLMessage
 import models.errors.MessageGenerationError
 import versioned.v2_1.generators.ArrivalMessageGenerator as V2_1_ArrivalMessageGenerator
 import versioned.v2_1.generators.DepartureMessageGenerator as V2_1_DepartureMessageGenerator
-import versioned.v3_0.generators.ArrivalMessageGenerator as V3_0_ArrivalMessageGenerator
-import versioned.v3_0.generators.DepartureMessageGenerator as V3_0_DepartureMessageGenerator
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future

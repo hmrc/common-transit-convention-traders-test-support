@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import base.TestActorSystem.system.dispatcher
 import connectors.MovementConnector
 import models.EORINumber
 import models.Movement
@@ -29,9 +30,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import services.MovementPersistenceService
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import base.TestActorSystem.system.dispatcher
 import versioned.v2_1.generators.ModelGenerators
 
 import scala.concurrent.Future

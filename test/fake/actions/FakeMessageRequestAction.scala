@@ -16,14 +16,13 @@
 
 package fake.actions
 
-import play.api.mvc.Result
-import controllers.actions.AuthRequest
 import controllers.actions.MessageRequestRefiner
 import controllers.actions.ValidatedVersionedRequest
 import models.EORINumber
 import models.MessageType
 import models.VersionHeader
 import models.request.MessageRequest
+import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.ExecutionContext

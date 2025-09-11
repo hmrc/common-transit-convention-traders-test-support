@@ -16,15 +16,15 @@
 
 package versioned.v2_1.generators
 
+import models.MessageType.GoodsReleaseNotification
+import models.MessageType.RejectionFromOfficeOfDestination
+import models.MessageType.UnloadingPermission
 import models.MovementId
 import models.XMLMessage
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
-import models.MessageType.GoodsReleaseNotification
-import models.MessageType.RejectionFromOfficeOfDestination
-import models.MessageType.UnloadingPermission
 
 import java.io.StringReader
 import javax.xml.XMLConstants

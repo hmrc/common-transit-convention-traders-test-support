@@ -16,18 +16,17 @@
 
 package models
 
-import models.MessageType
+import models.MessageType.AmendmentAcceptance
+import models.MessageType.GoodsReleaseNotification
+import models.MessageType.InvalidationDecision
+import models.MessageType.PositiveAcknowledgement
+import models.MessageType.UnloadingPermission
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import models.MessageType.AmendmentAcceptance
-import models.MessageType.GoodsReleaseNotification
-import models.MessageType.InvalidationDecision
-import models.MessageType.PositiveAcknowledgement
-import models.MessageType.UnloadingPermission
 
 class MessageTypeSpec extends AnyFreeSpec with Matchers with MockitoSugar with OptionValues with ScalaCheckDrivenPropertyChecks {
   "MessageType must contain" - {

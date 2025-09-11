@@ -19,7 +19,7 @@ package versioned.v2_1.generators
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 
-import java.time._
+import java.time.*
 
 trait JavaTimeGenerators {
 
