@@ -21,6 +21,15 @@ import com.github.tomakehurst.wiremock.client.WireMock.equalTo
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import config.AppConfig
+import connectors.MovementConnector
+import models.EORINumber
+import models.Message
+import models.MessageId
+import models.MessageType
+import models.Movement
+import models.MovementId
+import models.MovementReferenceNumber
+import models.MovementType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
@@ -38,8 +47,6 @@ import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.GuiceWiremockSuite
 import utils.WiremockSuite
-import v2_1.connectors.MovementConnector
-import v2_1.models.*
 
 import java.time.OffsetDateTime
 import scala.concurrent.ExecutionContext.Implicits.global

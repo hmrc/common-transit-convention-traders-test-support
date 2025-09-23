@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package base
 
-object Constants {
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
+import org.scalatest.Suite
 
-  val Context = "/customs/transits"
+object TestActorSystem {
+  val system: ActorSystem = ActorSystem("test")
+}
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+trait TestActorSystem {
+  self: Suite =>
+  implicit val system: ActorSystem        = TestActorSystem.system
+  implicit val materializer: Materializer = Materializer(TestActorSystem.system)
 }

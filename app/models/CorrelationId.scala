@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
+case class CorrelationId(movementId: MovementId, messageId: MessageId) {
 
-  val Context = "/customs/transits"
+  lazy val toFormattedString = {
+    val movementId1 = movementId.value.slice(0, 8)
+    val movementId2 = movementId.value.slice(8, 12)
+    val movementId3 = movementId.value.slice(12, 16)
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+    val messageId1 = messageId.value.slice(0, 4)
+    val messageId2 = messageId.value.slice(4, 16)
+
+    s"$movementId1-$movementId2-$movementId3-$messageId1-$messageId2"
+  }
 }

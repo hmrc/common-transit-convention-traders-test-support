@@ -16,17 +16,17 @@
 
 package test.v2_1.generators
 
+import models.CorrelationId
+import models.EORINumber
+import models.MessageId
+import models.MessageType
+import models.MovementId
+import models.MovementReferenceNumber
+import models.MovementType
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.hexChar
 import org.scalacheck.Gen.listOfN
-import v2_1.models.CorrelationId
-import v2_1.models.EORINumber
-import v2_1.models.MessageId
-import v2_1.models.MessageType
-import v2_1.models.MovementId
-import v2_1.models.MovementReferenceNumber
-import v2_1.models.MovementType
 
 import java.time.Instant
 import java.time.OffsetDateTime

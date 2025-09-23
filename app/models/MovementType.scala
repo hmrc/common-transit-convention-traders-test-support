@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
+sealed abstract class MovementType(val name: String, val urlFragment: String) extends Product with Serializable
 
-  val Context = "/customs/transits"
+object MovementType {
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+  case object Arrival extends MovementType("arrival", "arrivals")
+
+  case object Departure extends MovementType("departure", "departures")
+
+  def find(value: String): Option[MovementType] = values.find(_.name == value)
+
+  val values: Seq[MovementType] = Seq(Arrival, Departure)
 }

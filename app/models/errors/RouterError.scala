@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package config
+package models.errors
 
-object Constants {
+import models.MovementId
 
-  val Context = "/customs/transits"
+sealed trait RouterError
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+object RouterError {
+  case class MovementNotFound(movementId: MovementId)  extends RouterError
+  case class Unexpected(thr: Option[Throwable] = None) extends RouterError
 }

@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package models.request
 
-object Constants {
+import models.EORINumber
+import models.MessageType
+import models.VersionHeader
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
-  val Context = "/customs/transits"
-
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
-}
+case class MessageRequest[A](request: Request[A], eori: EORINumber, messageType: MessageType, versionHeader: VersionHeader) extends WrappedRequest[A](request)

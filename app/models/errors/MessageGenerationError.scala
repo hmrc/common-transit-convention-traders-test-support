@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package models.errors
 
-object Constants {
+import models.MessageType
 
-  val Context = "/customs/transits"
+sealed trait MessageGenerationError
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+object MessageGenerationError {
+
+  case class MessageTypeNotSupported(messageType: MessageType) extends MessageGenerationError
+
 }

@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
-  val Context = "/customs/transits"
+import java.time.OffsetDateTime
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+object Movement {
+
+  implicit val format: OFormat[Movement] =
+    Json.format[Movement]
 }
+
+case class Movement(
+  _id: MovementId,
+  enrollmentEORINumber: EORINumber,
+  movementEORINumber: EORINumber,
+  movementReferenceNumber: Option[MovementReferenceNumber],
+  created: OffsetDateTime,
+  updated: OffsetDateTime
+)

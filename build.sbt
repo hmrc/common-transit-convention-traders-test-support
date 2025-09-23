@@ -27,7 +27,8 @@ lazy val microservice = Project(appName, file("."))
   .settings(scoverageSettings*)
   .settings(
     RoutesKeys.routesImport ++= Seq(
-      "models._"
+      "models._",
+      "models.Bindings._"
     )
   )
   .settings(scalacSettings)

@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package config
+package controllers.actions
 
-object Constants {
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
 
-  val Context = "/customs/transits"
-
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
-}
+case class AuthRequest[A](request: Request[A], eori: String) extends WrappedRequest[A](request)

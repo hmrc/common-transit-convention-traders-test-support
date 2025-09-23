@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
-
-  val Context = "/customs/transits"
-
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
-}
+case class MessageId(value: String) extends AnyVal

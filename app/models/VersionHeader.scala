@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
+enum VersionHeader(val value: String) {
+  case v2_1 extends VersionHeader("application/vnd.hmrc.2.1+json")
+  case v3_0 extends VersionHeader("application/vnd.hmrc.3.0+json")
+}
 
-  val Context = "/customs/transits"
-
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+object VersionHeader {
+  def fromString(value: String): Option[VersionHeader] =
+    values.find(_.value == value)
 }

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package utils
 
-object Constants {
+import java.net.URI
+import java.net.URLEncoder
 
-  val Context = "/customs/transits"
+object Utils {
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+  def lastFragment(location: String): String =
+    URI.create(location).getPath.split("/").last
+
+  def urlEncode(str: String): String =
+    URLEncoder.encode(str, "UTF-8")
 }

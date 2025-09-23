@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package models
 
-object Constants {
+import java.time.OffsetDateTime
 
-  val Context = "/customs/transits"
-
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
-}
+// Message returned from DepartureConnector
+case class Message(
+  id: MessageId,
+  received: OffsetDateTime,
+  messageType: MessageType,
+  body: Option[String]
+)

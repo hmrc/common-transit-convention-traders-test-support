@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package models.errors
 
-object Constants {
+import models.MessageId
+import models.MovementId
+import models.MovementType
 
-  val Context = "/customs/transits"
+sealed trait PersistenceError
 
-  val MessageIdHeaderKey: String = "X-Message-Id"
-  val EnrolmentKey: String       = "HMRC-CTC-ORG"
-  val EnrolmentIdKey: String     = "EORINumber"
-  val DefaultTriggerId: String   = List.fill(16)("0").mkString
+object PersistenceError {
+  case class MovementNotFound(movementType: MovementType, movementId: MovementId)                      extends PersistenceError
+  case class MessageNotFound(movementType: MovementType, movementId: MovementId, messageId: MessageId) extends PersistenceError
+  case class Unexpected(thr: Option[Throwable] = None)                                                 extends PersistenceError
 }

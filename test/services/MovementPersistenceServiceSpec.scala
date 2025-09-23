@@ -1,0 +1,83 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package services
+
+import base.SpecBase
+import base.TestActorSystem.system.dispatcher
+import connectors.MovementConnector
+import models.EORINumber
+import models.Movement
+import models.MovementId
+import models.MovementType
+import models.errors.PersistenceError
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.eq as eqTo
+import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
+import uk.gov.hmrc.http.UpstreamErrorResponse
+import versioned.v2_1.generators.ModelGenerators
+
+import scala.concurrent.Future
+
+class MovementPersistenceServiceSpec extends SpecBase with ModelGenerators {
+
+  implicit val requestHeader: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+
+  "DepartureService" - {
+
+    "when retrieving a departure should succeed" in forAll(arbitrary[MovementType], arbitrary[Movement]) {
+      (movementType, movement) =>
+        val mockDepartureConnector = mock[MovementConnector]
+        when(
+          mockDepartureConnector
+            .getMovement(eqTo(movementType), EORINumber(eqTo(movement.enrollmentEORINumber.value)), MovementId(eqTo(movement._id.value)))(any(), any())
+        )
+          .thenReturn(Future.successful[Movement](movement))
+
+        val departureService = new MovementPersistenceService(mockDepartureConnector)
+        val either           = departureService.getMovement(movementType, movement.enrollmentEORINumber, movement._id)
+
+        whenReady(either.value) {
+          r =>
+            r mustBe Right(movement)
+        }
+    }
+
+    "when retrieving a departure should fail" in forAll(arbitrary[MovementType], arbitrary[Movement]) {
+      (movementType, movement) =>
+        val mockDepartureConnector = mock[MovementConnector]
+        val failedResponse         = UpstreamErrorResponse("", 500)
+
+        when(
+          mockDepartureConnector
+            .getMovement(eqTo(movementType), EORINumber(eqTo(movement.enrollmentEORINumber.value)), MovementId(eqTo(movement._id.value)))(any(), any())
+        )
+          .thenReturn(Future.failed(failedResponse))
+
+        val departureService = new MovementPersistenceService(mockDepartureConnector)
+        val either           = departureService.getMovement(movementType, movement.enrollmentEORINumber, movement._id)
+
+        whenReady(either.value) {
+          r =>
+            r mustBe Left(PersistenceError.Unexpected(Some(failedResponse)))
+        }
+    }
+
+  }
+}

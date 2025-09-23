@@ -12,6 +12,14 @@
         "access": {
           "type": "PUBLIC"
         }
+      },
+      {
+        "version": "3.0",
+        "status": "ALPHA",
+        "endpointsEnabled": false,
+        "access": {
+          "type": "PRIVATE"
+        }
       }
     ]
   }
