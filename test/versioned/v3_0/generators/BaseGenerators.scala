@@ -107,7 +107,7 @@ trait BaseGenerators {
     for {
       length        <- Gen.chooseNum(minLength + 1, (minLength * 2).max(100))
       extendedAscii <- extendedAsciiChar
-      chars <- {
+      chars         <- {
         if (withOnlyPrintableAscii) {
           listOfN(length, Gen.alphaChar)
         } else {

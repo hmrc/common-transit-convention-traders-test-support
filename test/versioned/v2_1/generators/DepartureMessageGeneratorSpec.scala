@@ -47,63 +47,53 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     val departureId = Gen.stringOfN(16, Gen.alphaNumChar).map(MovementId(_)).sample.value
 
     "when an amendment acceptance is requested" - {
-      "should produce a valid IE004 message" in {
+      "should produce a valid IE004 message" in
         validate("cc004c", generator.generate(departureId)(AmendmentAcceptance))
-      }
     }
 
     "when an invalidation decision is requested" - {
-      "should produce a valid IE009 message" in {
+      "should produce a valid IE009 message" in
         validate("cc009c", generator.generate(departureId)(InvalidationDecision))
-      }
     }
 
     "when a positive acknowledgement is requested" - {
-      "should produce a valid IE928 message" in {
+      "should produce a valid IE928 message" in
         validate("cc928c", generator.generate(departureId)(PositiveAcknowledgement))
-      }
     }
 
     "when supplied with message type MRNAllocated" - {
-      "should produce an IE028 Message" in {
+      "should produce an IE028 Message" in
         validate("cc028c", generator.generate(departureId)(MRNAllocated))
-      }
     }
 
     "when supplied with message type ReleaseForTransit" - {
-      "should produce an IE029 Message" in {
+      "should produce an IE029 Message" in
         validate("cc029c", generator.generate(departureId)(ReleaseForTransit))
-      }
     }
 
     "when supplied with message type RejectionFromOfficeOfDeparture" - {
-      "should produce an IE056 Message" in {
+      "should produce an IE056 Message" in
         validate("cc056c", generator.generate(departureId)(RejectionFromOfficeOfDeparture))
-      }
     }
 
     "when supplied with message type ControlDecisionNotification" - {
-      "should produce an IE060 Message" in {
+      "should produce an IE060 Message" in
         validate("cc060c", generator.generate(departureId)(ControlDecisionNotification))
-      }
     }
 
     "when supplied with message type RecoveryNotification" - {
-      "should produce an IE035 Message" in {
+      "should produce an IE035 Message" in
         validate("cc035c", generator.generate(departureId)(RecoveryNotification))
-      }
     }
 
     "when supplied with message type NoReleaseForTransit" - {
-      "should produce an IE051 Message" in {
+      "should produce an IE051 Message" in
         validate("cc051c", generator.generate(departureId)(NoReleaseForTransit))
-      }
     }
 
     "when supplied with message type GuaranteeNotValid" - {
-      "should produce an IE055 Message" in {
+      "should produce an IE055 Message" in
         validate("cc055c", generator.generate(departureId)(GuaranteeNotValid))
-      }
     }
 
     "when a discrepancies is requested" - {
@@ -114,15 +104,13 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     }
 
     "when a write off notification is requested" - {
-      "should produce a valid IE045 message" in {
+      "should produce a valid IE045 message" in
         validate("cc045c", generator.generate(departureId)(WriteOffNotification))
-      }
     }
 
     "when a forwarded incident notification to ED is requested" - {
-      "should produce a valid IE182 message" in {
+      "should produce a valid IE182 message" in
         validate("cc182c", generator.generate(departureId)(ForwardedIncidentNotificationToED))
-      }
     }
   }
 
