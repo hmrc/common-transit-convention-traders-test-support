@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.documentation
 
+import controllers.Assets
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.ControllerComponents
