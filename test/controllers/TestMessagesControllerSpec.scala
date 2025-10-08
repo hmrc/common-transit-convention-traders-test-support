@@ -257,12 +257,11 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
         arbitrary[Message]
       ) {
         (movementType, movement, messageType, genMessage) =>
-          val message = {
+          val message =
             movementType match {
               case MovementType.Arrival   => createMessage(genMessage, Departure)
               case MovementType.Departure => createMessage(genMessage, Arrival)
             }
-          }
           val mockMovementPersistenceService = mock[MovementPersistenceService]
           val mockInboundRouterService       = mock[InboundRouterService]
           val mockMessageGenerationService   = mock[MessageGenerationService]

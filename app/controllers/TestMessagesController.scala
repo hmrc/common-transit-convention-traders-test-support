@@ -65,8 +65,8 @@ class TestMessagesController @Inject() (
         val messageType                = request.messageType
 
         (for {
-          _       <- movementPersistenceService.getMovement(movementType, eori, movementId).asPresentation
-          message <- msgGenService.generateMessage(messageType, movementType, movementId).asPresentation
+          _         <- movementPersistenceService.getMovement(movementType, eori, movementId).asPresentation
+          message   <- msgGenService.generateMessage(messageType, movementType, movementId).asPresentation
           messageId <- inboundRouterService
             .post(messageType, message, CorrelationId(movementId, messageId.getOrElse(MessageId(Constants.DefaultTriggerId))))
             .asPresentation

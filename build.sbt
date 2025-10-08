@@ -12,7 +12,6 @@ ThisBuild / scalaVersion := "3.6.4"
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
-  .settings(inConfig(Test)(ScalafmtPlugin.scalafmtConfigSettings))
   .settings(inConfig(Test)(testSettings)*)
   .settings(Compile / unmanagedResourceDirectories += baseDirectory.value / "resources")
   .settings(
@@ -20,7 +19,6 @@ lazy val microservice = Project(appName, file("."))
     ThisBuild / scalafmtOnCompile := true,
     ThisBuild / useSuperShell := false
   )
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(ScoverageSettings())
   .settings(inThisBuild(buildSettings))
   .settings(PlayKeys.playDefaultPort := 9497)

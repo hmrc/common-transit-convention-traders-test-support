@@ -65,7 +65,7 @@ trait ModelGenerators extends BaseGenerators with JavaTimeGenerators {
 
   implicit val arbitaryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = Arbitrary {
     for {
-      countryCode <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
+      countryCode  <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
       randomString <- Gen
         .listOfN(14, Gen.alphaNumChar)
         .map(
