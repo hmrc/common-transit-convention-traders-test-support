@@ -37,8 +37,8 @@ import scala.concurrent.Future
 class MessageGenerationService @Inject() (
   v2_1_arrivalMessageGenerator: V2_1_ArrivalMessageGenerator,
   v2_1_departureMessageGenerator: V2_1_DepartureMessageGenerator,
-  v3_0_departureMessageGenerator: V3_0_DepartureMessageGenerator,
-  v3_0_arrivalMessageGenerator: V3_0_ArrivalMessageGenerator
+  v3_0_arrivalMessageGenerator: V3_0_ArrivalMessageGenerator,
+  v3_0_departureMessageGenerator: V3_0_DepartureMessageGenerator
 ) {
 
   def generators(versionHeader: VersionHeader, movementType: MovementType): MessageGenerator =

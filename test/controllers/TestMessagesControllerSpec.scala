@@ -120,9 +120,10 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
               )
           ).thenReturn(EitherT[Future, PersistenceError, Message](Future.successful(Right(message))))
 
-          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()))(any())).thenAnswer(
-            _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
-          )
+          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()), any[VersionHeader])(any()))
+            .thenAnswer(
+              _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
+            )
 
           val sut = new TestMessagesController(
             stubControllerComponents(),
@@ -180,9 +181,10 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
               )
           ).thenReturn(EitherT[Future, PersistenceError, Message](Future.successful(Right(message))))
 
-          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()))(any())).thenAnswer(
-            _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
-          )
+          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()), any[VersionHeader])(any()))
+            .thenAnswer(
+              _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
+            )
 
           val sut = new TestMessagesController(
             stubControllerComponents(),
@@ -274,9 +276,10 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
               .getMovement(eqTo(movementType), any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any())
           ).thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(movement))))
 
-          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()))(any())).thenAnswer(
-            _ => EitherT.leftT[Future, MessageGenerationError](MessageGenerationError.MessageTypeNotSupported(messageType))
-          )
+          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()), any[VersionHeader])(any()))
+            .thenAnswer(
+              _ => EitherT.leftT[Future, MessageGenerationError](MessageGenerationError.MessageTypeNotSupported(messageType))
+            )
 
           val sut = new TestMessagesController(
             stubControllerComponents(),
@@ -318,9 +321,10 @@ class TestMessagesControllerSpec extends SpecBase with ScalaCheckPropertyChecks 
               .getMovement(eqTo(movementType), any[String].asInstanceOf[EORINumber], any[String].asInstanceOf[MovementId])(any(), any(), any())
           ).thenReturn(EitherT[Future, PersistenceError, Movement](Future.successful(Right(movement))))
 
-          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()))(any())).thenAnswer(
-            _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
-          )
+          when(mockMessageGenerationService.generateMessage(any[MessageType], any[MovementType], MovementId(anyString()), any[VersionHeader])(any()))
+            .thenAnswer(
+              _ => EitherT.rightT[Future, XMLMessage](XMLMessage(<test></test>))
+            )
 
           when(mockInboundRouterService.post(any[MessageType], XMLMessage(any[NodeSeq]), any[CorrelationId])(any(), any()))
             .thenReturn(EitherT[Future, RouterError, MessageId](Future.successful(Left(RouterError.Unexpected()))))
