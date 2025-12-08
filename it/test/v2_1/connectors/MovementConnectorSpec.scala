@@ -133,7 +133,7 @@ class MovementConnectorSpec
           ).withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(aResponse().withStatus(NOT_FOUND))
         )
-        val sut = new MovementConnector(httpClient, appConfig)
+        val sut    = new MovementConnector(httpClient, appConfig)
         val result = sut
           .getMovement(movementType, eori, movementId)
           .map(
@@ -212,7 +212,7 @@ class MovementConnectorSpec
           ).withHeader(HeaderNames.AUTHORIZATION, equalTo(token))
             .willReturn(aResponse().withStatus(NOT_FOUND))
         )
-        val sut = new MovementConnector(httpClient, appConfig)
+        val sut    = new MovementConnector(httpClient, appConfig)
         val result = sut
           .getMessage(movementType, eori, movementId, messageId)
           .map(

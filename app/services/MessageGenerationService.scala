@@ -19,32 +19,41 @@ package services
 import cats.data.EitherT
 import com.google.inject.Inject
 import generators.MessageGenerator
+import models.VersionHeader.v2_1
 import models.MessageType
 import models.MovementId
 import models.MovementType
+import models.VersionHeader
 import models.XMLMessage
 import models.errors.MessageGenerationError
 import versioned.v2_1.generators.ArrivalMessageGenerator as V2_1_ArrivalMessageGenerator
 import versioned.v2_1.generators.DepartureMessageGenerator as V2_1_DepartureMessageGenerator
+import versioned.v3_0.generators.ArrivalMessageGenerator as V3_0_ArrivalMessageGenerator
+import versioned.v3_0.generators.DepartureMessageGenerator as V3_0_DepartureMessageGenerator
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 class MessageGenerationService @Inject() (
   v2_1_arrivalMessageGenerator: V2_1_ArrivalMessageGenerator,
-  v2_1_departureMessageGenerator: V2_1_DepartureMessageGenerator
+  v2_1_departureMessageGenerator: V2_1_DepartureMessageGenerator,
+  v3_0_arrivalMessageGenerator: V3_0_ArrivalMessageGenerator,
+  v3_0_departureMessageGenerator: V3_0_DepartureMessageGenerator
 ) {
 
-  val generators: PartialFunction[MovementType, MessageGenerator] = {
-    case MovementType.Arrival   => v2_1_arrivalMessageGenerator
-    case MovementType.Departure => v2_1_departureMessageGenerator
-  }
+  def generators(versionHeader: VersionHeader, movementType: MovementType): MessageGenerator =
+    movementType match {
+      case MovementType.Arrival if versionHeader == v2_1   => v2_1_arrivalMessageGenerator
+      case MovementType.Departure if versionHeader == v2_1 => v2_1_departureMessageGenerator
+      case MovementType.Arrival                            => v3_0_arrivalMessageGenerator
+      case MovementType.Departure                          => v3_0_departureMessageGenerator
+    }
 
-  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId)(implicit
+  def generateMessage(messageType: MessageType, movementType: MovementType, movementId: MovementId, version: VersionHeader)(implicit
     ec: ExecutionContext
   ): EitherT[Future, MessageGenerationError, XMLMessage] =
     EitherT.fromEither[Future](
-      generators(movementType)
+      generators(version, movementType)
         .generate(movementId)
         .lift(messageType)
         .toRight(MessageGenerationError.MessageTypeNotSupported(messageType))

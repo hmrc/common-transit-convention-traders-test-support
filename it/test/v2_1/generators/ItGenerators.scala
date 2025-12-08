@@ -68,7 +68,7 @@ trait ItGenerators {
 
   implicit val arbitraryMovementReferenceNumber: Arbitrary[MovementReferenceNumber] = Arbitrary {
     for {
-      countryCode <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
+      countryCode  <- Gen.listOfN(2, Gen.alphaUpperChar).map(_.mkString)
       randomString <- Gen
         .listOfN(14, Gen.alphaNumChar)
         .map(

@@ -251,6 +251,9 @@ class DepartureMessageGenerator extends MessageGenerator {
               <declarationGoodsItemNumber>{declarationGoodsItemNumber()}</declarationGoodsItemNumber>
               <Commodity>
                 <descriptionOfGoods>{alphanumeric(1, 512)}</descriptionOfGoods>
+                <GoodsMeasure>
+                  <grossMass>10.0</grossMass>
+                </GoodsMeasure>
               </Commodity>
               <Packaging>
                 <sequenceNumber>{between1And99999}</sequenceNumber>
@@ -391,6 +394,7 @@ class DepartureMessageGenerator extends MessageGenerator {
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
+          <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(1, 70)}</name>
         </Guarantor>
@@ -526,6 +530,7 @@ class DepartureMessageGenerator extends MessageGenerator {
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->
@@ -575,6 +580,7 @@ class DepartureMessageGenerator extends MessageGenerator {
         </HolderOfTheTransitProcedure>
         <!--Optional:-->
         <Guarantor>
+          <identificationNumber>{alphanumeric(8, 17)}</identificationNumber>
           <!--Optional:-->
           <name>{alphanumeric(8, 70)}</name>
           <!--Optional:-->

@@ -17,16 +17,11 @@
 package services
 
 import base.SpecBase
-import models.MessageType
-import models.MovementId
-import models.MovementType
-import models.XMLMessage
+import models.*
 import models.errors.MessageGenerationError
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import versioned.v2_1.generators.ArrivalMessageGenerator
-import versioned.v2_1.generators.DepartureMessageGenerator
 import versioned.v2_1.generators.ModelGenerators
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,25 +29,38 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class MessageGenerationServiceSpec extends SpecBase with ModelGenerators {
 
   "generators Partial Function" - {
-    val arrivalMessageGenerator   = mock[ArrivalMessageGenerator]
-    val departureMessageGenerator = mock[DepartureMessageGenerator]
+    val v2ArrivalMessageGenerator   = mock[versioned.v2_1.generators.ArrivalMessageGenerator]
+    val v2DepartureMessageGenerator = mock[versioned.v2_1.generators.DepartureMessageGenerator]
+    val v3ArrivalMessageGenerator   = mock[versioned.v3_0.generators.ArrivalMessageGenerator]
+    val v3DepartureMessageGenerator = mock[versioned.v3_0.generators.DepartureMessageGenerator]
 
-    val sut = new MessageGenerationService(arrivalMessageGenerator, departureMessageGenerator)
+    val sut = new MessageGenerationService(v2ArrivalMessageGenerator, v2DepartureMessageGenerator, v3ArrivalMessageGenerator, v3DepartureMessageGenerator)
 
-    "a movement type of Arrival will return the arrival generator" in {
-      sut.generators(MovementType.Arrival) mustBe arrivalMessageGenerator
+    "a movement type of Arrival will return the v2 arrival generator" in {
+      sut.generators(VersionHeader.v2_1, MovementType.Arrival) mustBe v2ArrivalMessageGenerator
     }
 
-    "a movement type of Departure will return the departure generator" in {
-      sut.generators(MovementType.Departure) mustBe departureMessageGenerator
+    "a movement type of Departure will return the v2 departure generator" in {
+      sut.generators(VersionHeader.v2_1, MovementType.Departure) mustBe v2DepartureMessageGenerator
+    }
+
+    "a movement type of Arrival will return the v3 arrival generator" in {
+      sut.generators(VersionHeader.v3_0, MovementType.Arrival) mustBe v3ArrivalMessageGenerator
+    }
+
+    "a movement type of Departure will return the v3 departure generator" in {
+      sut.generators(VersionHeader.v3_0, MovementType.Departure) mustBe v3DepartureMessageGenerator
     }
 
   }
 
   "generateMessage" - {
 
-    val arrivalMessageGenerator   = mock[ArrivalMessageGenerator]
-    val departureMessageGenerator = mock[DepartureMessageGenerator]
+    val v2ArrivalMessageGenerator   = mock[versioned.v2_1.generators.ArrivalMessageGenerator]
+    val v2DepartureMessageGenerator = mock[versioned.v2_1.generators.DepartureMessageGenerator]
+
+    val v3ArrivalMessageGenerator   = mock[versioned.v3_0.generators.ArrivalMessageGenerator]
+    val v3DepartureMessageGenerator = mock[versioned.v3_0.generators.DepartureMessageGenerator]
 
     val validArrivalMessage   = XMLMessage(<arrival></arrival>)
     val validDepartureMessage = XMLMessage(<departure></departure>)
@@ -65,15 +73,15 @@ class MessageGenerationServiceSpec extends SpecBase with ModelGenerators {
       case MessageType.PositiveAcknowledgement => validDepartureMessage
     }
 
-    when(arrivalMessageGenerator.generate(MovementId(anyString()))).thenReturn(arrivalPF)
+    when(v2ArrivalMessageGenerator.generate(MovementId(anyString()))).thenReturn(arrivalPF)
 
-    when(departureMessageGenerator.generate(MovementId(anyString()))).thenReturn(departurePF)
+    when(v2DepartureMessageGenerator.generate(MovementId(anyString()))).thenReturn(departurePF)
 
-    val sut = new MessageGenerationService(arrivalMessageGenerator, departureMessageGenerator)
+    val sut = new MessageGenerationService(v2ArrivalMessageGenerator, v2DepartureMessageGenerator, v3ArrivalMessageGenerator, v3DepartureMessageGenerator)
 
     "a valid message type for a departure returns a right with an XMLMessage" in forAll(arbitrary[MovementId]) {
       movementId =>
-        whenReady(sut.generateMessage(MessageType.PositiveAcknowledgement, MovementType.Departure, movementId).value) {
+        whenReady(sut.generateMessage(MessageType.PositiveAcknowledgement, MovementType.Departure, movementId, VersionHeader.v2_1).value) {
           result =>
             result mustBe Right(validDepartureMessage)
         }
@@ -81,7 +89,7 @@ class MessageGenerationServiceSpec extends SpecBase with ModelGenerators {
 
     "a valid message type for a arrival returns a right with an XMLMessage" in forAll(arbitrary[MovementId]) {
       movementId =>
-        whenReady(sut.generateMessage(MessageType.GoodsReleaseNotification, MovementType.Arrival, movementId).value) {
+        whenReady(sut.generateMessage(MessageType.GoodsReleaseNotification, MovementType.Arrival, movementId, VersionHeader.v2_1).value) {
           result =>
             result mustBe Right(validArrivalMessage)
         }
@@ -89,7 +97,7 @@ class MessageGenerationServiceSpec extends SpecBase with ModelGenerators {
 
     "a valid but incorrect message type for a arrival returns a left with a MessageTypeNotSupported" in forAll(arbitrary[MovementId]) {
       movementId =>
-        whenReady(sut.generateMessage(MessageType.PositiveAcknowledgement, MovementType.Arrival, movementId).value) {
+        whenReady(sut.generateMessage(MessageType.PositiveAcknowledgement, MovementType.Arrival, movementId, VersionHeader.v2_1).value) {
           result =>
             result mustBe Left(MessageGenerationError.MessageTypeNotSupported(MessageType.PositiveAcknowledgement))
         }
@@ -97,7 +105,7 @@ class MessageGenerationServiceSpec extends SpecBase with ModelGenerators {
 
     "a valid but incorrect message type for a departure returns a left with a MessageTypeNotSupported" in forAll(arbitrary[MovementId]) {
       movementId =>
-        whenReady(sut.generateMessage(MessageType.GoodsReleaseNotification, MovementType.Departure, movementId).value) {
+        whenReady(sut.generateMessage(MessageType.GoodsReleaseNotification, MovementType.Departure, movementId, VersionHeader.v2_1).value) {
           result =>
             result mustBe Left(MessageGenerationError.MessageTypeNotSupported(MessageType.GoodsReleaseNotification))
         }

@@ -76,6 +76,9 @@ class ArrivalMessageGenerator extends MessageGenerator {
                   <sequenceNumber>{between1And99999}</sequenceNumber>
                   <UNNumber>{alphanumeric(4)}</UNNumber>
                 </DangerousGoods>
+                <GoodsMeasure>
+                  <grossMass>10.0</grossMass>
+                </GoodsMeasure>
               </Commodity>
               <!--1 to 99 repetitions:-->
               <Packaging>
@@ -410,6 +413,9 @@ class ArrivalMessageGenerator extends MessageGenerator {
                   <sequenceNumber>{between1And99999}</sequenceNumber>
                   <UNNumber>{numeric(4)}</UNNumber>
                 </DangerousGoods>
+                <GoodsMeasure>
+                  <grossMass>10.0</grossMass>
+                </GoodsMeasure>
               </Commodity>
               <!--1 to 99 repetitions:-->
               <Packaging>
