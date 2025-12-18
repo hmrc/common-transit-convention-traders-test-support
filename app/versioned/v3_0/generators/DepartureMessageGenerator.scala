@@ -242,6 +242,7 @@ class DepartureMessageGenerator extends MessageGenerator {
         <Consignment>
           <containerIndicator>{zeroOrOne()}</containerIndicator>
           <grossMass>{decimalNumber(16, 6)}</grossMass>
+          <PlaceOfLoading>{}</PlaceOfLoading>
           <HouseConsignment>
             <sequenceNumber>{between1And99999}</sequenceNumber>
             <countryOfDestination>{country()}</countryOfDestination>
