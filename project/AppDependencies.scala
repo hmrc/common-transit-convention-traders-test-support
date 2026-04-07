@@ -2,7 +2,7 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion  = "10.6.0"
+  private val bootstrapVersion  = "10.7.0"
   private val scalaCheckVersion = "1.19.0"
 
   val compile: Seq[ModuleID] = Seq(
@@ -12,7 +12,7 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID] = Seq(
-    "org.mockito"        % "mockito-core"           % "5.20.0",
+    "org.mockito"        % "mockito-core"           % "5.23.0",
     "org.scalatestplus" %% "mockito-5-12"           % "3.2.19.0",
     "org.scalacheck"    %% "scalacheck"             % scalaCheckVersion,
     "org.typelevel"     %% "cats-laws"              % "2.13.0",
