@@ -24,6 +24,7 @@ import models.MessageType.GuaranteeNotValid
 import models.MessageType.InvalidationDecision
 import models.MessageType.MRNAllocated
 import models.MessageType.NoReleaseForTransit
+import models.MessageType.NotificationToAmendDeclaration
 import models.MessageType.PositiveAcknowledgement
 import models.MessageType.RecoveryNotification
 import models.MessageType.RejectionFromOfficeOfDeparture
@@ -74,6 +75,11 @@ class DepartureMessageGeneratorSpec extends AnyFreeSpec with Matchers with Optio
     "when supplied with message type RejectionFromOfficeOfDeparture" - {
       "should produce an IE056 Message" in
         validate("cc056c", generator.generate(departureId)(RejectionFromOfficeOfDeparture))
+    }
+
+    "when supplied with message type NotificationToAmendDeclaration" - {
+      "should produce an IE022 Message" in
+        validate("cc022c", generator.generate(departureId)(NotificationToAmendDeclaration))
     }
 
     "when supplied with message type ControlDecisionNotification" - {

@@ -25,6 +25,7 @@ import models.MessageType.GuaranteeNotValid
 import models.MessageType.InvalidationDecision
 import models.MessageType.MRNAllocated
 import models.MessageType.NoReleaseForTransit
+import models.MessageType.NotificationToAmendDeclaration
 import models.MessageType.PositiveAcknowledgement
 import models.MessageType.RecoveryNotification
 import models.MessageType.RejectionFromOfficeOfDeparture
@@ -50,6 +51,7 @@ class DepartureMessageGenerator extends MessageGenerator {
     case Discrepancies                     => generateIE019Message(correlationId)
     case WriteOffNotification              => generateIE045Message(correlationId)
     case ForwardedIncidentNotificationToED => generateIE182Message(correlationId)
+    case NotificationToAmendDeclaration    => generateIE022Message(correlationId)
   }
 
   private def generateIE004Message(correlationId: String): XMLMessage =
@@ -144,6 +146,43 @@ class DepartureMessageGenerator extends MessageGenerator {
           </ContactPerson>
         </HolderOfTheTransitProcedure>
       </ncts:CC009C>
+    )
+
+  private def generateIE022Message(correlationId: String): XMLMessage =
+    XMLMessage(
+      <ncts:CC022C PhaseID="NCTS5.0" xmlns:ncts="http://ncts.dgtaxud.ec">
+          <messageSender>{alphanumeric(1, 35)}</messageSender>
+          <messageRecipient>{correlationId}</messageRecipient>
+          <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
+          <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
+          <messageType>CC056C</messageType>
+          <correlationIdentifier>{correlationId}</correlationIdentifier>
+          <TransitOperation>
+            <MRN>{mrn()}</MRN>
+            <amendmentNotificationDateAndTime>{generateLocalDateTime()}</amendmentNotificationDateAndTime>
+          </TransitOperation>
+          <CustomsOfficeOfDeparture>
+            <referenceNumber>{referenceNumber()}</referenceNumber>
+          </CustomsOfficeOfDeparture>
+          <HolderOfTheTransitProcedure>
+            <identificationNumber>{alphanumeric(1, 17)}</identificationNumber>
+            <TIRHolderIdentificationNumber>{alphanumeric(1, 17)}</TIRHolderIdentificationNumber>
+            <name>{alphanumeric(1, 70)}</name>
+            <Address>
+              <streetAndNumber>{alphanumeric(1, 70)}</streetAndNumber>
+              <postcode>{alphanumeric(1, 17)}</postcode>
+              <city>{alphanumeric(1, 35)}</city>
+              <country>{alpha(2).toUpperCase}</country>
+            </Address>
+          </HolderOfTheTransitProcedure>
+          <FunctionalError>
+            <sequenceNumber>{between1And99999}</sequenceNumber>
+            <errorPointer>{alphanumeric(2, 512)}</errorPointer>
+            <errorCode>12</errorCode>
+            <errorReason>{alphanumeric(2, 7)}</errorReason>
+            <originalAttributeValue>{alphanumeric(2, 512)}</originalAttributeValue>
+          </FunctionalError>
+        </ncts:CC022C>
     )
 
   private def generateIE928Message(correlationId: String): XMLMessage =

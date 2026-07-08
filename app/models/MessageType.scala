@@ -37,6 +37,7 @@ object MessageType {
   case object Discrepancies                     extends MessageType("IE019", "CC019C")
   case object WriteOffNotification              extends MessageType("IE045", "CC045C")
   case object ForwardedIncidentNotificationToED extends MessageType("IE182", "CC182C")
+  case object NotificationToAmendDeclaration    extends MessageType("IE022", "CC022C")
 
   val arrivalMessages: Seq[MessageType] = Seq(
     GoodsReleaseNotification,
@@ -57,7 +58,8 @@ object MessageType {
     GuaranteeNotValid,
     Discrepancies,
     WriteOffNotification,
-    ForwardedIncidentNotificationToED
+    ForwardedIncidentNotificationToED,
+    NotificationToAmendDeclaration
   )
 
   val values: Seq[MessageType] = arrivalMessages ++ departureMessages
