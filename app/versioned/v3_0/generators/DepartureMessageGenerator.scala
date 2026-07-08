@@ -155,7 +155,7 @@ class DepartureMessageGenerator extends MessageGenerator {
         <messageRecipient>{correlationId}</messageRecipient>
         <preparationDateAndTime>{generateLocalDateTime()}</preparationDateAndTime>
         <messageIdentification>{alphanumeric(1, 35)}</messageIdentification>
-        <messageType>CC056C</messageType>
+        <messageType>CC022C</messageType>
         <correlationIdentifier>{correlationId}</correlationIdentifier>
         <TransitOperation>
           <MRN>{mrn()}</MRN>
