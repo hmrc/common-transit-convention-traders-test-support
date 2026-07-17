@@ -19,6 +19,7 @@ package models
 import models.MessageType.AmendmentAcceptance
 import models.MessageType.GoodsReleaseNotification
 import models.MessageType.InvalidationDecision
+import models.MessageType.NotificationToAmendDeclaration
 import models.MessageType.PositiveAcknowledgement
 import models.MessageType.UnloadingPermission
 import org.scalacheck.Gen
@@ -56,6 +57,13 @@ class MessageTypeSpec extends AnyFreeSpec with Matchers with MockitoSugar with O
       InvalidationDecision.code mustEqual "IE009"
       InvalidationDecision.rootNode mustEqual "CC009C"
       MessageType.departureMessages must contain(InvalidationDecision)
+    }
+
+    "NotificationToAmendDeclaration" in {
+      MessageType.values must contain(NotificationToAmendDeclaration)
+      NotificationToAmendDeclaration.code mustEqual "IE022"
+      NotificationToAmendDeclaration.rootNode mustEqual "CC022C"
+      MessageType.departureMessages must contain(NotificationToAmendDeclaration)
     }
 
     "PositiveAcknowledgement" in {
