@@ -9,17 +9,13 @@
         "version": "2.1",
         "status": "BETA",
         "endpointsEnabled": true,
-        "access": {
-          "type": "PUBLIC"
-        }
+        "access": "PUBLIC"
       },
       {
         "version": "3.0",
         "status": "ALPHA",
         "endpointsEnabled": false,
-        "access": {
-          "type": "PRIVATE"
-        }
+        "access": "INTERNAL"
       }
     ]
   }
