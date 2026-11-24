@@ -2,13 +2,13 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion  = "10.7.0"
-  private val scalaCheckVersion = "1.19.0"
+  private val bootstrapVersion  = "10.9.0"
+  private val scalaCheckVersion = "1.20.0"
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "bootstrap-backend-play-30" % bootstrapVersion,
     "org.typelevel"     %% "cats-core"                 % "2.13.0",
-    "io.chrisdavenport" %% "cats-scalacheck"           % "0.3.2"
+    "io.chrisdavenport" %% "cats-scalacheck"           % "0.5.0"
   )
 
   val test: Seq[ModuleID] = Seq(
